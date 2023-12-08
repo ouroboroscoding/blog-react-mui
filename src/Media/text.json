@@ -1,0 +1,148 @@
+{
+	"en-CA": {
+		"add": {
+			"cancel": "Cancel",
+			"descr": "Drop file or click to upload (max file size of 10MiB)",
+			"duplicate": "Filename already exists",
+			"thumb": {
+				"crop": "Crop",
+				"fit": "Fit",
+				"height": "Height",
+				"type": "Resize Type",
+				"width": "Width"
+			},
+			"title": "Upload new Media",
+			"upload": "Upload"
+		},
+		"details": {
+			"dimensions": "Dimensions",
+			"filename": "Filename",
+			"mime": "Mime type",
+			"size": "Size",
+			"thumbnails": "Thumbnails"
+		},
+		"filter": {
+			"filename": "Filename filter",
+			"from": "From",
+			"range": {
+				"explicit": "Select a range",
+				"last_week": "Uploaded in the last 7 days",
+				"last_two_weeks": "Uploaded in the last 14 days",
+				"last_thirty": "Uploaded in the last 30 days",
+				"last_ninety": "Uploaded in the last 90 days",
+				"last_year": "Uploaded in the last 365 days",
+				"this_month": "Uploaded this month",
+				"this_year": "Uploaded this year",
+				"today": "Today's uploads"
+			},
+			"my_uploads": "Only my uploads",
+			"to": "To",
+			"whose": {
+				"mine": "Showing only your uploads"
+			}
+		},
+		"remove": {
+			"button": "Click to confirm delete",
+			"confirm": "Are you sure you want to delete the file \"{FILE}\"? Once you do this, you will not be able to get this file back, and any blog posts using it will appear broken.",
+			"title": "Delete \"{FILE}\"?"
+		},
+		"no_records": "No media found. Please adjust your search filter."
+	},
+	"en-US": {
+		"add": {
+			"cancel": "Cancel",
+			"descr": "Drop file or click to upload (max file size of 10MiB)",
+			"duplicate": "Filename already exists",
+			"thumb": {
+				"crop": "Crop",
+				"fit": "Fit",
+				"height": "Height",
+				"type": "Resize Type",
+				"width": "Width"
+			},
+			"title": "Télécharger un nouveau Média",
+			"upload": "Télécharger"
+		},
+		"details": {
+			"dimensions": "Dimensions",
+			"filename": "Filename",
+			"mime": "Mime type",
+			"size": "Size",
+			"thumbnails": "Thumbnails"
+		},
+		"filter": {
+			"filename": "Filename filter",
+			"from": "From",
+			"range": {
+				"explicit": "Select a range",
+				"last_week": "Uploaded in the last 7 days",
+				"last_two_weeks": "Uploaded in the last 14 days",
+				"last_thirty": "Uploaded in the last 30 days",
+				"last_ninety": "Uploaded in the last 90 days",
+				"last_year": "Uploaded in the last 365 days",
+				"this_month": "Uploaded this month",
+				"this_year": "Uploaded this year",
+				"today": "Today's uploads"
+			},
+			"to": "To",
+			"whose": {
+				"mine": "Showing only your uploads"
+			}
+		},
+		"remove": {
+			"button": "Click to confirm delete",
+			"confirm": "Are you sure you want to delete the file \"{FILE}\"? Once you do this, you will not be able to get this file back, and any blog posts using it will appear broken.",
+			"title": "Delete \"{FILE}\"?"
+		},
+		"no_records": "No media found. Please adjust your search filter."
+	},
+	"fr-CA": {
+		"add": {
+			"cancel": "Annuler",
+			"descr": "Déposez le fichier ou cliquez pour le télécharger (taille maximale du fichier : 10MiB)",
+			"duplicate": "Le nom de fichier existe déjà",
+			"thumb": {
+				"crop": "Découper",
+				"fit": "Insérer",
+				"height": "Hauteur",
+				"type": "Type",
+				"width": "Largeur"
+			},
+			"title": "Télécharger un nouveau Média",
+			"upload": "Télécharger"
+		},
+		"details": {
+			"dimensions": "Dimensions",
+			"filename": "Nom de fichier",
+			"mime": "Type de mime",
+			"size": "Taille",
+			"thumbnails": "Vignettes"
+		},
+		"filter": {
+			"filename": "Filtre de nom de fichier",
+			"from": "De",
+			"range": {
+				"explicit": "Sélectionner un intervalle",
+				"last_week": "Téléchargé au cours des 7 derniers jours",
+				"last_two_weeks": "Téléchargé au cours des 14 derniers jours",
+				"last_thirty": "Téléchargé au cours des 30 derniers jours",
+				"last_ninety": "Téléchargé au cours des 90 derniers jours",
+				"last_year": "Téléchargé au cours des 365 derniers jours",
+				"this_month": "Téléchargé ce mois-ci",
+				"this_year": "Téléchargé cette année",
+				"today": "Téléchargements d'aujourd'hui"
+			},
+			"my_uploads": "Seulement mes téléchargements",
+			"to": "À",
+			"whose": {
+				"mine": "Afficher uniquement vos téléchargements"
+			}
+		},
+		"remove": {
+			"button": "Cliquer pour confirmer la suppression",
+			"confirm": "Êtes-vous sûr de vouloir supprimer le fichier \"{FILE}\" ? Une fois que vous l'aurez fait, vous ne pourrez plus récupérer ce fichier, et tous les articles de blog qui l'utiliseront seront interrompus.",
+			"title": "Supprimer \"{FILE}\"?"
+		},
+		"no_records": "Aucun média n'a été trouvé. Veuillez ajuster votre filtre de recherche."
+	}
+}

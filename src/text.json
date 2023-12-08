@@ -1,0 +1,20 @@
+{
+	"en-CA": {
+		"home_message": "Welcome to your Blogging system.",
+		"tab_home": "Home",
+		"tab_invalid": "Invalid location: {path}",
+		"tab_media": "Media"
+	},
+	"en-US": {
+		"home_message": "Welcome to your Blogging system.",
+		"tab_home": "Home",
+		"tab_invalid": "Invalid location: {path}",
+		"tab_media": "Media"
+	},
+	"fr-CA": {
+		"home_message": "Bienvenue dans votre système de blogs.",
+		"tab_home": "Accueil",
+		"tab_invalid": "Lieu non valid: {path}",
+		"tab_media": "Médias"
+	}
+}
