@@ -29,10 +29,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Local components
 import Add from './Add';
 import Filter from './Filter';
+import View from './View';
 
 // Translations
 import TEXT from './text';
@@ -56,6 +58,7 @@ export default function Media({ locale, onError }) {
 	const [ view, viewSet ] = useState(null);
 
 	// Get rights
+	const hover = useMediaQuery('(hover: hover)');
 	const rights = useRights('blog_media');
 
 	// Called to fetch records
@@ -95,7 +98,12 @@ export default function Media({ locale, onError }) {
 	}
 
 	// Called when the user clicks on, or mouses in and out of the record item
-	function mediaHover(type, media) {
+	function mediaClick(media) {
+
+		// If we can hover, do nothing
+		if(hover) {
+			return;
+		}
 
 		// Get latest
 		recordsSet(l => {
@@ -109,24 +117,11 @@ export default function Media({ locale, onError }) {
 			// Clone the records
 			const lRecords = clone(l);
 
-			// For a click we need to toggle
-			if(type === 'click') {
-
-				// If we are already in hover move
-				if(lRecords[i].hover) {
-					delete lRecords[i].hover;
-				} else {
-					lRecords[i].hover = true;
-				}
-			}
-
-			// Else, we are dealing with a straight forward in or out
-			else {
-				if(type === 'over') {
-					lRecords[i].hover = true;
-				} else {
-					delete lRecords[i].hover;
-				}
+			// If we are already in hover move
+			if(lRecords[i].hover) {
+				delete lRecords[i].hover;
+			} else {
+				lRecords[i].hover = true;
 			}
 
 			// Set the new records
@@ -147,6 +142,65 @@ export default function Media({ locale, onError }) {
 			}
 		}, error => {
 			onError(error);
+		});
+	}
+
+	// Called when the view has added a new thumbnail to the image
+	function thumbAdded(size, url) {
+
+		// Get latest
+		recordsSet(l => {
+
+			// Clone the records
+			const lRecords = clone(l);
+
+			// Find the record
+			const i = afindi(lRecords, '_id', view._id);
+			if(i === -1) {
+				return l;
+			}
+
+			// Update the list of thumbnails
+			lRecords[i].image.thumbnails.push(size);
+
+			// Update the object of urls
+			lRecords[i].urls[size] = url;
+
+			// Set the new view
+			viewSet(lRecords[i]);
+
+			// Return the new records
+			return lRecords;
+		});
+	}
+
+	// Called when the view has removed an existing thumbnail from the image
+	function thumbRemoved(size) {
+
+		// Get latest
+		recordsSet(l => {
+
+			// Clone the records
+			const lRecords = clone(l);
+
+			// Find the record
+			const i = afindi(lRecords, '_id', view._id);
+			if(i === -1) {
+				return l;
+			}
+
+			// Update the list of thumbnails
+			const c = lRecords[i].image.thumbnails.indexOf(size)
+			lRecords[i].image.thumbnails.splice(c, 1);
+
+			// Update the object of urls
+			delete lRecords[i].urls[size];
+
+			// Set the new view
+			viewSet(lRecords[i]);
+
+			// Return the new records
+			return lRecords;
 		});
 	}
 
@@ -179,19 +233,24 @@ export default function Media({ locale, onError }) {
 						<Paper
 							className={'blog_media_records_item' + (o.hover ? ' hover' : '')}
 							key={o._id}
-							onClick={() => mediaHover('click', o)}
+							onClick={() => mediaClick(o)}
 						>
-							{o.image ?
-								<Box
-									className="blog_media_records_item_photo"
-									style={{backgroundImage: `url(${o.urls.source})`}}
-								/>
-							:
-								<Box className="blog_media_records_item_file">
-									<i className="mime fa-solid fa-file" />
+							<Box className="blog_media_records_item_main">
+								{o.image ?
+									<Box
+										className="blog_media_records_item_photo"
+										style={{backgroundImage: `url(${o.urls.source})`}}
+									/>
+								:
+									<Box className="blog_media_records_item_file">
+										<i className="mime fa-solid fa-file" />
+									</Box>
+								}
+								<Box className="blog_media_record_item_filename">
+									<nobr><Typography>{o.filename}</Typography></nobr>
 								</Box>
-							}
-							{o.hover &&
+							</Box>
+							{(hover || o.hover) &&
 								<Box className="blog_media_records_item_buttons">
 									<Button
 										className="blog_media_records_item_view"
@@ -244,6 +303,17 @@ export default function Media({ locale, onError }) {
 						>{_.remove.button}</Button>
 					</DialogActions>
 				</Dialog>
+			}
+			{view !== null &&
+				<View
+					locale={locale}
+					onClose={() => viewSet(null)}
+					onError={onError}
+					onThumbAdded={thumbAdded}
+					onThumbRemoved={thumbRemoved}
+					rights={rights}
+					value={view}
+				/>
 			}
 		</Box>
 	);

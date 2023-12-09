@@ -6,6 +6,7 @@
 			"duplicate": "Filename already exists",
 			"thumb": {
 				"crop": "Crop",
+				"duplicate": "Thumbnail already exists",
 				"fit": "Fit",
 				"height": "Height",
 				"type": "Resize Type",
@@ -19,6 +20,7 @@
 			"filename": "Filename",
 			"mime": "Mime type",
 			"size": "Size",
+			"source": "Source",
 			"thumbnails": "Thumbnails"
 		},
 		"filter": {
@@ -55,6 +57,7 @@
 			"duplicate": "Filename already exists",
 			"thumb": {
 				"crop": "Crop",
+				"duplicate": "Thumbnail already exists",
 				"fit": "Fit",
 				"height": "Height",
 				"type": "Resize Type",
@@ -68,6 +71,7 @@
 			"filename": "Filename",
 			"mime": "Mime type",
 			"size": "Size",
+			"source": "Source",
 			"thumbnails": "Thumbnails"
 		},
 		"filter": {
@@ -103,6 +107,7 @@
 			"duplicate": "Le nom de fichier existe déjà",
 			"thumb": {
 				"crop": "Découper",
+				"duplicate": "Le vignette existe déjà",
 				"fit": "Insérer",
 				"height": "Hauteur",
 				"type": "Type",
@@ -116,6 +121,7 @@
 			"filename": "Nom de fichier",
 			"mime": "Type de mime",
 			"size": "Taille",
+			"source": "Source",
 			"thumbnails": "Vignettes"
 		},
 		"filter": {

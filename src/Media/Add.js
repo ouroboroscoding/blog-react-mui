@@ -76,7 +76,7 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 	}
 
 	// Called when a thumbnail changes
-	function thumbChange(key, type, value) {
+	function thumbChange(key, type, val) {
 
 		// Make sure we're up to date
 		thumbsSet(l => {
@@ -99,12 +99,12 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 			if(type === 'height' || type === 'width') {
 
 				// Make sure we have an int
-				value = parseInt(value, 10);
+				val = parseInt(val, 10);
 
 				// If it's higher than it's equivalent file dimension, set it to
 				//	that
-				if(value > file.dimensions[type]) {
-					value = file.dimensions[type];
+				if(val > file.dimensions[type]) {
+					val = file.dimensions[type];
 				}
 
 				// If we're linked
@@ -114,26 +114,26 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 					if(type === 'height') {
 
 						// Get the percentage of the height based on the image height
-						const fPerc = file.dimensions.height / value;
+						const fPerc = file.dimensions.height / val;
 
 						// Set new values
-						o['width'] = Math.round(file.dimensions.width / fPerc);
+						o.width = Math.round(file.dimensions.width / fPerc);
 					}
 
 					// Else, if we're changing the width
 					else {
 
 						// Get the percentage of the height based on the image height
-						const fPerc = file.dimensions.width / value;
+						const fPerc = file.dimensions.width / val;
 
 						// Set new values
-						o['height'] = Math.round(file.dimensions.height / fPerc);
+						o.height = Math.round(file.dimensions.height / fPerc);
 					}
 				}
 			}
 
 			// Add the new value
-			o[type] = value;
+			o[type] = val;
 
 			// Merge the new data and return
 			merge(lThumbs[iThumb], o);
@@ -212,10 +212,10 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 	// Render
 	return (
 		<Dialog
+			fullScreen={mobile}
 			id="blog_media_upload_modal"
 			onClose={onCancel}
 			open={open}
-			fullScreen={mobile}
 		>
 			<DialogTitle>{_.add.title}</DialogTitle>
 			<DialogContent>
