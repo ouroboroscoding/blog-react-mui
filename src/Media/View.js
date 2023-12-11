@@ -13,6 +13,8 @@ import blog, { errors } from '@ouroboros/blog';
 import {
 	bytesHuman, combine
 } from '@ouroboros/tools';
+import { copy } from '@ouroboros/browser/clipboard';
+import events from '@ouroboros/events';
 
 // NPM modules
 import PropTypes from 'prop-types';
@@ -82,7 +84,7 @@ export default function View({
 		thumbSet({
 			type: 'f',
 			height: Math.round(value.image.resolution.height / 2),
-			link: true,
+			chain: true,
 			width: Math.round(value.image.resolution.width / 2)
 		});
 	}
@@ -108,8 +110,8 @@ export default function View({
 					val = value.image.resolution[type];
 				}
 
-				// If we're linked
-				if(thumb.link) {
+				// If we're chained
+				if(thumb.chain) {
 
 					// If we're changing the height
 					if(type === 'height') {
@@ -136,9 +138,9 @@ export default function View({
 			// If we're changing the type
 			if(type === 'type') {
 
-				// If the new value is crop, turn off linking
+				// If the new value is crop, turn off chaining
 				if(val === 'c') {
-					oNew.link = false;
+					oNew.chain = false;
 				}
 			}
 
@@ -202,7 +204,7 @@ export default function View({
 			open={true}
 		>
 			<DialogContent className="blog_media_view">
-			<i className="fa-solid fa-times-circle close" onClick={onClose} />
+				<i className="fa-solid fa-times-circle close" onClick={onClose} />
 				<Box className="blog_media_view_content">
 					{value.image ?
 						<Box
@@ -223,41 +225,68 @@ export default function View({
 							{_.details.filename}<br />
 							{_.details.mime}<br />
 							{_.details.size}<br />
-							{value.image && [
-								_.details.dimensions,
-								<br />
-							]}
+							{value.image &&
+								<React.Fragment>
+									{_.details.dimensions}<br />
+								</React.Fragment>
+							}
 							{value.image && value.image.thumbnails &&
 								<React.Fragment>
 									{_.details.thumbnails}&nbsp;
-									<i className={"fa-solid fa-plus link" + (thumb !== null ? ' open' : '')} onClick={() => thumb !== null ? thumbSet(null) : thumbAdd()} />
+									<i
+										className={"fa-solid fa-plus " +
+											(thumb !== null ? ' open' : '')}
+										onClick={() => thumb !== null ?
+											thumbSet(null) : thumbAdd()}
+									/>
 								</React.Fragment>
 							}
-
 						</Typography>
 					</Box>
 					<Box className="blog_media_view_details_right">
 						<Typography>
-							<nobr><a href={value.urls.source} target="_blank">
-								{value.filename}
-							</a></nobr><br />
+							<nobr>
+								<i
+									className="fa-solid fa-copy"
+									onClick={() => {
+										copy(value.urls.source).then(() => {
+											events.get('success').trigger(_.url_copied)
+										});
+									}}
+								/>
+								<a
+									href={value.urls.source}
+									rel="noreferrer"
+									target="_blank"
+								>{value.filename}</a>
+							</nobr><br />
 							<nobr>{value.mime}</nobr><br />
 							<nobr>{bytesHuman(value.length)}</nobr><br />
-							{value.image && [
-								<nobr>{`${value.image.resolution.width}x${value.image.resolution.height}`}</nobr>,
-								<br />
-							]}
-							{value.image && value.image.thumbnails && value.image.thumbnails.map(s =>
+							{value.image &&
 								<React.Fragment>
+									<nobr>{`${value.image.resolution.width}x${value.image.resolution.height}`}</nobr><br />
+								</React.Fragment>
+							}
+							{value.image && value.image.thumbnails && value.image.thumbnails.map(s =>
+								<span key={s} className="blog_media_thumb">
+									<i
+										className="fa-solid fa-copy"
+										onClick={() => {
+											copy(value.urls[s]).then(() => {
+												events.get('success').trigger(_.url_copied)
+											});
+										}}
+									/>
 									<a
 										href={value.urls[s]}
+										rel="noreferrer"
 										target="_blank"
-									>{s[0] === 'f' ? _.add.thumb.fit : _.add.thumb.crop} {s.substring(1)}</a>&nbsp;
+									>{s[0] === 'f' ? _.add.thumb.fit : _.add.thumb.crop} {s.substring(1)}</a>
 									<ThumbDelete
 										onDelete={thumbDelete}
 										size={s}
 									/>
-								</React.Fragment>
+								</span>
 							)}
 						</Typography>
 					</Box>
@@ -291,8 +320,8 @@ export default function View({
 									value={thumb.width}
 								/>
 								<i
-									className={'blog_thumb_link fa-solid ' + (thumb.link ? 'fa-link' : 'fa-link-slash')}
-									onClick={() => thumbChange('link', !thumb.link)}
+									className={'blog_thumb_chain fa-solid ' + (thumb.link ? 'fa-link' : 'fa-link-slash')}
+									onClick={() => thumbChange('chain', !thumb.chain)}
 								/>
 								<TextField
 									className="blog_thumb_dimension"
@@ -311,6 +340,9 @@ export default function View({
 								>
 									<i className="fa-solid fa-plus" />
 								</Button>
+								{err &&
+									<Box className="error">{err}</Box>
+								}
 							</Box>
 						}
 					</Box>

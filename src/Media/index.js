@@ -12,7 +12,9 @@
 import blog from '@ouroboros/blog';
 import clone from '@ouroboros/clone';
 import { useRights } from '@ouroboros/brain-react';
+import { copy } from '@ouroboros/browser/clipboard';
 import { timestamp } from '@ouroboros/dates';
+import events from '@ouroboros/events';
 import { afindi, arrayFindDelete, empty } from '@ouroboros/tools';
 
 // NPM modules
@@ -259,6 +261,18 @@ export default function Media({ locale, onError }) {
 										variant="contained"
 									>
 										<i className="fa-solid fa-eye" />
+									</Button>
+									<Button
+										className="blog_media_records_item_copy"
+										color="info"
+										onClick={() => {
+											copy(o.urls.source).then(() => {
+												events.get('success').trigger(_.url_copied)
+											});
+										}}
+										variant="contained"
+									>
+										<i className="fa-solid fa-copy" />
 									</Button>
 									{rights.delete &&
 										<Button

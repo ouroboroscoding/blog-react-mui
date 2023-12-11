@@ -48,7 +48,8 @@
 			"confirm": "Are you sure you want to delete the file \"{FILE}\"? Once you do this, you will not be able to get this file back, and any blog posts using it will appear broken.",
 			"title": "Delete \"{FILE}\"?"
 		},
-		"no_records": "No media found. Please adjust your search filter."
+		"no_records": "No media found. Please adjust your search filter.",
+		"url_copied": "URL copied to clipboard"
 	},
 	"en-US": {
 		"add": {
@@ -98,7 +99,8 @@
 			"confirm": "Are you sure you want to delete the file \"{FILE}\"? Once you do this, you will not be able to get this file back, and any blog posts using it will appear broken.",
 			"title": "Delete \"{FILE}\"?"
 		},
-		"no_records": "No media found. Please adjust your search filter."
+		"no_records": "No media found. Please adjust your search filter.",
+		"url_copied": "URL copied to clipboard"
 	},
 	"fr-CA": {
 		"add": {
@@ -149,6 +151,7 @@
 			"confirm": "Êtes-vous sûr de vouloir supprimer le fichier \"{FILE}\" ? Une fois que vous l'aurez fait, vous ne pourrez plus récupérer ce fichier, et tous les articles de blog qui l'utiliseront seront interrompus.",
 			"title": "Supprimer \"{FILE}\"?"
 		},
-		"no_records": "Aucun média n'a été trouvé. Veuillez ajuster votre filtre de recherche."
+		"no_records": "Aucun média n'a été trouvé. Veuillez ajuster votre filtre de recherche.",
+		"url_copied": "URL copié dans le presse-papiers"
 	}
 }
