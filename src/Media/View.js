@@ -156,7 +156,7 @@ export default function View({
 	function thumbDelete(size) {
 
 		// Send the request to the server
-		blog.delete('media/thumbnail', {
+		blog.delete('admin/media/thumbnail', {
 			_id: value._id,
 			size
 		}).then(data => {
@@ -175,7 +175,7 @@ export default function View({
 		const sSize = `${thumb.type}${thumb.width}x${thumb.height}`;
 
 		// Send the request to the server
-		blog.create('media/thumbnail', {
+		blog.create('admin/media/thumbnail', {
 			_id: value._id,
 			size: sSize
 		}).then(data => {

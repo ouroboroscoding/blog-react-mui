@@ -186,7 +186,7 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 		}
 
 		// Make the request to the server
-		blog.create('media', oData).then(data => {
+		blog.create('admin/media', oData).then(data => {
 
 			// Pass along the data tp the parent
 			onAdded(data);

@@ -46,7 +46,9 @@
 		"@emotion/react": "^11.8.2",
 		"@emotion/styled": "^11.8.1",
 		"@mui/material": "^5.5.1",
+		"@ouroboros/brain-react": "^1.0.2",
 		"@ouroboros/body": "^1.0.3",
+		"@ouroboros/mouth-mui": "^1.2.1",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
 	}

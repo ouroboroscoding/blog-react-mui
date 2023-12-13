@@ -23,6 +23,7 @@ import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 
 // Local pages
+import Categories from './Categories';
 import Media from './Media';
 
 // Styling
@@ -35,7 +36,8 @@ import TEXT from './text';
 const TAB_MAP = {
 	invalid: -1,
 	home: 0,
-	media: 1
+	categories: 1,
+	media: 2,
 }
 
 /**
@@ -70,6 +72,11 @@ export default function Blog({ base_path, locale, onError }) {
 			tabSet(TAB_MAP.home);
 		}
 
+		// Else, if the location is categories
+		else if(location.pathname === `${base_path}/categories`) {
+			tabSet(TAB_MAP.categories);
+		}
+
 		// Else, if the location is media
 		else if(location.pathname === `${base_path}/media`) {
 			tabSet(TAB_MAP.media);
@@ -99,6 +106,12 @@ export default function Blog({ base_path, locale, onError }) {
 					to={base_path}
 				/>
 				<Tab
+					className={tab === TAB_MAP.categories ? 'selected' : ''}
+					label={_.tab_categories}
+					component={Link}
+					to={`${base_path}/categories`}
+				/>
+				<Tab
 					className={tab === TAB_MAP.media ? 'selected' : ''}
 					label={_.tab_media}
 					component={Link}
@@ -109,6 +122,11 @@ export default function Blog({ base_path, locale, onError }) {
 				<Box id="blog_home">
 					<Typography>{_.home_message}</Typography>
 				</Box>
+			) || (tab === TAB_MAP.categories &&
+				<Categories
+					locale={locale}
+					onError={onError}
+				/>
 			) || (tab === TAB_MAP.media &&
 				<Media
 					locale={locale}

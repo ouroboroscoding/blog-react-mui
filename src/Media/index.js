@@ -44,7 +44,7 @@ import TEXT from './text';
 /**
  * Media
  *
- * Handles mapping of routers in types path
+ * Handles fetching and display of media
  *
  * @name Media
  * @access public
@@ -80,7 +80,7 @@ export default function Media({ locale, onError }) {
 
 		// Fetch from the server
 		recordsSet(false);
-		blog.read('media/filter', filter).then(recordsSet, error => {
+		blog.read('admin/media/filter', filter).then(recordsSet, error => {
 			onError(error);
 		});
 	}
@@ -135,7 +135,7 @@ export default function Media({ locale, onError }) {
 	function mediaRemove() {
 
 		// Send the delete request to the server
-		blog.delete('media', {
+		blog.delete('admin/media', {
 			_id: remove._id
 		}).then(data => {
 			if(data) {

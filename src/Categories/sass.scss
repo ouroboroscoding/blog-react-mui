@@ -1,0 +1,33 @@
+#blog_categories {
+	padding: 10px;
+
+	.blog_category_add_button {
+		width: 100%;
+	}
+
+	.blog_category_records {
+
+	}
+}
+
+#blog_category_add {
+
+	.blog_category_add_locale {
+		padding: 10px;
+
+		.blog_category_add_locale_header {
+			display: flex;
+			flex-direction: row;
+
+			.blog_category_add_locale_select {
+				flex-basis: 0;
+				flex-grow: 1;
+				flex-shrink: 1;
+			}
+		}
+	}
+
+	.blog_category_add_locale_add {
+		text-align: right;
+	}
+}
