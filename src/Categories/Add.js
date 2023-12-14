@@ -10,13 +10,11 @@
 
 // Ouroboros modules
 import blog, { errors } from '@ouroboros/blog';
+import CategoryDef from '@ouroboros/blog/definitions/category';
 import CategoryLocaleDef from '@ouroboros/blog/definitions/category_locale';
-import { Tree } from '@ouroboros/define';
+import { Node, Tree } from '@ouroboros/define';
 import { DefineParent } from '@ouroboros/define-mui';
-import { locales as Locales } from '@ouroboros/mouth-mui';
-import {
-	afindi, empty, omap, pathToTree
-} from '@ouroboros/tools';
+import { afindi, omap, pathToTree } from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
@@ -37,16 +35,24 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
+// Local modules
+import normalize from 'data/normalize';
+
 // Translations
 import TEXT from './text';
 
+// Create the category name Node
+const CategoryNameNode = new Node(CategoryDef.name);
+
 // Create the category locale Tree
-console.log(CategoryLocaleDef);
 const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
 	__ui__: {
 		__create__: [ 'title', 'slug', 'description']
 	}
 })
+
+// Constants
+const TITLE_TO_SLUG = /[ a-z0-9-]/;
 
 /**
  * Category Add
@@ -58,13 +64,13 @@ const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Add({ locale, onAdded, onCancel, onError, open }) {
+export default function Add({
+	locale, locales, onAdded, onCancel, onError, open
+}) {
 
 	// State
 	const [ errs, errsSet ] = useState({});
-	const [ name, nameSet ] = useState('');
 	const [ data, dataSet ] = useState(null);
-	const [ locs, locsSet ] = useState(false);
 
 	// Hooks
 	const mobile = useMediaQuery('(max-width:400px)');
@@ -72,47 +78,29 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 	// Load effect
 	useEffect(() => {
 
-		// Subscribe to locales available
-		const oL = Locales.subscribe(l => {
+		// Init the first data key
+		let sLocale = null;
 
-			console.log(l);
+		// If the current locale matches one in the list
+		const i = afindi(locales, '_id', locale)
+		if(i !== -1) {
+			sLocale = locales[i]._id;
+		}
 
-			// If it's nothing, do nothing
-			if(empty(l)) {
-				return;
+		// Else, just grab the first one
+		else {
+			sLocale = locales[0]._id;
+		}
+
+		// Clear the data completely by creating new locale data for the
+		//	key found
+		dataSet({
+			[sLocale]: {
+				key: uuidv4(),
+				ref: createRef()
 			}
-
-			// Set the locales available
-			locsSet(l);
-
-			// Init the first data key
-			let sLocale = null;
-
-			// If the current locale matches one in the list
-			const i = afindi(l, '_id', locale)
-			if(i !== -1) {
-				sLocale = l[i]._id;
-			}
-
-			// Else, just grab the first one
-			else {
-				sLocale = l[0]._id;
-			}
-
-			// Clear the data completely by creating new locale data for the
-			//	key found
-			dataSet({
-				[sLocale]: {
-					key: uuidv4(),
-					ref: createRef()
-				}
-			});
 		});
 
-		// Unsubscribe
-		return () => {
-			oL.unsubscribe();
-		}
 	}, []);
 
 	// Called to add a new locale to the data
@@ -122,13 +110,13 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 		dataSet(o => {
 
 			// If the count of data keys matches the locales, you shall not pass
-			if(Object.keys(o).length === locs.length) {
+			if(Object.keys(o).length === locales.length) {
 				return o;
 			}
 
 			// Get the new locale by filtering out the ones already used and
 			//	then using the first one we find in the remaining
-			const sLocale = locs.filter(o => !(o['_id'] in data))[0]._id;
+			const sLocale = locales.filter(o => !(o['_id'] in data))[0]._id;
 
 			// Shallow copy the data and add the new empty locale to the copy
 			const oData = { ...o };
@@ -140,11 +128,6 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 			// Return the new data
 			return oData;
 		});
-	}
-
-	// Called when any of the data in the individual forms changes
-	function dataChanged(loc, value) {
-
 	}
 
 	// Called to remove a locale from the data
@@ -195,23 +178,87 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 	// Called to upload the file
 	function submit() {
 
-		const oData = {};
+		// Clear errors
+		errsSet({});
+
+		// Init the data with the name
+		const oData = { locales: {} };
+
+		// Keep track of used slugs
+		const lSlugs = [];
+
+		// Go through each locale
+		for(const k in data) {
+
+			// If the form data is invalid, stop immediately
+			if(!data[k].ref.current.valid()) {
+				return;
+			}
+
+			// Add the locale data
+			oData.locales[k] = data[k].ref.current.value;
+
+			// If the slug already exists
+			if(lSlugs.includes(oData.locales[k].slug)) {
+
+				// Add the duplicate error and stop
+				data[k].ref.current.error({ slug: 'duplicate' });
+				return;
+			}
+
+			// Add the slug
+			lSlugs.push(oData.locales[k].slug);
+		}
 
 		// Make the request to the server
-		blog.create('admin/category', oData).then(data => {
+		blog.create('admin/category', {
+			record: oData
+		}).then(data => {
 
-			// Pass along the data tp the parent
+			// Pass along the data to the parent
 			onAdded(oData);
 
 		}, error => {
 			if(error.code === errors.body.DATA_FIELDS) {
-				errsSet(pathToTree(error.msg));
+				const oErrors = pathToTree(error.msg).records;
+				for(const loc in oErrors.locale) {
+					data[loc].ref.current.error(oErrors.locale[loc]);
+				}
 			} else if(error.code === errors.body.DB_DUPLICATE) {
-				errsSet({ duplicate: true });
+				const [ loc, slug ] = error.msg[0];
+				data[loc].ref.current.error({ slug: 'duplicate' });
 			} else {
 				onError(error);
 			}
 		});
+	}
+
+	// Called when the title of a locale changes
+	function titleChanged(ev) {
+
+		// Clean the title of any special characters, then convert it to
+		//	lowercase
+		const s = normalize(ev.data.title).toLowerCase();
+
+		// Init the return string array
+		const l = [];
+
+		// Go through each character in the title
+		for(const c of s.split('')) {
+
+			// If it's a space, replace it with a dash -
+			if(c === ' ') {
+				l.push('-');
+			}
+
+			// Else, if it's any valid uri character,
+			else if(TITLE_TO_SLUG.test(c)) {
+				l.push(c);
+			}
+		}
+
+		// Join the array and return it as the new URL
+		return { 'slug': l.join('') }
 	}
 
 	// Text
@@ -227,63 +274,75 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 		>
 			<DialogTitle>{_.add.title}</DialogTitle>
 			<DialogContent>
-				{(locs === false &&
+				{(locales === false || data === null) ?
 					<Typography>...</Typography>
-				) || (locs.length === 1 &&
-					<DefineParent
-						name={locs[0]}
-						node={CategoryLocaleTree}
-						ref={data[locs[0]].ref}
-						type="create"
-					/>
-				) || (data !== null &&
+				:
 					<React.Fragment>
-						{omap(data, (v,k,i) =>
-							<Paper key={v.key} className="blog_category_add_locale">
-								<Box className="blog_category_add_locale_header">
-									<Box className="blog_category_add_locale_select">
-										<FormControl>
-											<InputLabel id={`category_locale_select_${v.key}`}>
-												{_.add.language}
-											</InputLabel>
-											<Select
-												label={_.add.language}
-												labelId={`category_locale_select_${v.key}`}
-												native
-												onChange={ev => localeChanged(k, ev.target.value)}
-												size="small"
-												value={k}
-											>
-												{locs.filter(o => {
-													return o['_id'] === k || !(o['_id'] in data);
-												}).map(o =>
-													<option key={o['_id']} value={o['_id']}>{o['name']}</option>
-												)}
-											</Select>
-										</FormControl>
-									</Box>
-									{i > 0 &&
-										<Box>
-											<Button
-												color="secondary"
-												onClick={() => dataRemove(k)}
-												variant="contained"
-											>
-												<i className="fa-solid fa-times" />
-											</Button>
+						{locales.length === 1 ?
+							<DefineParent
+								error={errs.locale && (locales[0] in errs.locale ? errs.locale[locales[0]] : false)}
+								name={locales[0]}
+								node={CategoryLocaleTree}
+								onNodeChange={{
+									title: titleChanged
+								}}
+								ref={data[locales[0]].ref}
+								type="create"
+							/>
+						:
+							<React.Fragment>
+								{omap(data, (v,k,i) =>
+									<Paper key={v.key} className="blog_category_add_locale">
+										<Box className="blog_category_add_locale_header">
+											<Box className="blog_category_add_locale_select">
+												<FormControl>
+													<InputLabel id={`category_locale_select_${v.key}`}>
+														{_.add.language}
+													</InputLabel>
+													<Select
+														label={_.add.language}
+														labelId={`category_locale_select_${v.key}`}
+														native
+														onChange={ev => localeChanged(k, ev.target.value)}
+														size="small"
+														value={k}
+													>
+														{locales.filter(o => {
+															return o['_id'] === k || !(o['_id'] in data);
+														}).map(o =>
+															<option key={o['_id']} value={o['_id']}>{o['name']}</option>
+														)}
+													</Select>
+												</FormControl>
+											</Box>
+											{i > 0 &&
+												<Box>
+													<Button
+														color="secondary"
+														onClick={() => dataRemove(k)}
+														variant="contained"
+													>
+														<i className="fa-solid fa-times" />
+													</Button>
+												</Box>
+											}
 										</Box>
-									}
-								</Box>
-								<br />
-								<DefineParent
-									name={k}
-									node={CategoryLocaleTree}
-									ref={data[k].ref}
-									type="create"
-								/>
-							</Paper>
-						)}
-						{Object.keys(data).length != locs.length &&
+										<br />
+										<DefineParent
+											error={errs.locale && (k in errs.locale ? errs.locale[k] : false)}
+											name={k}
+											node={CategoryLocaleTree}
+											onNodeChange={{
+												title: titleChanged
+											}}
+											ref={data[k].ref}
+											type="create"
+										/>
+									</Paper>
+								)}
+							</React.Fragment>
+						}
+						{Object.keys(data).length != locales.length &&
 							<Box className="blog_category_add_locale_add">
 								<Button color="primary" onClick={dataAdd} variant="contained">
 									<i className="fa-solid fa-plus" />
@@ -291,7 +350,7 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 							</Box>
 						}
 					</React.Fragment>
-				)}
+				}
 			</DialogContent>
 			<DialogActions>
 				<Button
@@ -314,6 +373,7 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 // Valid props
 Add.propTypes = {
 	locale: PropTypes.string.isRequired,
+	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onAdded: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
 	onError: PropTypes.func.isRequired,

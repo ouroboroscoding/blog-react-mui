@@ -3,8 +3,14 @@
 		"add": {
 			"cancel": "Cancel",
 			"language": "Language",
+			"name": "Name",
 			"submit": "Create Category",
 			"title": "Add new Category"
+		},
+		"remove": {
+			"button": "Click to confirm delete",
+			"confirm": "Are you sure you want to delete the category \"{TITLE}\"?",
+			"title": "Delete \"{TITLE}\"?"
 		},
 		"no_records": "No categories found. Please add one or more."
 	},
@@ -12,8 +18,14 @@
 		"add": {
 			"cancel": "Cancel",
 			"language": "Language",
+			"name": "Name",
 			"submit": "Create Category",
 			"title": "Add new Category"
+		},
+		"remove": {
+			"button": "Click to confirm delete",
+			"confirm": "Are you sure you want to delete the category \"{TITLE}\"?",
+			"title": "Delete \"{TITLE}\"?"
 		},
 		"no_records": "No categories found. Please add one or more."
 	},
@@ -21,8 +33,14 @@
 		"add": {
 			"cancel": "Annuler",
 			"language": "Langue",
+			"name": "Nom",
 			"submit": "Créer Catégorie",
 			"title": "Ajouter une nouvelle Catégorie"
+		},
+		"remove": {
+			"button": "Cliquer pour confirmer la suppression",
+			"confirm": "Êtes-vous sûr de vouloir supprimer la catégorie \"{TITLE}\" ?",
+			"title": "Supprimer \"{TITLE}\"?"
 		},
 		"no_records": "Aucune catégorie n'a été trouvée. Veuillez en ajouter une ou plusieurs."
 	}

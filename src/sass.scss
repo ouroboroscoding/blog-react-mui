@@ -29,6 +29,10 @@
 	padding: 10px;
 }
 
+i.fa-trash-alt.confirm {
+	color: #ff0000;
+}
+
 @import 'Categories/sass';
 @import 'Media/sass';
 @import 'Posts/sass';

@@ -1,34 +1,40 @@
 /**
- * Media
+ * Categories
  *
- * Primary entry into media component
+ * Primary entry into categories component
  *
  * @author Chris Nasr <chris@ouroboroscoding.com>
  * @copyright Ouroboros Coding Inc.
- * @created 2023-12-02
+ * @created 2023-12-11
  */
 
 // Ouroboros modules
 import blog from '@ouroboros/blog';
 import clone from '@ouroboros/clone';
 import { useRights } from '@ouroboros/brain-react';
-import events from '@ouroboros/events';
-import { afindi, arrayFindDelete, sortByKey } from '@ouroboros/tools';
+import { locales as Locales } from '@ouroboros/mouth-mui';
+import { arrayFindDelete, empty, sortByKey } from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Material UI
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
 import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 // Local components
 import Add from './Add';
+import Category from './Category';
+
+// Local modules
+import title from './title';
 
 // Translations
 import TEXT from './text';
@@ -47,21 +53,32 @@ export default function Categories({ locale, onError }) {
 
 	// State
 	const [ add, addSet ] = useState(false);
+	const [ locales, localesSet ] = useState(false);
 	const [ records, recordsSet ] = useState([]);
 	const [ remove, removeSet ] = useState(null);
 
 	// Get rights
 	const rights = useRights('blog_category');
 
-	// Called to fetch records
-	function fetch(filter) {
+	// Load effect
+	useEffect(() => {
 
 		// Fetch from the server
-		recordsSet(false);
 		blog.read('admin/category').then(recordsSet, error => {
 			onError(error);
 		});
-	}
+
+		// Subscribe to locales
+		const oL = Locales.subscribe(l => {
+			if(empty(l)) return;
+			localesSet(l);
+		});
+
+		// Unsubscribe
+		return () => {
+			oL.unsubscribe();
+		}
+	}, []);
 
 	// Called after new category is added
 	function categoryAdded(file) {
@@ -97,6 +114,15 @@ export default function Categories({ locale, onError }) {
 	// Text
 	const _ = TEXT[locale];
 
+	// If we don't have locales yet
+	if(locales === false) {
+		return (
+			<Box id="blog_categories">
+				<Typography>...</Typography>
+			</Box>
+		)
+	}
+
 	// Render
 	return (
 		<Box id="blog_categories">
@@ -120,23 +146,46 @@ export default function Categories({ locale, onError }) {
 					</Box>
 				) ||
 					records.map(o =>
-						<Accordion>
-							<AccordionSummary>{o.name}</AccordionSummary>
-							<AccordionDetails>
-								<pre>{JSON.stringify(o.locales, null, 4)}</pre>
-							</AccordionDetails>
-						</Accordion>
+						<Category
+							key={o._id}
+							locale={locale}
+							locales={locales}
+							onDelete={() => removeSet(o)}
+							onError={onError}
+							rights={rights}
+							value={o}
+						/>
 					)
 				}
 			</Box>
 			{rights.create &&
 				<Add
 					locale={locale}
+					locales={locales}
 					onAdded={categoryAdded}
 					onCancel={() => addSet(false)}
 					onError={onError}
 					open={add}
 				/>
+			}
+			{remove !== null &&
+				<Dialog
+					id="blog_category_delete"
+					onClose={() => removeSet(null)}
+					open={true}
+				>
+					<DialogTitle>{_.remove.title.replace('{TITLE}', title(locale, remove))}</DialogTitle>
+					<DialogContent>
+						<DialogContentText>{_.remove.confirm.replace('{TITLE}', title(locale, remove))}</DialogContentText>
+					</DialogContent>
+					<DialogActions>
+						<Button
+							color="secondary"
+							onClick={categoryRemove}
+							variant="contained"
+						>{_.remove.button}</Button>
+					</DialogActions>
+				</Dialog>
 			}
 		</Box>
 	);

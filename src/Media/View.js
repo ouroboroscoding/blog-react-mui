@@ -18,7 +18,7 @@ import events from '@ouroboros/events';
 
 // NPM modules
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 // Material UI
 import Box from '@mui/material/Box';
@@ -31,33 +31,11 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+// Project components
+import ConfirmDelete from '../ConfirmDelete';
+
 // Translations
 import TEXT from './text';
-
-function ThumbDelete({ onDelete, size }) {
-	const [ state, stateSet ] = useState(false);
-	const refTimer = useRef(null);
-	function click() {
-		if(!state) {
-			stateSet(true);
-			refTimer.current = setTimeout(() => stateSet(false), 3000);
-		} else {
-			stateSet(false);
-			onDelete(size);
-			if(refTimer.current !== null) {
-				clearTimeout(refTimer.current);
-				refTimer.current = null;
-			}
-		}
-	}
-	return (
-		<i
-			className={'fa-solid fa-trash-alt blog_thumb_remove' +
-				(state ? ' confirm' : '')}
-			onClick={click}
-		/>
-	);
-}
 
 /**
  * Media View
@@ -282,9 +260,8 @@ export default function View({
 										rel="noreferrer"
 										target="_blank"
 									>{s[0] === 'f' ? _.add.thumb.fit : _.add.thumb.crop} {s.substring(1)}</a>
-									<ThumbDelete
-										onDelete={thumbDelete}
-										size={s}
+									<ConfirmDelete
+										onConfirm={() => thumbDelete(s)}
 									/>
 								</span>
 							)}
