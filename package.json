@@ -37,6 +37,7 @@
 		"@ouroboros/blog": "file:../blog",
 		"@ouroboros/browser": "^0.1.7",
 		"@ouroboros/clone": "^1.0.1",
+		"@ouroboros/dates": "^1.0.0",
 		"@ouroboros/define": "^1.0.3",
 		"@ouroboros/tools": "^0.5.1",
 		"prop-types": "^15.8.1",

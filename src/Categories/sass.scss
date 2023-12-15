@@ -20,8 +20,46 @@
 					margin-left: 10px;
 				}
 			}
-		}
 
+			.blog_categories_record_view {
+				display: flex;
+				flex-direction: row;
+				padding: 10px;
+
+				.view_left {
+					flex-basis: auto;
+					flex-grow: 0;
+					flex-shrink: 0;
+					margin-right: 10px;
+				}
+
+				.view_right {
+					flex-basis: 0;
+					flex-grow: 1;
+					flex-shrink: 1;
+				}
+			}
+
+			.blog_category_record_locale {
+				margin-top: 10px;
+				padding: 10px;
+
+				.blog_category_record_locale_header {
+					display: flex;
+					flex-direction: row;
+
+					.blog_category_record_locale_select {
+						flex-basis: 0;
+						flex-grow: 1;
+						flex-shrink: 1;
+					}
+				}
+			}
+
+			.blog_category_record_locale_add {
+				text-align: right;
+			}
+		}
 	}
 }
 

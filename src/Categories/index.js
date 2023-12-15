@@ -10,10 +10,13 @@
 
 // Ouroboros modules
 import blog from '@ouroboros/blog';
+import CategoryLocaleDef from '@ouroboros/blog/definitions/category_locale';
 import clone from '@ouroboros/clone';
+import { Tree } from '@ouroboros/define';
+
 import { useRights } from '@ouroboros/brain-react';
 import { locales as Locales } from '@ouroboros/mouth-mui';
-import { arrayFindDelete, empty, sortByKey } from '@ouroboros/tools';
+import { arrayFindDelete, empty } from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
@@ -39,6 +42,14 @@ import title from './title';
 // Translations
 import TEXT from './text';
 
+// Create the category locale Tree
+const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
+	__ui__: {
+		__create__: [ 'title', 'slug', 'description'],
+		__update__: [ 'title', 'slug', 'description']
+	}
+});
+
 /**
  * Categories
  *
@@ -49,7 +60,7 @@ import TEXT from './text';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Categories({ locale, onError }) {
+export default function Categories({ baseURL, locale, onError }) {
 
 	// State
 	const [ add, addSet ] = useState(false);
@@ -81,13 +92,12 @@ export default function Categories({ locale, onError }) {
 	}, []);
 
 	// Called after new category is added
-	function categoryAdded(file) {
+	function categoryAdded(category) {
 
 		// Add it to the records and re-sort by name
 		recordsSet(l => {
 			const lRecords = clone(l);
-			lRecords.push(file);
-			lRecords.sort(sortByKey('name'));
+			lRecords.unshift(category);
 			return lRecords;
 		});
 
@@ -147,12 +157,14 @@ export default function Categories({ locale, onError }) {
 				) ||
 					records.map(o =>
 						<Category
+							baseURL={baseURL}
 							key={o._id}
 							locale={locale}
 							locales={locales}
 							onDelete={() => removeSet(o)}
 							onError={onError}
 							rights={rights}
+							tree={CategoryLocaleTree}
 							value={o}
 						/>
 					)
@@ -166,6 +178,7 @@ export default function Categories({ locale, onError }) {
 					onCancel={() => addSet(false)}
 					onError={onError}
 					open={add}
+					tree={CategoryLocaleTree}
 				/>
 			}
 			{remove !== null &&
@@ -193,6 +206,7 @@ export default function Categories({ locale, onError }) {
 
 // Valid props
 Categories.propTypes = {
+	baseURL: PropTypes.string.isRequired,
 	locale: PropTypes.string.isRequired,
 	onError: PropTypes.func.isRequired
 }

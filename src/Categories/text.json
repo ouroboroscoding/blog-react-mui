@@ -1,47 +1,60 @@
 {
 	"en-CA": {
 		"add": {
-			"cancel": "Cancel",
-			"language": "Language",
-			"name": "Name",
 			"submit": "Create Category",
 			"title": "Add new Category"
 		},
+		"cancel": "Cancel",
+		"label": {
+			"description": "Meta (SEO) Description",
+			"language": "Language",
+			"slug": "URL",
+			"title": "Page and Meta (SEO) Title"
+		},
+		"no_records": "No categories found. Please add one or more.",
 		"remove": {
 			"button": "Click to confirm delete",
 			"confirm": "Are you sure you want to delete the category \"{TITLE}\"?",
 			"title": "Delete \"{TITLE}\"?"
-		},
-		"no_records": "No categories found. Please add one or more."
+		}
 	},
 	"en-US": {
 		"add": {
-			"cancel": "Cancel",
-			"language": "Language",
-			"name": "Name",
 			"submit": "Create Category",
 			"title": "Add new Category"
 		},
+		"cancel": "Cancel",
+		"label": {
+			"description": "Meta (SEO) Description",
+			"language": "Language",
+			"slug": "URL",
+			"title": "Page and Meta (SEO) Title"
+		},
+		"no_records": "No categories found. Please add one or more.",
 		"remove": {
 			"button": "Click to confirm delete",
 			"confirm": "Are you sure you want to delete the category \"{TITLE}\"?",
 			"title": "Delete \"{TITLE}\"?"
-		},
-		"no_records": "No categories found. Please add one or more."
+		}
 	},
 	"fr-CA": {
 		"add": {
-			"cancel": "Annuler",
-			"language": "Langue",
 			"name": "Nom",
 			"submit": "Créer Catégorie",
 			"title": "Ajouter une nouvelle Catégorie"
 		},
+		"cancel": "Annuler",
+		"label": {
+			"description": "Description meta (SEO)",
+			"language": "Langue",
+			"slug": "URL",
+			"title": "Titre de la page et meta (SEO)"
+		},
+		"no_records": "Aucune catégorie n'a été trouvée. Veuillez en ajouter une ou plusieurs.",
 		"remove": {
 			"button": "Cliquer pour confirmer la suppression",
 			"confirm": "Êtes-vous sûr de vouloir supprimer la catégorie \"{TITLE}\" ?",
 			"title": "Supprimer \"{TITLE}\"?"
-		},
-		"no_records": "Aucune catégorie n'a été trouvée. Veuillez en ajouter une ou plusieurs."
+		}
 	}
 }

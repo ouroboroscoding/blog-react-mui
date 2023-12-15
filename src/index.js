@@ -50,7 +50,7 @@ const TAB_MAP = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Blog({ base_path, locale, onError }) {
+export default function Blog({ basePath, baseURL, locale, onError }) {
 
 	// State
 	const [ tab, tabSet ] = useState(TAB_MAP.home);
@@ -68,17 +68,17 @@ export default function Blog({ base_path, locale, onError }) {
 		}
 
 		// If we're at the root
-		if(location.pathname === base_path) {
+		if(location.pathname === basePath) {
 			tabSet(TAB_MAP.home);
 		}
 
 		// Else, if the location is categories
-		else if(location.pathname === `${base_path}/categories`) {
+		else if(location.pathname === `${basePath}/categories`) {
 			tabSet(TAB_MAP.categories);
 		}
 
 		// Else, if the location is media
-		else if(location.pathname === `${base_path}/media`) {
+		else if(location.pathname === `${basePath}/media`) {
 			tabSet(TAB_MAP.media);
 		}
 
@@ -90,7 +90,7 @@ export default function Blog({ base_path, locale, onError }) {
 			);
 		}
 
-	}, [base_path, locale, location, navigate]);
+	}, [basePath, locale, location, navigate]);
 
 	// Set proper translation object
 	const _ = TEXT[locale];
@@ -103,50 +103,55 @@ export default function Blog({ base_path, locale, onError }) {
 					className={tab === TAB_MAP.home ? 'selected' : ''}
 					label={_.tab_home}
 					component={Link}
-					to={base_path}
+					to={basePath}
 				/>
 				<Tab
 					className={tab === TAB_MAP.categories ? 'selected' : ''}
 					label={_.tab_categories}
 					component={Link}
-					to={`${base_path}/categories`}
+					to={`${basePath}/categories`}
 				/>
 				<Tab
 					className={tab === TAB_MAP.media ? 'selected' : ''}
 					label={_.tab_media}
 					component={Link}
-					to={`${base_path}/media`}
+					to={`${basePath}/media`}
 				/>
 			</Tabs>
-			{(tab === TAB_MAP.home &&
-				<Box id="blog_home">
-					<Typography>{_.home_message}</Typography>
-				</Box>
-			) || (tab === TAB_MAP.categories &&
-				<Categories
-					locale={locale}
-					onError={onError}
-				/>
-			) || (tab === TAB_MAP.media &&
-				<Media
-					locale={locale}
-					onError={onError}
-				/>
-			)}
+			<Box id="blog_content">
+				{(tab === TAB_MAP.home &&
+					<Box id="blog_home">
+						<Typography>{_.home_message}</Typography>
+					</Box>
+				) || (tab === TAB_MAP.categories &&
+					<Categories
+						baseURL={baseURL}
+						locale={locale}
+						onError={onError}
+					/>
+				) || (tab === TAB_MAP.media &&
+					<Media
+						locale={locale}
+						onError={onError}
+					/>
+				)}
+			</Box>
 		</Box>
 	);
 }
 
 // Valid props
 Blog.propTypes = {
-	base_path: PropTypes.string,
+	basePath: PropTypes.string,
+	baseURL: PropTypes.string,
 	locale: PropTypes.string,
 	onError: PropTypes.func
 }
 
 // Default props
 Blog.defaultProps = {
-	base_path: '/blog',
+	basePath: '/blog',
+	baseURL: 'http://localhost/blog',
 	locale: 'en-US',
 	onError: error => {
 		throw new Error(JSON.stringify(error, null, 4));

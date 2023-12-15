@@ -10,9 +10,7 @@
 
 // Ouroboros modules
 import blog, { errors } from '@ouroboros/blog';
-import CategoryDef from '@ouroboros/blog/definitions/category';
-import CategoryLocaleDef from '@ouroboros/blog/definitions/category_locale';
-import { Node, Tree } from '@ouroboros/define';
+import { timestamp } from '@ouroboros/dates';
 import { DefineParent } from '@ouroboros/define-mui';
 import { afindi, omap, pathToTree } from '@ouroboros/tools';
 
@@ -41,16 +39,6 @@ import normalize from 'data/normalize';
 // Translations
 import TEXT from './text';
 
-// Create the category name Node
-const CategoryNameNode = new Node(CategoryDef.name);
-
-// Create the category locale Tree
-const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
-	__ui__: {
-		__create__: [ 'title', 'slug', 'description']
-	}
-})
-
 // Constants
 const TITLE_TO_SLUG = /[ a-z0-9-]/;
 
@@ -65,7 +53,7 @@ const TITLE_TO_SLUG = /[ a-z0-9-]/;
  * @returns React.Component
  */
 export default function Add({
-	locale, locales, onAdded, onCancel, onError, open
+	locale, locales, onAdded, onCancel, onError, open, tree
 }) {
 
 	// State
@@ -215,6 +203,10 @@ export default function Add({
 			record: oData
 		}).then(data => {
 
+			// Add the ID and created timestamp
+			oData._id = data;
+			oData._created = timestamp();
+
 			// Pass along the data to the parent
 			onAdded(oData);
 
@@ -280,9 +272,8 @@ export default function Add({
 					<React.Fragment>
 						{locales.length === 1 ?
 							<DefineParent
-								error={errs.locale && (locales[0] in errs.locale ? errs.locale[locales[0]] : false)}
 								name={locales[0]}
-								node={CategoryLocaleTree}
+								node={tree}
 								onNodeChange={{
 									title: titleChanged
 								}}
@@ -297,10 +288,10 @@ export default function Add({
 											<Box className="blog_category_add_locale_select">
 												<FormControl>
 													<InputLabel id={`category_locale_select_${v.key}`}>
-														{_.add.language}
+														{_.label.language}
 													</InputLabel>
 													<Select
-														label={_.add.language}
+														label={_.label.language}
 														labelId={`category_locale_select_${v.key}`}
 														native
 														onChange={ev => localeChanged(k, ev.target.value)}
@@ -329,9 +320,8 @@ export default function Add({
 										</Box>
 										<br />
 										<DefineParent
-											error={errs.locale && (k in errs.locale ? errs.locale[k] : false)}
 											name={k}
-											node={CategoryLocaleTree}
+											node={tree}
 											onNodeChange={{
 												title: titleChanged
 											}}
@@ -357,7 +347,7 @@ export default function Add({
 					color="secondary"
 					onClick={onCancel}
 					variant="contained"
-				>{_.add.cancel}</Button>
+				>{_.cancel}</Button>
 				{data !== null &&
 					<Button
 						color="primary"
@@ -377,5 +367,6 @@ Add.propTypes = {
 	onAdded: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
 	onError: PropTypes.func.isRequired,
-	open: PropTypes.bool.isRequired
+	open: PropTypes.bool.isRequired,
+	tree: PropTypes.object.isRequired
 }
