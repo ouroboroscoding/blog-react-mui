@@ -13,10 +13,9 @@ import blog from '@ouroboros/blog';
 import CategoryLocaleDef from '@ouroboros/blog/definitions/category_locale';
 import clone from '@ouroboros/clone';
 import { Tree } from '@ouroboros/define';
-
 import { useRights } from '@ouroboros/brain-react';
 import { locales as Locales } from '@ouroboros/mouth-mui';
-import { arrayFindDelete, empty } from '@ouroboros/tools';
+import { afindi, arrayFindDelete, combine, empty } from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
@@ -121,6 +120,27 @@ export default function Categories({ baseURL, locale, onError }) {
 		});
 	}
 
+	// Called when any category is updated
+	function categoryUpdated(_id, data) {
+
+		// Get latest
+		recordsSet(l => {
+
+			// Get the index
+			const i = afindi(l, '_id', _id);
+			if(i < 0) {
+				return l;
+			}
+
+			// Clone the records and combine the data for the category
+			const lRecords = clone(l);
+			lRecords[i] = combine(lRecords[i], data);
+
+			// Return the new records
+			return lRecords;
+		})
+	}
+
 	// Text
 	const _ = TEXT[locale];
 
@@ -162,6 +182,7 @@ export default function Categories({ baseURL, locale, onError }) {
 							locale={locale}
 							locales={locales}
 							onDelete={() => removeSet(o)}
+							onUpdated={cat => categoryUpdated(o._id, cat)}
 							onError={onError}
 							rights={rights}
 							tree={CategoryLocaleTree}

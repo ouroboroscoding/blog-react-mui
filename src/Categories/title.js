@@ -13,6 +13,7 @@
  * title
  *
  * @name title
+ * @access public
  * @param {string} locale The currently selected locale
  * @param {object} category The category to find a title for
  * @returns an appropriate title for the category

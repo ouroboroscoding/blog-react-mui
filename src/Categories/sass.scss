@@ -33,10 +33,22 @@
 					margin-right: 10px;
 				}
 
-				.view_right {
+				.view_center {
 					flex-basis: 0;
 					flex-grow: 1;
 					flex-shrink: 1;
+				}
+
+				.view_right {
+					flex-basis: auto;
+					flex-grow: 0;
+					flex-shrink: 0;
+					margin-left: 10px;
+
+					i {
+						font-size: 1.2rem;
+						margin-bottom: 10px;
+					}
 				}
 			}
 

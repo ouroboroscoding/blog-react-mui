@@ -33,14 +33,11 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-// Local modules
-import normalize from 'data/normalize';
+// Project modules
+import titleToSlug from '../titleToSlug';
 
 // Translations
 import TEXT from './text';
-
-// Constants
-const TITLE_TO_SLUG = /[ a-z0-9-]/;
 
 /**
  * Category Add
@@ -225,34 +222,6 @@ export default function Add({
 		});
 	}
 
-	// Called when the title of a locale changes
-	function titleChanged(ev) {
-
-		// Clean the title of any special characters, then convert it to
-		//	lowercase
-		const s = normalize(ev.data.title).toLowerCase();
-
-		// Init the return string array
-		const l = [];
-
-		// Go through each character in the title
-		for(const c of s.split('')) {
-
-			// If it's a space, replace it with a dash -
-			if(c === ' ') {
-				l.push('-');
-			}
-
-			// Else, if it's any valid uri character,
-			else if(TITLE_TO_SLUG.test(c)) {
-				l.push(c);
-			}
-		}
-
-		// Join the array and return it as the new URL
-		return { 'slug': l.join('') }
-	}
-
 	// Text
 	const _ = TEXT[locale];
 
@@ -275,7 +244,7 @@ export default function Add({
 								name={locales[0]}
 								node={tree}
 								onNodeChange={{
-									title: titleChanged
+									title: titleToSlug
 								}}
 								ref={data[locales[0]].ref}
 								type="create"
@@ -323,7 +292,7 @@ export default function Add({
 											name={k}
 											node={tree}
 											onNodeChange={{
-												title: titleChanged
+												title: titleToSlug
 											}}
 											ref={data[k].ref}
 											type="create"
