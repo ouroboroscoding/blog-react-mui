@@ -38,7 +38,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Upload from './Upload';
 
 // Translations
-import TEXT from './text';
+import TEXT from '../../../translations/media';
 
 /**
  * Media Add

@@ -34,10 +34,10 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Project modules
-import titleToSlug from '../titleToSlug';
+import titleToSlug from '../../../functions/titleToSlug';
 
 // Translations
-import TEXT from './text';
+import TEXT from '../../../translations/categories';
 
 /**
  * Category Add

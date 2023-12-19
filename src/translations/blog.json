@@ -1,0 +1,32 @@
+{
+	"en-CA": {
+		"home_message": "Welcome to your Blogging system.",
+		"tab": {
+			"categories": "Categories",
+			"home": "Home",
+			"invalid": "Invalid location: {path}",
+			"media": "Media",
+			"new": "New Post"
+		}
+	},
+	"en-US": {
+		"home_message": "Welcome to your Blogging system.",
+		"tab": {
+			"categories": "Categories",
+			"home": "Home",
+			"invalid": "Invalid location: {path}",
+			"media": "Media",
+			"new": "New Post"
+		}
+	},
+	"fr-CA": {
+		"home_message": "Bienvenue dans votre système de blogs.",
+		"tab": {
+			"categories": "Catégories",
+			"home": "Accueil",
+			"invalid": "Lieu non valid: {path}",
+			"media": "Médias",
+			"new": "Nouveau Poste"
+		}
+	}
+}

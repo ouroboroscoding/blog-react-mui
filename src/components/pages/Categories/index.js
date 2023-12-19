@@ -36,10 +36,10 @@ import Add from './Add';
 import Category from './Category';
 
 // Local modules
-import title from './title';
+import categoryTitle from '../../../functions/categoryTitle';
 
 // Translations
-import TEXT from './text';
+import TEXT from '../../../translations/categories';
 
 // Create the category locale Tree
 const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
@@ -208,9 +208,9 @@ export default function Categories({ baseURL, locale, onError }) {
 					onClose={() => removeSet(null)}
 					open={true}
 				>
-					<DialogTitle>{_.remove.title.replace('{TITLE}', title(locale, remove))}</DialogTitle>
+					<DialogTitle>{_.remove.title.replace('{TITLE}', categoryTitle(locale, remove))}</DialogTitle>
 					<DialogContent>
-						<DialogContentText>{_.remove.confirm.replace('{TITLE}', title(locale, remove))}</DialogContentText>
+						<DialogContentText>{_.remove.confirm.replace('{TITLE}', categoryTitle(locale, remove))}</DialogContentText>
 					</DialogContent>
 					<DialogActions>
 						<Button

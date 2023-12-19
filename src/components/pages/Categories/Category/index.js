@@ -34,10 +34,10 @@ import LocaleAdd from './LocaleAdd';
 import LocaleViewEdit from './LocaleViewEdit';
 
 // Locale modules
-import title from '../title';
+import categoryTitle from '../../../../functions/categoryTitle';
 
 // Translations
-import TEXT from '../text';
+import TEXT from '../../../../translations/categories';
 
 /**
  * Category
@@ -103,7 +103,7 @@ export default function Category({
 	// Render
 	return (
 		<Accordion className="blog_categories_record">
-			<AccordionSummary>{title(locale, value)}</AccordionSummary>
+			<AccordionSummary>{categoryTitle(locale, value)}</AccordionSummary>
 			<AccordionDetails>
 				<Box className="blog_categories_record_actions">
 					{rights.delete &&

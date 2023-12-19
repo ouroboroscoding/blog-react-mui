@@ -1,0 +1,17 @@
+{
+	"en-CA": {
+		"image": {
+			"title": "Select an Image from Media"
+		}
+	},
+	"en-US": {
+		"image": {
+			"title": "Select an Image from Media"
+		}
+	},
+	"fr-CA": {
+		"image": {
+			"title": "Sélection d'une image à partir d'un Média"
+		}
+	}
+}

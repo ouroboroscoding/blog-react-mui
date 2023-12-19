@@ -9,10 +9,11 @@
  */
 
 // Ouroboros modules
-import { increment, iso } from '@ouroboros/dates';
+import blog from '@ouroboros/blog';
+import { increment, iso, timestamp } from '@ouroboros/dates';
 import safeLocalStorage from '@ouroboros/browser/safeLocalStorage'
 import clone from '@ouroboros/clone';
-import { compare } from '@ouroboros/tools';
+import { compare, empty } from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
@@ -28,7 +29,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 
 // Translations
-import TEXT from './text';
+import TEXT from '../../translations/media_filter';
 
 /**
  * Filter
@@ -309,8 +310,33 @@ export default class Filter extends React.Component {
 			// Overwrite the last filter
 			this.lastFilter = dFilter;
 
-			// Let the parent know
-			this.props.onChange(clone(dFilter));
+			// If it's empty, clear the records
+			if(empty(dFilter)) {
+				this.props.onRecords([]);
+				return;
+			}
+
+			// Else, fetch the records from the server, start by cloning the
+			//	filter
+			const dData = dFilter;
+
+			// If we have a range, convert it
+			if(dData.range) {
+				dData.range[0] = timestamp(dData.range[0] + ' 00:00:00', false);
+				dData.range[1] = timestamp(dData.range[1] + ' 23:59:59', false);
+			}
+
+			// If we only want images
+			if(this.props.imagesOnly) {
+				dData.images_only = true;
+			}
+
+			// Fetch from the server
+			this.props.onRecords(false);
+			blog.read('admin/media/filter', dData).then(
+				this.props.onRecords,
+				this.props.onError
+			);
 
 			// Store it
 			localStorage.setItem('blog_media_filter', JSON.stringify(dStorage))
@@ -325,7 +351,7 @@ export default class Filter extends React.Component {
 
 		// Actual render
 		return (
-			<Box className="blog_media_filter">
+			<Box id="blog_media_filter">
 				<Box className="blog_media_filter_toggle">
 					<ToggleButtonGroup
 						onChange={this.toggleChanged}
@@ -354,32 +380,32 @@ export default class Filter extends React.Component {
 									this.state.range
 								}
 							>
-								<option value="today">{_.filter.range.today}</option>
-								<option value="last_week">{_.filter.range.last_week}</option>
-								<option value="last_two_weeks">{_.filter.range.last_two_weeks}</option>
-								<option value="last_thirty">{_.filter.range.last_thirty}</option>
-								<option value="last_ninety">{_.filter.range.last_ninety}</option>
-								<option value="last_year">{_.filter.range.last_year}</option>
-								<option value="this_month">{_.filter.range.this_month}</option>
-								<option value="this_year">{_.filter.range.this_year}</option>
-								<option value="explicit">{_.filter.range.explicit}</option>
+								<option value="today">{_.range.today}</option>
+								<option value="last_week">{_.range.last_week}</option>
+								<option value="last_two_weeks">{_.range.last_two_weeks}</option>
+								<option value="last_thirty">{_.range.last_thirty}</option>
+								<option value="last_ninety">{_.range.last_ninety}</option>
+								<option value="last_year">{_.range.last_year}</option>
+								<option value="this_month">{_.range.this_month}</option>
+								<option value="this_year">{_.range.this_year}</option>
+								<option value="explicit">{_.range.explicit}</option>
 							</Select>
 							{Array.isArray(this.state.range) &&
-								<Box className="blog_media_filter_expicit">
+								<Box className="blog_media_filter_explicit">
 									<TextField
 										className="blog_media_filter_date"
-										label={_.filter.from}
+										label={_.from}
 										onChange={(ev) => this.dateChanged('from', ev.currentTarget.value)}
-										placeholder={_.filter.from}
+										placeholder={_.from}
 										size="small"
 										type="date"
 										value={this.state.range[0]}
 									/>
 									<TextField
 										className="blog_media_filter_date"
-										label={_.filter.to}
+										label={_.to}
 										onChange={(ev) => this.dateChanged('to', ev.currentTarget.value)}
-										placeholder={_.filter.to}
+										placeholder={_.to}
 										size="small"
 										type="date"
 										value={this.state.range[1]}
@@ -392,9 +418,9 @@ export default class Filter extends React.Component {
 						<Grid item xs={12} md={6} lg={4} xl={3}>
 							<TextField
 								className="blog_media_filter_filename"
-								label={_.filter.filename}
+								label={_.filename}
 								onChange={this.filenameChanged}
-								placeholder={_.filter.filename}
+								placeholder={_.filename}
 								size="small"
 								type="text"
 								value={this.state.filename}
@@ -403,7 +429,7 @@ export default class Filter extends React.Component {
 					}
 					{this.state.toggle.includes('mine') &&
 						<Grid item xs={12} md={6} lg={4} xl={3}>
-							<Typography>{_.filter.whose.mine}</Typography>
+							<Typography>{_.whose.mine}</Typography>
 						</Grid>
 					}
 				</Grid>
@@ -414,6 +440,13 @@ export default class Filter extends React.Component {
 
 // Valid props
 Filter.propTypes = {
+	imagesOnly: PropTypes.bool,
 	locale: PropTypes.string.isRequired,
-	onChange: PropTypes.func.isRequired
+	onError: PropTypes.func.isRequired,
+	onRecords: PropTypes.func.isRequired
+}
+
+// Default props
+Filter.defaultProps = {
+	imagesOnly: false
 }

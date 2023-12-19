@@ -13,9 +13,8 @@ import blog from '@ouroboros/blog';
 import clone from '@ouroboros/clone';
 import { useRights } from '@ouroboros/brain-react';
 import { copy } from '@ouroboros/browser/clipboard';
-import { timestamp } from '@ouroboros/dates';
 import events from '@ouroboros/events';
-import { afindi, arrayFindDelete, empty } from '@ouroboros/tools';
+import { afindi, arrayFindDelete } from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
@@ -35,11 +34,11 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Local components
 import Add from './Add';
-import Filter from './Filter';
+import Filter from '../../composites/MediaFilter';
 import View from './View';
 
 // Translations
-import TEXT from './text';
+import TEXT from '../../../translations/media';
 
 /**
  * Media
@@ -62,28 +61,6 @@ export default function Media({ locale, onError }) {
 	// Get rights
 	const hover = useMediaQuery('(hover: hover)');
 	const rights = useRights('blog_media');
-
-	// Called to fetch records
-	function fetch(filter) {
-
-		// If it's empty
-		if(empty(filter)) {
-			recordsSet([]);
-			return;
-		}
-
-		// If we have a range, convert it
-		if(filter.range) {
-			filter.range[0] = timestamp(filter.range[0] + ' 00:00:00', false);
-			filter.range[1] = timestamp(filter.range[1] + ' 23:59:59', false);
-		}
-
-		// Fetch from the server
-		recordsSet(false);
-		blog.read('admin/media/filter', filter).then(recordsSet, error => {
-			onError(error);
-		});
-	}
 
 	// Called after new media is uploaded
 	function mediaAdded(file) {
@@ -212,7 +189,11 @@ export default function Media({ locale, onError }) {
 	// Render
 	return (
 		<Box id="blog_media">
-			<Filter locale={locale} onChange={fetch} />
+			<Filter
+				locale={locale}
+				onError={onError}
+				onRecords={recordsSet}
+			/>
 			{rights.create &&
 				<Button
 					className="blog_media_upload_button"

@@ -26,10 +26,10 @@ import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
 
 // Local modules
-import titleToSlug from 'blog/titleToSlug';
+import titleToSlug from '../../../../functions/titleToSlug';
 
 // Translations
-import TEXT from '../text';
+import TEXT from '../../../../translations/categories';
 
 /**
  * Category Locale View/Edit

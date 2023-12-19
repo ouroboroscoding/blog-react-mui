@@ -1,5 +1,5 @@
 /**
- * Title
+ * Category Title
  *
  * A single function to handle displaying a category's title using the current
  * locale
@@ -10,15 +10,15 @@
  */
 
 /**
- * title
+ * Category Title
  *
- * @name title
+ * @name categoryTitle
  * @access public
  * @param {string} locale The currently selected locale
  * @param {object} category The category to find a title for
  * @returns an appropriate title for the category
  */
-export default function title(locale, category) {
+export default function categoryTitle(locale, category) {
 	if(locale in category.locales) {
 			return category.locales[locale].title;
 	} else {

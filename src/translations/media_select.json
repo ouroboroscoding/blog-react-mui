@@ -1,0 +1,14 @@
+{
+	"en-CA": {
+		"no_records": "No Images found. Please adjust your search filter.",
+		"title": "Select an Image from Media"
+	},
+	"en-US": {
+		"no_records": "No Images found. Please adjust your search filter.",
+		"title": "Select an Image from Media"
+	},
+	"fr-CA": {
+		"no_records": "Aucune image n'a été trouvée. Veuillez ajuster votre filtre de recherche.",
+		"title": "Sélection d'une image à partir d'un Média"
+	}
+}

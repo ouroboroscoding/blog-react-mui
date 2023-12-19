@@ -24,10 +24,10 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 // Project components
-import ConfirmDelete from 'blog/ConfirmDelete';
+import ConfirmDelete from '../../../elements/ConfirmDelete';
 
 // Translations
-import TEXT from '../text';
+import TEXT from '../../../../translations/categories';
 
 /**
  * Category Locale View/Edit

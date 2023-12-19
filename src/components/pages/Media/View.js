@@ -32,10 +32,10 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 // Project components
-import ConfirmDelete from '../ConfirmDelete';
+import ConfirmDelete from '../../elements/ConfirmDelete';
 
 // Translations
-import TEXT from './text';
+import TEXT from '../../../translations/media';
 
 /**
  * Media View
