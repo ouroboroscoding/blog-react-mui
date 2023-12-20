@@ -1,0 +1,32 @@
+#blog_post_media_select {
+
+	.blog_post_media_select_record {
+		display: flex;
+		flex-direction: row;
+		padding: 5px 10px;
+
+		.blog_post_media_select_record_image {
+			flex-basis: 0;
+			flex-grow: 1;
+			flex-shrink: 1;
+
+			aspect-ratio: 1 / 1;
+			background-attachment: scroll;
+			background-position: center center;
+			background-repeat: no-repeat;
+			background-size: contain;
+		}
+
+		.blog_post_media_select_record_urls {
+			flex-basis: auto;
+			flex-grow: 0;
+			flex-shrink: 0;
+
+			button {
+				margin: 0 0 5px 5px;
+				max-width: calc((100vw / 2) - 10px);
+				width: 200px;
+			}
+		}
+	}
+}

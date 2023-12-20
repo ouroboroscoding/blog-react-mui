@@ -1,14 +1,23 @@
 {
 	"en-CA": {
+		"crop": "Crop",
+		"fit": "Fit",
 		"no_records": "No Images found. Please adjust your search filter.",
+		"source": "Source",
 		"title": "Select an Image from Media"
 	},
 	"en-US": {
+		"crop": "Crop",
+		"fit": "Fit",
 		"no_records": "No Images found. Please adjust your search filter.",
+		"source": "Source",
 		"title": "Select an Image from Media"
 	},
 	"fr-CA": {
+		"crop": "Découper",
+		"fit": "Insérer",
 		"no_records": "Aucune image n'a été trouvée. Veuillez ajuster votre filtre de recherche.",
+		"source": "Source",
 		"title": "Sélection d'une image à partir d'un Média"
 	}
 }

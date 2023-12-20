@@ -89,29 +89,13 @@ export default class HTML extends React.Component {
 						plugins: ['advlist', 'emoticons', 'link', 'lists', 'code', 'image'],
 						paste_as_text: true,
 						statusbar: false,
-						style_formats: [ {
-							title: 'Image Left',
-							selector: 'img',
-							styles: {
-								float: 'left',
-								margin: '0 10px 0 10px'
-							}
-						}, {
-							title: 'Image Right',
-							selector: 'img',
-							styles: {
-								float: 'right',
-								margin: '0 10px 0 10px'
-							}
-						} ],
 						toolbar: 'undo redo | ' +
-									'blocks + styles | ' +
+									'blocks | ' +
 									'bold italic | ' +
 									'alignleft aligncenter alignright alignjustify | ' +
 									'bullist numlist outdent indent | ' +
-									'subscript superscript | ' +
-									'link | emoticons | image | ' +
-									'removeformat | code'
+									'link image | ' +
+									'removeformat code'
 					}}
 				/>
 				{this.state.select !== false &&
@@ -119,6 +103,7 @@ export default class HTML extends React.Component {
 						fullScreen={this.props.fullScreen}
 						fullWidth={true}
 						id="blog_post_media_select"
+						maxWidth="lg"
 						onClose={() => this.setState({ select: false })}
 						open={true}
 					>
@@ -130,6 +115,7 @@ export default class HTML extends React.Component {
 								onError={this.props.onError}
 								onRecords={records => this.setState({ images: records })}
 							/>
+							<br />
 							{(this.state.images === false &&
 								<DialogContentText>...</DialogContentText>
 							) || (this.state.images.length === 0 &&
@@ -139,22 +125,24 @@ export default class HTML extends React.Component {
 									className="blog_post_media_select_record"
 									key={o._id}
 								>
-									<Box className="blog_post_media_select_record_image">
-										<img src={o.urls['source']} alt="" />
-									</Box>
+									<Box
+										className="blog_post_media_select_record_image"
+										style={{backgroundImage: `url(${o.urls.source})`}}
+									/>
 									<Box className="blog_post_media_select_record_urls">
 										<Button
-											color="primary"
-											onClick={() => this.setUrl(o.urls['source'])}
+											color={o.urls.source === this.state.select[1] ? 'info' : 'primary'}
+											onClick={() => this.setUrl(o.urls.source)}
 											variant="contained"
-										>{_.source}</Button>
+										>{_.source}</Button><br />
 										{o.image.thumbnails.map(s =>
-											<Button
-												color="primary"
-												key={s}
-												onClick={() => this.setUrl(o.urls[s])}
-												variant="contained"
-											>{s}</Button>
+											<React.Fragment key={s}>
+												<Button
+													color={o.urls[s] === this.state.select[1] ? 'info' : 'primary'}
+													onClick={() => this.setUrl(o.urls[s])}
+													variant="contained"
+												>{s[0] === 'f' ? _.fit : _.crop} {s.substring(1)}</Button><br />
+											</React.Fragment>
 										)}
 									</Box>
 								</Paper>
