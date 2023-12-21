@@ -1,0 +1,17 @@
+.node_tags_adornment {
+	display: flex;
+
+	.node_tags_tag {
+		background-color: #6ebadf;
+		border-radius: 15px;
+		color: #fff;
+		display: inline-block;
+		margin-right: 5px;
+		padding: 2px 0 0 10px;
+
+		i {
+			color: #fff;
+			font-size: .9rem;
+		}
+	}
+}

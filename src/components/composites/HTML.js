@@ -16,8 +16,6 @@ import { Editor } from '@tinymce/tinymce-react';
 // Material UI
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -120,33 +118,37 @@ export default class HTML extends React.Component {
 								<DialogContentText>...</DialogContentText>
 							) || (this.state.images.length === 0 &&
 								<DialogContentText>{_.no_records}</DialogContentText>
-							) || (this.state.images.map(o =>
-								<Paper
-									className="blog_post_media_select_record"
-									key={o._id}
-								>
-									<Box
-										className="blog_post_media_select_record_image"
-										style={{backgroundImage: `url(${o.urls.source})`}}
-									/>
-									<Box className="blog_post_media_select_record_urls">
-										<Button
-											color={o.urls.source === this.state.select[1] ? 'info' : 'primary'}
-											onClick={() => this.setUrl(o.urls.source)}
-											variant="contained"
-										>{_.source}</Button><br />
-										{o.image.thumbnails.map(s =>
-											<React.Fragment key={s}>
+							) ||
+								<Box className="blog_post_media_select_records">
+									{this.state.images.map(o =>
+										<Paper
+											className="blog_post_media_select_record"
+											key={o._id}
+										>
+											<Box
+												className="blog_post_media_select_record_image"
+												style={{backgroundImage: `url(${o.urls.source})`}}
+											/>
+											<Box className="blog_post_media_select_record_urls">
 												<Button
-													color={o.urls[s] === this.state.select[1] ? 'info' : 'primary'}
-													onClick={() => this.setUrl(o.urls[s])}
+													color={o.urls.source === this.state.select[1] ? 'info' : 'primary'}
+													onClick={() => this.setUrl(o.urls.source)}
 													variant="contained"
-												>{s[0] === 'f' ? _.fit : _.crop} {s.substring(1)}</Button><br />
-											</React.Fragment>
-										)}
-									</Box>
-								</Paper>
-							))}
+												>{_.source}</Button><br />
+												{o.image.thumbnails.map(s =>
+													<React.Fragment key={s}>
+														<Button
+															color={o.urls[s] === this.state.select[1] ? 'info' : 'primary'}
+															onClick={() => this.setUrl(o.urls[s])}
+															variant="contained"
+														>{s[0] === 'f' ? _.fit : _.crop} {s.substring(1)}</Button><br />
+													</React.Fragment>
+												)}
+											</Box>
+										</Paper>
+									)}
+								</Box>
+							}
 						</DialogContent>
 					</Dialog>
 				}

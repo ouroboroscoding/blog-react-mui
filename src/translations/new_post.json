@@ -1,0 +1,20 @@
+{
+	"en-CA": {
+		"labels": {
+			"category": "Category",
+			"language": "Language"
+		}
+	},
+	"en-US": {
+		"labels": {
+			"category": "Category",
+			"language": "Language"
+		}
+	},
+	"fr-CA": {
+		"labels": {
+			"category": "Catégorie",
+			"language": "Langue"
+		}
+	}
+}
