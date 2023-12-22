@@ -23,7 +23,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Paper from '@mui/material/Paper';
 
 // Project components
-import MediaFilter from './MediaFilter';
+import MediaFilter from '../composites/MediaFilter';
 
 // Text
 import TEXT from '../../translations/media_select';

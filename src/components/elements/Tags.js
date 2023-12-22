@@ -43,7 +43,7 @@ export default class Tags extends React.Component {
 		this.refText = React.createRef();
 
 		// Bind methods
-		this.keyPressed = this.keyPressed.bind(this);
+		this.keyUp = this.keyUp.bind(this);
 		this.tagRemove = this.tagRemove.bind(this);
 	}
 
@@ -53,7 +53,7 @@ export default class Tags extends React.Component {
 	}
 
 	// Called to check keys for anything that would trigger a new tag
-	keyPressed(ev) {
+	keyUp(ev) {
 
 		// If we got an Enter or a comma
 		if(ev.key === 'Enter' || ev.key === ',') {
@@ -134,9 +134,9 @@ export default class Tags extends React.Component {
 				error={this.state.error ? true : false}
 				helperText={this.state.error || ''}
 				inputRef={this.refText}
-				label="Tags"
-				onKeyUp={this.keyPressed}
-				placeholder="Tags"
+				label={this.props.label}
+				onKeyUp={this.keyUp}
+				placeholder={this.props.placeholder}
 				variant="outlined"
 				InputProps={{
 					startAdornment: (
@@ -181,6 +181,8 @@ export default class Tags extends React.Component {
 
 // Valid props
 Tags.propTypes = {
+	label: PropTypes.string,
+	placeholder: PropTypes.string,
 	value: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 

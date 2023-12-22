@@ -20,18 +20,20 @@ import React, { useEffect, useRef, useState } from 'react';
 // Material UI
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
-import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
+import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Project components
-import HTML from '../../composites/HTML';
-import Tags from '../../composites/Tags';
+import HTML from '../../elements/HTML';
+import Tags from '../../elements/Tags';
 
 // Project modules
 import categoryTitle from '../../../functions/categoryTitle';
@@ -54,11 +56,13 @@ export default function New({ baseURL, locale, onError }) {
 
 	// State
 	const [ cats, catsSet ] = useState(false);
+	const [ data, dataSet ] = useState({
+		categories: [], slug: '', title: ''
+	});
 	const [ error, errorSet ] = useState({});
 	const [ loc, locSet ] = useState(false);
 	const [ locales, localesSet ] = useState(false);
-	const [ slug, slugSet ] = useState('');
-	const [ title, titleSet ] = useState('');
+	const [ menu, menuSet ] = useState(false);
 
 	// Hooks
 	const fullScreen = useMediaQuery('(max-width:600px)');
@@ -99,98 +103,46 @@ export default function New({ baseURL, locale, onError }) {
 		return () => {
 			oL.unsubscribe();
 		}
-	}, []);
+
+	}, [ locale, onError ]);
+
+	// Called when any data point changes
+	function dataChange(which, value) {
+		dataSet(o => {
+			const oData = { ...data };
+			oData[which] = value;
+			if(which === 'title') {
+				oData.slug = titleToSlug(value);
+			}
+			return oData;
+		});
+	}
+
+	// Called when a category is changes
+	function catChange(_id, checked) {
+		dataSet(o => {
+			const oData = { ...data }
+			if(checked) {
+				const i = oData.categories.indexOf(_id);
+				if(i === -1) {
+					oData.categories.push(_id);
+				}
+			} else {
+				const i = oData.categories.indexOf(_id);
+				if(i > -1) {
+					oData.categories.splice(i, 1);
+				}
+			}
+			return oData;
+		})
+	}
 
 	// Text
 	const _ = TEXT[locale];
 
-	// Header grid sizes
-	const oHeaderGS = locales.length > 1 ? { xs: 12, sm: 6, xl: 3 } : { xs: 12 };
-
 	// Render
 	return (
 		<Box id="blog_new_post">
-			<Box className="blog_new_post_header">
-				{(cats === false || locales === false) ?
-					<Typography>...</Typography>
-				:
-					<Grid container spacing={2}>
-						{locales.length > 1 &&
-							<Grid item {...oHeaderGS}>
-								<FormControl error={'_locale' in error}>
-									<InputLabel id="blog_new_post_locale_select">
-										{_.labels.language}
-									</InputLabel>
-									<Select
-										label={_.labels.language}
-										labelId="blog_new_post_locale_select"
-										native
-										onChange={ev => locSet(ev.target.value)}
-										size="small"
-										value={loc}
-										variant="outlined"
-									>
-										{locales.map(o =>
-											<option key={o._id} value={o._id}>{o.name}</option>
-										)}
-									</Select>
-								</FormControl>
-								{'_locale' in error &&
-									<FormHelperText>{error._locale}</FormHelperText>
-								}
-							</Grid>
-						}
-						<Grid item {...oHeaderGS}>
-							<FormControl error={'category' in error}>
-								<InputLabel id="blog_new_post_category_select">
-									{_.labels.category}
-								</InputLabel>
-								<Select
-									label={_.labels.category}
-									labelId="blog_new_post_category_select"
-									native
-									size="small"
-									variant="outlined"
-								>
-									{cats.map(o =>
-										<option key={o._id} value={o._id}>{categoryTitle(locale, o)}</option>
-									)}
-								</Select>
-								{'category' in error &&
-									<FormHelperText>{error.category}</FormHelperText>
-								}
-							</FormControl>
-						</Grid>
-						<Grid item xs={12} md={6} xl={3}>
-							<TextField
-								label={_.labels.title}
-								onChange={ev => {
-									slugSet(titleToSlug(ev.currentTarget.value));
-									titleSet(ev.currentTarget.value);
-								}}
-								placeholder={_.labels.title}
-								size="small"
-								value={title}
-							/>
-						</Grid>
-						<Grid item xs={12} md={6} xl={3}>
-							<TextField
-								InputProps={{
-									startAdornment:
-										<InputAdornment position="start">
-											{`${baseURL}/p/`}
-										</InputAdornment>
-								}}
-								label={_.labels.slug}
-								onChange={ev => slugSet(ev.currentTarget.value)}
-								placeholder={_.labels.slug}
-								size="small"
-								value={slug}
-							/>
-						</Grid>
-					</Grid>
-				}
-			</Box>
 			<Box className="blog_new_post_content">
 				<HTML
 					error={'content' in error ? error.content : false}
@@ -200,15 +152,97 @@ export default function New({ baseURL, locale, onError }) {
 					ref={refHtml}
 				/>
 			</Box>
-			<Box className="blog_new_post_footer">
-				<Grid container spacing={2}>
-					<Grid item xs={12} md={6}>
-						<Tags
-							error={'tags' in error ? error.tags : false}
-							ref={refTags}
-						/>
-					</Grid>
-				</Grid>
+			{fullScreen &&
+				<Box className={'blog_new_post_drawer_icon' + (menu ? ' open' : '')}>
+					<IconButton onClick={() => menuSet(b => !b)}>
+						<i className="fa-solid fa-bars" />
+					</IconButton>
+				</Box>
+			}
+			<Box className={'blog_new_post_drawer' + (menu ? ' open' : '')}>
+				{(cats === false || locales === false) ?
+					<Typography>...</Typography>
+				:
+					<React.Fragment>
+						{locales.length > 1 &&
+							<Box className="field">
+								<FormControl error={'_locale' in error}>
+									<InputLabel id="blog_new_post_locale_select">
+										{_.labels.language}
+									</InputLabel>
+									<Select
+										label={_.labels.language}
+										labelId="blog_new_post_locale_select"
+										native
+										onChange={ev => locSet(ev.target.value)}
+										size={fullScreen ? 'small' : 'medium'}
+										value={loc}
+										variant="outlined"
+									>
+										{locales.map(o =>
+											<option key={o._id} value={o._id}>{o.name}</option>
+										)}
+									</Select>
+									{'_locale' in error &&
+										<FormHelperText>{error._locale}</FormHelperText>
+									}
+								</FormControl>
+							</Box>
+						}
+						<Box className="field">
+							<TextField
+								InputLabelProps={{
+									shrink: true,
+								}}
+								label={_.labels.title}
+								onChange={ev => dataChange('title', ev.currentTarget.value)}
+								placeholder={_.placeholders.title}
+								size={fullScreen ? 'small' : 'medium'}
+								value={data.title}
+							/>
+						</Box>
+						<Box className="field">
+							<TextField
+								InputProps={{
+									startAdornment:
+										<InputAdornment position="start">
+											{`${baseURL}/p/`}
+										</InputAdornment>
+								}}
+								label={_.labels.slug}
+								onChange={ev => dataChange('slug', ev.currentTarget.value)}
+								size={fullScreen ? 'small' : 'medium'}
+								value={data.slug}
+							/>
+						</Box>
+						<Box className="field">
+							<Box className="field_group">
+								<Typography className="legend">{_.labels.categories}</Typography>
+								{cats.map(o =>
+									<Box className="category">
+										<FormControlLabel
+											control={
+												<Switch
+													checked={data.categories.includes(o._id)}
+													onChange={ev => catChange(o._id, ev.target.checked)}
+												/>
+											}
+											label={categoryTitle(locale, o)}
+										/>
+									</Box>
+								)}
+							</Box>
+						</Box>
+						<Box className="field">
+							<Tags
+								error={'tags' in error ? error.tags : false}
+								label={_.labels.tags}
+								placeholder={_.placeholders.tags}
+								ref={refTags}
+							/>
+						</Box>
+					</React.Fragment>
+				}
 			</Box>
 		</Box>
 	);

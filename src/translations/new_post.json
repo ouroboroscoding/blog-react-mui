@@ -1,26 +1,41 @@
 {
 	"en-CA": {
 		"labels": {
-			"category": "Category",
+			"categories": "Categories",
 			"language": "Language",
 			"slug": "URL",
+			"tags": "Tag",
 			"title": "Title"
+		},
+		"placeholders": {
+			"tags": "tag #1, tag two, third tag",
+			"title": "My new blog post"
 		}
 	},
 	"en-US": {
 		"labels": {
-			"category": "Category",
+			"categories": "Categories",
 			"language": "Language",
 			"slug": "URL",
+			"tags": "Tag",
 			"title": "Title"
+		},
+		"placeholders": {
+			"tags": "tag #1, tag two, third tag",
+			"title": "My new blog post"
 		}
 	},
 	"fr-CA": {
 		"labels": {
-			"category": "Catégorie",
+			"categories": "Catégories",
 			"language": "Langue",
 			"slug": "URL",
+			"tags": "Étiquette",
 			"title": "Titre"
+		},
+		"placeholders": {
+			"tags": "étiquette n°1, étiquette deux, troisième étiquette",
+			"title": "Mon nouvel article de blog"
 		}
 	}
 }

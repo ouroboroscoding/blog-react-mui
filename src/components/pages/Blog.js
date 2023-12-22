@@ -170,7 +170,7 @@ Blog.propTypes = {
 // Default props
 Blog.defaultProps = {
 	basePath: '/blog',
-	baseURL: 'http://localhost/blog',
+	baseURL: 'http://localhost',
 	locale: 'en-US',
 	onError: error => {
 		throw new Error(JSON.stringify(error, null, 4));
