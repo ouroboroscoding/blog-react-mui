@@ -34,7 +34,7 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Project modules
-import titleToSlug from '../../../functions/titleToSlug';
+import { define_titleToSlug } from '../../../functions/titleToSlug';
 
 // Translations
 import TEXT from '../../../translations/categories';
@@ -244,7 +244,7 @@ export default function Add({
 								name={locales[0]}
 								node={tree}
 								onNodeChange={{
-									title: titleToSlug
+									title: define_titleToSlug
 								}}
 								ref={data[locales[0]].ref}
 								type="create"
@@ -292,7 +292,7 @@ export default function Add({
 											name={k}
 											node={tree}
 											onNodeChange={{
-												title: titleToSlug
+												title: define_titleToSlug
 											}}
 											ref={data[k].ref}
 											type="create"

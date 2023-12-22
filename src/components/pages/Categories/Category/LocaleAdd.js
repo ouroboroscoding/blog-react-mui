@@ -26,7 +26,7 @@ import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
 
 // Local modules
-import titleToSlug from '../../../../functions/titleToSlug';
+import { define_titleToSlug } from '../../../../functions/titleToSlug';
 
 // Translations
 import TEXT from '../../../../translations/categories';
@@ -109,7 +109,7 @@ export default function LocaleAdd({
 				name="category_locale_add"
 				node={tree}
 				onNodeChange={{
-					title: titleToSlug
+					title: define_titleToSlug
 				}}
 				ref={refForm}
 				type="create"

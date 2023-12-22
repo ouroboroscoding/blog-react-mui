@@ -15,22 +15,39 @@ import { normalize } from '@ouroboros/tools';
 const TITLE_TO_SLUG = /[ a-z0-9-]/;
 
 /**
- * Title To Slug
+ * Define Title To Slug
  *
  * Converts a title string into a URL slug and returns it as an object with one
  * key suitable for an onNodeChange event
  *
- * @name titleToSlug
+ * @name define_titleToSlug
  * @access public
  * @param {Event} ev The event sent from the Form/Parent
  * @returns object
  */
+export function define_titleToSlug(ev) {
 
-export default function titleToSlug(ev) {
+	// Use the regular function to generate the slug, then return it in a format
+	//	define can handle
+	return { 'slug': titleToSlug(ev.data.title) }
+}
+
+/**
+ * Title To Slug
+ *
+ * Converts a str into a URL slug and returns it as a new string
+ *
+ * @name titleToSlug
+ * @access public
+ * @param {string} title The title to convert
+ * @returns object
+ */
+
+export default function titleToSlug(title) {
 
 	// Clean the title of any special characters, then convert it to
 	//	lowercase
-	const s = normalize(ev.data.title).toLowerCase();
+	const s = normalize(title).toLowerCase();
 
 	// Init the return string array
 	const l = [];
@@ -50,5 +67,5 @@ export default function titleToSlug(ev) {
 	}
 
 	// Join the array and return it as the new URL
-	return { 'slug': l.join('') }
+	return l.join('');
 }

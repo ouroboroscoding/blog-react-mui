@@ -138,6 +138,7 @@ export default function Blog({ basePath, baseURL, locale, onError }) {
 					</Box>
 				) || (tab === TAB_MAP.new &&
 					<New
+						baseURL={baseURL}
 						locale={locale}
 						onError={onError}
 					/>

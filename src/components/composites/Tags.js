@@ -70,7 +70,8 @@ export default class Tags extends React.Component {
 				sTag = sTag.substring(0, sTag.length - 1);
 			}
 
-			// Trim any remaining space and convert it to lowercase
+			// Trim any remaining space and convert it to lowercase, then
+			//	normalize it
 			sTag = sTag.trim().toLowerCase();
 
 			// If the tag doesn't already exist and it's not empty
@@ -93,12 +94,36 @@ export default class Tags extends React.Component {
 			// If there's no text to remove, and we have some tags
 			if(this.refText.current.value === '' && this.state.value.length) {
 
+				// Remove the last tag and set it to the text
+				this.refText.current.value = this.state.value.pop();
+
 				// Remove the last tag
 				this.setState({
 					error: false,
-					value: this.state.value.toSpliced(-1, 1)
+					value: [ ...this.state.value ]
 				});
 			}
+		}
+
+		// Else, if we have 32 characters
+		else if(this.refText.current.value.length === 32) {
+
+			// Trim any remaining space and convert it to lowercase, then
+			//	normalize it
+			const sTag = this.refText.current.value.trim().toLowerCase();
+
+			// If the tag doesn't already exist and it's not empty
+			if(this.state.value.indexOf(sTag) === -1 && sTag !== '') {
+
+				// Set the new state
+				this.setState({
+					error: false,
+					value: [...this.state.value, sTag]
+				});
+			}
+
+			// Clear the text
+			this.refText.current.value = '';
 		}
 	}
 

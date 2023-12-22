@@ -2,19 +2,25 @@
 	"en-CA": {
 		"labels": {
 			"category": "Category",
-			"language": "Language"
+			"language": "Language",
+			"slug": "URL",
+			"title": "Title"
 		}
 	},
 	"en-US": {
 		"labels": {
 			"category": "Category",
-			"language": "Language"
+			"language": "Language",
+			"slug": "URL",
+			"title": "Title"
 		}
 	},
 	"fr-CA": {
 		"labels": {
 			"category": "Catégorie",
-			"language": "Langue"
+			"language": "Langue",
+			"slug": "URL",
+			"title": "Titre"
 		}
 	}
 }
