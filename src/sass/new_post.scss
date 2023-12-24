@@ -5,16 +5,32 @@
 	.blog_new_post_drawer {
 		background-color: #fff;
 		display: none;
+		flex-direction: column;
 		padding: 5px;
 		position: absolute;
 		right: 0;
 		top: 0;
 		width: 0;
 		z-index: 1000;
+
+		.blog_new_post_drawer_fields {
+			flex-basis: 0;
+			flex-grow: 1;
+			flex-shrink: 1;
+			overflow: auto;
+			padding-top: 5px;
+		}
+
+		.blog_new_post_drawer_actions {
+			flex-basis: auto;
+			flex-grow: 0;
+			flex-shrink: 0;
+			text-align: right;
+		}
 	}
 
 	.blog_new_post_drawer.open {
-		display: block;
+		display: flex;
 		width: calc(100vw - 35px);
 	}
 
@@ -46,8 +62,8 @@
 			flex-basis: auto;
 			flex-grow: 0;
 			flex-shrink: 0;
-			display: block;
-			padding: 5px;
+
+			display: flex;
 			position: relative;
 			right: unset;
 			top: unset;

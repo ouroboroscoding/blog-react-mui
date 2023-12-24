@@ -8,9 +8,6 @@
  * @created 2023-12-02
  */
 
-// Ouroboros modules
-import events from '@ouroboros/events';
-
 // NPM modules
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
@@ -24,6 +21,7 @@ import Typography from '@mui/material/Typography';
 
 // Local pages
 import Categories from './Categories';
+import Edit from './Edit';
 import Media from './Media';
 import New from './New';
 
@@ -89,12 +87,14 @@ export default function Blog({ basePath, baseURL, locale, onError }) {
 			tabSet(TAB_MAP.new);
 		}
 
+		// Else, if the location is an exist post
+		else if(location.pathname.substring(basePath.length, basePath.length + 5) === '/edit') {
+			tabSet(TAB_MAP.edit);
+		}
+
 		// Else, unknown location
 		else {
 			tabSet(TAB_MAP.invalid);
-			events.get('errors').trigger(
-				TEXT[locale].tab_invalid.replace('{path}', location.pathname)
-			);
 		}
 
 	}, [basePath, locale, location, navigate]);
@@ -138,6 +138,7 @@ export default function Blog({ basePath, baseURL, locale, onError }) {
 					</Box>
 				) || (tab === TAB_MAP.new &&
 					<New
+						basePath={basePath}
 						baseURL={baseURL}
 						locale={locale}
 						onError={onError}
@@ -153,6 +154,19 @@ export default function Blog({ basePath, baseURL, locale, onError }) {
 						locale={locale}
 						onError={onError}
 					/>
+				) || (tab === TAB_MAP.edit &&
+					<Edit
+						_id={location.pathname.slice(-36)}
+						baseURL={baseURL}
+						locale={locale}
+						onError={onError}
+					/>
+				) || (tab === TAB_MAP.invalid &&
+					<Box className="padding">
+						<Typography>
+							{_.tab.invalid.replace('{path}', location.pathname)}
+						</Typography>
+					</Box>
 				)}
 			</Box>
 		</Box>
