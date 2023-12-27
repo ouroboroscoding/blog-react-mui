@@ -110,7 +110,6 @@ export default class HTML extends React.Component {
 							<MediaFilter
 								imagesOnly={true}
 								locale={this.props.locale}
-								onError={this.props.onError}
 								onRecords={records => this.setState({ images: records })}
 							/>
 							<br />

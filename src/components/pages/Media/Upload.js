@@ -163,7 +163,6 @@ Upload.propTypes = {
 	accept: PropTypes.string,
 	maxFileSize: PropTypes.number,
 	onChange: PropTypes.func,
-	onError: PropTypes.func,
 	value: PropTypes.shape({
 		url: PropTypes.string
 	})

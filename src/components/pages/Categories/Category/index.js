@@ -50,7 +50,7 @@ import TEXT from '../../../../translations/categories';
  * @returns React.Component
  */
 export default function Category({
-	baseURL, locale, locales, onDelete, onError, onUpdated, rights, tree, value
+	baseURL, locale, locales, onDelete, onUpdated, rights, tree, value
 }) {
 
 	// State
@@ -121,7 +121,6 @@ export default function Category({
 						locale={locale}
 						locales={locales}
 						onDeleted={() => localeDeleted(k)}
-						onError={onError}
 						onUpdated={data => localeUpdated(k, data)}
 						rights={rights}
 						tree={tree}
@@ -148,7 +147,6 @@ export default function Category({
 						})}
 						onAdded={localeAdded}
 						onCancel={() => addSet(false)}
-						onError={onError}
 						tree={tree}
 					/>
 				}
@@ -164,7 +162,6 @@ Category.propTypes = {
 	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onDelete: PropTypes.func.isRequired,
 	onUpdated: PropTypes.func.isRequired,
-	onError: PropTypes.func.isRequired,
 	rights: PropTypes.object.isRequired,
 	tree: PropTypes.object.isRequired,
 	value: PropTypes.object.isRequired

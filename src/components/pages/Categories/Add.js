@@ -12,6 +12,7 @@
 import blog, { errors } from '@ouroboros/blog';
 import { timestamp } from '@ouroboros/dates';
 import { DefineParent } from '@ouroboros/define-mui';
+import events from '@ouroboros/events';
 import { afindi, omap, pathToTree } from '@ouroboros/tools';
 
 // NPM modules
@@ -50,7 +51,7 @@ import TEXT from '../../../translations/categories';
  * @returns React.Component
  */
 export default function Add({
-	locale, locales, onAdded, onCancel, onError, open, tree
+	locale, locales, onAdded, onCancel, open, tree
 }) {
 
 	// State
@@ -217,7 +218,7 @@ export default function Add({
 				const [ loc, slug ] = error.msg[0];
 				data[loc].ref.current.error({ slug: 'duplicate' });
 			} else {
-				onError(error);
+				events.get('error').trigger(error);
 			}
 		});
 	}
@@ -335,7 +336,6 @@ Add.propTypes = {
 	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onAdded: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
-	onError: PropTypes.func.isRequired,
 	open: PropTypes.bool.isRequired,
 	tree: PropTypes.object.isRequired
 }

@@ -11,6 +11,7 @@
 // Ouroboros modules
 import blog, { errors } from '@ouroboros/blog';
 import clone from '@ouroboros/clone';
+import events from '@ouroboros/events';
 import {
 	afindi, arrayFindDelete, bytesHuman, merge, pathToTree
 } from '@ouroboros/tools';
@@ -50,7 +51,7 @@ import TEXT from '../../../translations/media';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Add({ locale, onAdded, onCancel, onError, open }) {
+export default function Add({ locale, onAdded, onCancel, open }) {
 
 	// State
 	const [ errs, errsSet ] = useState({});
@@ -201,7 +202,7 @@ export default function Add({ locale, onAdded, onCancel, onError, open }) {
 			} else if(error.code === errors.body.DB_DUPLICATE) {
 				errsSet({ duplicate: true });
 			} else {
-				onError(error);
+				events.get('error').trigger(error);
 			}
 		});
 	}
@@ -359,6 +360,5 @@ Add.propTypes = {
 	locale: PropTypes.string.isRequired,
 	onAdded: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
-	onError: PropTypes.func.isRequired,
 	open: PropTypes.bool.isRequired
 }

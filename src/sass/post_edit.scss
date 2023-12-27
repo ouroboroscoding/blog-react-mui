@@ -1,8 +1,8 @@
-#blog_new_post {
+#blog_post_edit {
 	height: 100%;
 	position: relative;
 
-	.blog_new_post_drawer {
+	.blog_post_edit_drawer {
 		background-color: #fff;
 		bottom: 0;
 		display: none;
@@ -14,28 +14,55 @@
 		width: 0;
 		z-index: 1000;
 
-		.blog_new_post_drawer_fields {
+		.blog_post_edit_drawer_fields {
 			flex-basis: 0;
 			flex-grow: 1;
 			flex-shrink: 1;
+			height: 100%;
 			overflow: auto;
 			padding-top: 5px;
+
+			.blog_post_edit_locales {
+				display: flex;
+				flex-direction: column;
+
+				.MuiAccordion-root {
+					flex-basis: auto;
+					flex-grow: 0;
+					flex-shrink: 0;
+				}
+
+				.MuiAccordion-root.accordion_expanded {
+					flex-basis: 0;
+					flex-grow: 1;
+					flex-shrink: 1;
+				}
+			}
 		}
 
-		.blog_new_post_drawer_actions {
+		.blog_post_edit_drawer_actions {
 			flex-basis: auto;
 			flex-grow: 0;
 			flex-shrink: 0;
+			margin-top: 10px;
+			text-align: right;
+		}
+
+		.blog_post_edit_drawer_publish {
+			flex-basis: auto;
+			flex-grow: 0;
+			flex-shrink: 0;
+			margin-bottom: 10px;
 			text-align: right;
 		}
 	}
 
-	.blog_new_post_drawer.drawer_open {
+	.blog_post_edit_drawer.drawer_open {
 		display: flex;
 		width: calc(100vw - 35px);
 	}
 
-	.blog_new_post_drawer_icon {
+	.blog_post_edit_drawer_icon {
 		background-color: #fff;
 		position: absolute;
 		top: 5px;
@@ -43,27 +70,28 @@
 		z-index: 1000;
 	}
 
-	.blog_new_post_drawer_icon.drawer_open {
+	.blog_post_edit_drawer_icon.drawer_open {
 		right: calc(100vw - 40px);
 	}
 
-	.blog_new_post_content {
+	.blog_post_edit_content {
 		height: 100%;
 	}
 }
 
 @media only screen and (min-width: 600px) {
 
-	#blog_new_post {
+	#blog_post_edit {
 		display: flex;
 		flex-direction: row;
 		height: 100%;
 
-		.blog_new_post_drawer {
+		.blog_post_edit_drawer {
 			flex-basis: auto;
 			flex-grow: 0;
 			flex-shrink: 0;
 
+			bottom: unset;
 			display: flex;
 			position: relative;
 			right: unset;
@@ -71,7 +99,7 @@
 			width: 400px;
 		}
 
-		.blog_new_post_content {
+		.blog_post_edit_content {
 			flex-basis: 0;
 			flex-grow: 1;
 			flex-shrink: 1;

@@ -11,6 +11,7 @@
 // Ouroboros modules
 import blog, { errors } from '@ouroboros/blog';
 import { locales as Locales } from '@ouroboros/mouth-mui';
+import events from '@ouroboros/events';
 import { afindo, empty, pathToTree } from '@ouroboros/tools';
 
 // NPM modules
@@ -54,7 +55,7 @@ import TEXT from '../../../translations/new_post';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function New({ basePath, baseURL, locale, onError }) {
+export default function New({ basePath, baseURL, locale }) {
 
 	// State
 	const [ cats, catsSet ] = useState(false);
@@ -71,13 +72,15 @@ export default function New({ basePath, baseURL, locale, onError }) {
 
 	// Refs
 	const refHtml = useRef(null);
-	const refTags = useRef(null);
 
 	// Load effect
 	useEffect(() => {
 
 		// Get the available categories
-		blog.read('admin/category').then(catsSet, onError);
+		blog.read('admin/category').then(
+			catsSet,
+			error => events.get('error').trigger(error)
+		);
 
 		// Subscribe to locales
 		const oL = Locales.subscribe(l => {
@@ -105,7 +108,7 @@ export default function New({ basePath, baseURL, locale, onError }) {
 			oL.unsubscribe();
 		}
 
-	}, [ locale, onError ]);
+	}, [ locale ]);
 
 	// Called when a category is changes
 	function catChange(_id, checked) {
@@ -129,26 +132,31 @@ export default function New({ basePath, baseURL, locale, onError }) {
 	// Called to create the new post
 	function create() {
 
-		// Init data and possile errors
+		// Init data and possible errors
+		const oData = {
+			categories: data.categories,
+			locales: {
+				[data.locale]: {
+					title: data.title.trim(),
+					slug: data.slug.trim(),
+				}
+			}
+		};
 		const oErrors = {};
 
-		// Trim title and slug
-		data.title = data.title.trim();
-		data.slug = data.slug.trim();
-
 		// Check the title
-		if(data.title === '') {
+		if(oData.locales[data.locale].title === '') {
 			oErrors.title = 'missing';
 		}
 
 		// Check the slug
-		if(data.slug === '') {
+		if(oData.locales[data.locale] === '') {
 			oErrors.slug = 'missing';
 		}
 
 		// Add the content and check if it's empty
-		data.content = refHtml.current.value;
-		if(empty(data.content)) {
+		oData.locales[data.locale].content = refHtml.current.value;
+		if(empty(oData.locales[data.locale].content)) {
 			oErrors.content = 'missing';
 		}
 
@@ -159,12 +167,12 @@ export default function New({ basePath, baseURL, locale, onError }) {
 		}
 
 		// If we have any tags, add them
-		if(refTags.current.value.length) {
-			data.tags = [ ...refTags.current.value ];
+		if(data.tags.length) {
+			oData.locales[data.locale].tags = [ ...data.tags ];
 		}
 
 		// Send the data to the server
-		blog.create('admin/post', data).then(_id => {
+		blog.create('admin/post', oData).then(_id => {
 			if(_id) {
 				navigate(`${basePath}/edit/${_id}`);
 			}
@@ -174,7 +182,7 @@ export default function New({ basePath, baseURL, locale, onError }) {
 			} else if(error.code === errors.body.DB_DUPLICATE) {
 				errorSet({'slug': 'duplicate'});
 			} else {
-				onError(error);
+				events.get('error').trigger(error);
 			}
 		});
 	}
@@ -202,23 +210,40 @@ export default function New({ basePath, baseURL, locale, onError }) {
 					error={'content' in error ? error.content : false}
 					fullScreen={fullScreen}
 					locale={locale}
-					onError={onError}
 					ref={refHtml}
 				/>
 			</Box>
 			{fullScreen &&
-				<Box className={'blog_new_post_drawer_icon' + (menu ? ' open' : '')}>
+				<Box className={'blog_new_post_drawer_icon' + (menu ? ' drawer_open' : '')}>
 					<IconButton onClick={() => menuSet(b => !b)}>
 						<i className="fa-solid fa-bars" />
 					</IconButton>
 				</Box>
 			}
-			<Box className={'blog_new_post_drawer' + (menu ? ' open' : '')}>
+			<Box className={'blog_new_post_drawer' + (menu ? ' drawer_open' : '')}>
 				{(cats === false || locales === false) ?
 					<Typography>...</Typography>
 				:
 					<React.Fragment>
 						<Box className="blog_new_post_drawer_fields">
+							<Box className="field">
+								<Box className="field_group">
+									<Typography className="legend">{_.labels.categories}</Typography>
+									{cats.map(o =>
+										<Box className="category" key={o._id}>
+											<FormControlLabel
+												control={
+													<Switch
+														checked={data.categories.includes(o._id)}
+														onChange={ev => catChange(o._id, ev.target.checked)}
+													/>
+												}
+												label={categoryTitle(locale, o)}
+											/>
+										</Box>
+									)}
+								</Box>
+							</Box>
 							{locales.length > 1 &&
 								<Box className="field">
 									<FormControl error={'_locale' in error}>
@@ -275,29 +300,12 @@ export default function New({ basePath, baseURL, locale, onError }) {
 								/>
 							</Box>
 							<Box className="field">
-								<Box className="field_group">
-									<Typography className="legend">{_.labels.categories}</Typography>
-									{cats.map(o =>
-										<Box className="category" key={o._id}>
-											<FormControlLabel
-												control={
-													<Switch
-														checked={data.categories.includes(o._id)}
-														onChange={ev => catChange(o._id, ev.target.checked)}
-													/>
-												}
-												label={categoryTitle(locale, o)}
-											/>
-										</Box>
-									)}
-								</Box>
-							</Box>
-							<Box className="field">
 								<Tags
 									error={'tags' in error ? error.tags : false}
 									label={_.labels.tags}
+									onChange={val => dataChange('tags', val)}
 									placeholder={_.placeholders.tags}
-									ref={refTags}
+									value={data.tags}
 								/>
 							</Box>
 						</Box>
@@ -320,6 +328,5 @@ export default function New({ basePath, baseURL, locale, onError }) {
 New.propTypes = {
 	basePath: PropTypes.string.isRequired,
 	baseURL: PropTypes.string.isRequired,
-	locale: PropTypes.string.isRequired,
-	onError: PropTypes.func.isRequired
+	locale: PropTypes.string.isRequired
 }

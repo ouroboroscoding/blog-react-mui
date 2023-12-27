@@ -11,9 +11,10 @@
 // Ouroboros modules
 import blog from '@ouroboros/blog';
 import CategoryLocaleDef from '@ouroboros/blog/definitions/category_locale';
+import { useRights } from '@ouroboros/brain-react';
 import clone from '@ouroboros/clone';
 import { Tree } from '@ouroboros/define';
-import { useRights } from '@ouroboros/brain-react';
+import events from '@ouroboros/events';
 import { locales as Locales } from '@ouroboros/mouth-mui';
 import { afindi, arrayFindDelete, combine, empty } from '@ouroboros/tools';
 
@@ -59,7 +60,7 @@ const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Categories({ baseURL, locale, onError }) {
+export default function Categories({ baseURL, locale }) {
 
 	// State
 	const [ add, addSet ] = useState(false);
@@ -75,7 +76,7 @@ export default function Categories({ baseURL, locale, onError }) {
 
 		// Fetch from the server
 		blog.read('admin/category').then(recordsSet, error => {
-			onError(error);
+			events.get('error').trigger(error);
 		});
 
 		// Subscribe to locales
@@ -116,7 +117,7 @@ export default function Categories({ baseURL, locale, onError }) {
 				removeSet(null);
 			}
 		}, error => {
-			onError(error);
+			events.get('error').trigger(error);
 		});
 	}
 
@@ -183,7 +184,6 @@ export default function Categories({ baseURL, locale, onError }) {
 							locales={locales}
 							onDelete={() => removeSet(o)}
 							onUpdated={cat => categoryUpdated(o._id, cat)}
-							onError={onError}
 							rights={rights}
 							tree={CategoryLocaleTree}
 							value={o}
@@ -197,7 +197,6 @@ export default function Categories({ baseURL, locale, onError }) {
 					locales={locales}
 					onAdded={categoryAdded}
 					onCancel={() => addSet(false)}
-					onError={onError}
 					open={add}
 					tree={CategoryLocaleTree}
 				/>
@@ -228,6 +227,5 @@ export default function Categories({ baseURL, locale, onError }) {
 // Valid props
 Categories.propTypes = {
 	baseURL: PropTypes.string.isRequired,
-	locale: PropTypes.string.isRequired,
-	onError: PropTypes.func.isRequired
+	locale: PropTypes.string.isRequired
 }

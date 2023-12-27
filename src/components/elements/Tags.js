@@ -7,6 +7,9 @@
  * @created 2023-12-20
  */
 
+// Ouroboros modules
+import { empty } from '@ouroboros/tools';
+
 // NPM modules
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -47,6 +50,28 @@ export default class Tags extends React.Component {
 		this.tagRemove = this.tagRemove.bind(this);
 	}
 
+	// Called when props passed to the component have changed
+	componentDidUpdate(prevProps) {
+
+		// Init the new state
+		const oState = {};
+
+		// If the error changed
+		if(prevProps.error !== this.props.error) {
+			oState.error = this.props.error;
+		}
+
+		// If the value changed
+		if(prevProps.value !== this.props.value) {
+			oState.value = this.props.value;
+		}
+
+		// If we have changes, set the new state
+		if(!empty(oState)) {
+			this.setState(oState);
+		}
+	}
+
 	// Called to set the error message
 	error(msg) {
 		this.setState({ error: msg });
@@ -81,6 +106,10 @@ export default class Tags extends React.Component {
 				this.setState({
 					error: false,
 					value: [...this.state.value, sTag]
+				}, () => {
+					if(this.props.onChange) {
+						this.props.onChange(this.state.value);
+					}
 				});
 			}
 
@@ -101,6 +130,10 @@ export default class Tags extends React.Component {
 				this.setState({
 					error: false,
 					value: [ ...this.state.value ]
+				}, () => {
+					if(this.props.onChange) {
+						this.props.onChange(this.state.value);
+					}
 				});
 			}
 		}
@@ -119,6 +152,10 @@ export default class Tags extends React.Component {
 				this.setState({
 					error: false,
 					value: [...this.state.value, sTag]
+				}, () => {
+					if(this.props.onChange) {
+						this.props.onChange(this.state.value);
+					}
 				});
 			}
 
@@ -165,6 +202,10 @@ export default class Tags extends React.Component {
 		this.setState({
 			error: false,
 			value: this.state.value.filter(val => val !== name)
+		}, () => {
+			if(this.props.onChange) {
+				this.props.onChange(this.state.value);
+			}
 		});
 	}
 
@@ -182,6 +223,7 @@ export default class Tags extends React.Component {
 // Valid props
 Tags.propTypes = {
 	label: PropTypes.string,
+	onChange: PropTypes.func,
 	placeholder: PropTypes.string,
 	value: PropTypes.arrayOf(PropTypes.string).isRequired
 }

@@ -50,7 +50,7 @@ import TEXT from './text';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Posts({ locale, onError }) {
+export default function Posts({ locale }) {
 
 	// State
 	const [ add, addSet ] = useState(false);
@@ -76,7 +76,7 @@ export default function Posts({ locale, onError }) {
 		// Fetch from the server
 		recordsSet(false);
 		blog.read('admin/posts/filter', filter).then(recordsSet, error => {
-			onError(error);
+			events.get('error').trigger(error);
 		});
 	}
 
@@ -106,7 +106,7 @@ export default function Posts({ locale, onError }) {
 				removeSet(null);
 			}
 		}, error => {
-			onError(error);
+			events.get('error').trigger(error);
 		});
 	}
 

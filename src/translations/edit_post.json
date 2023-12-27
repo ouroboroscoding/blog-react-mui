@@ -1,18 +1,29 @@
 {
 	"en-CA": {
+		"category": {
+			"added": "Category added",
+			"deleted": "Category removed"
+		},
 		"labels": {
 			"categories": "Categories",
 			"slug": "URL",
 			"tags": "Tag",
 			"title": "Title"
 		},
+		"new_locale": "Add Language",
+		"no_save": "Nothing to save",
 		"placeholders": {
 			"tags": "tag #1, tag two, third tag",
 			"title": "My new blog post"
 		},
-		"submit": "Create Post"
+		"publish": "Publish Changes",
+		"submit": "Save Changes"
 	},
 	"en-US": {
+		"category": {
+			"added": "Category added",
+			"deleted": "Category removed"
+		},
 		"labels": {
 			"categories": "Categories",
 			"language": "Language",
@@ -20,13 +31,20 @@
 			"tags": "Tag",
 			"title": "Title"
 		},
+		"new_locale": "Add Language",
+		"no_save": "Nothing to save",
 		"placeholders": {
 			"tags": "tag #1, tag two, third tag",
 			"title": "My new blog post"
 		},
-		"submit": "Create Post"
+		"publish": "Publish Changes",
+		"submit": "Save Changes"
 	},
 	"fr-CA": {
+		"category": {
+			"added": "Catégorie ajoutée",
+			"deleted": "Catégorie supprimée"
+		},
 		"labels": {
 			"categories": "Catégories",
 			"language": "Langue",
@@ -34,10 +52,13 @@
 			"tags": "Étiquette",
 			"title": "Titre"
 		},
+		"new_locale": "Ajouter Langue",
+		"no_save": "Rien à enregistrer",
 		"placeholders": {
 			"tags": "étiquette n°1, étiquette deux, troisième étiquette",
 			"title": "Mon nouvel article de blog"
 		},
-		"submit": "Créer Poste"
+		"publish": "Publier les Modifications",
+		"submit": "Enregistrer les Modifications"
 	}
 }

@@ -50,7 +50,7 @@ const TAB_MAP = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Blog({ basePath, baseURL, locale, onError }) {
+export default function Blog({ basePath, baseURL, locale }) {
 
 	// State
 	const [ tab, tabSet ] = useState(TAB_MAP.home);
@@ -141,25 +141,21 @@ export default function Blog({ basePath, baseURL, locale, onError }) {
 						basePath={basePath}
 						baseURL={baseURL}
 						locale={locale}
-						onError={onError}
 					/>
 				) || (tab === TAB_MAP.categories &&
 					<Categories
 						baseURL={baseURL}
 						locale={locale}
-						onError={onError}
 					/>
 				) || (tab === TAB_MAP.media &&
 					<Media
 						locale={locale}
-						onError={onError}
 					/>
 				) || (tab === TAB_MAP.edit &&
 					<Edit
 						_id={location.pathname.slice(-36)}
 						baseURL={baseURL}
 						locale={locale}
-						onError={onError}
 					/>
 				) || (tab === TAB_MAP.invalid &&
 					<Box className="padding">
@@ -177,16 +173,12 @@ export default function Blog({ basePath, baseURL, locale, onError }) {
 Blog.propTypes = {
 	basePath: PropTypes.string,
 	baseURL: PropTypes.string,
-	locale: PropTypes.string,
-	onError: PropTypes.func
+	locale: PropTypes.string
 }
 
 // Default props
 Blog.defaultProps = {
 	basePath: '/blog',
 	baseURL: 'http://localhost',
-	locale: 'en-US',
-	onError: error => {
-		throw new Error(JSON.stringify(error, null, 4));
-	}
+	locale: 'en-US'
 }

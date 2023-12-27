@@ -48,7 +48,7 @@ import TEXT from '../../../translations/media';
  * @returns React.Component
  */
 export default function View({
-	locale, onClose, onError, onThumbAdded, onThumbRemoved, value
+	locale, onClose, onThumbAdded, onThumbRemoved, value
 }) {
 
 	// State
@@ -142,7 +142,7 @@ export default function View({
 				onThumbRemoved(size);
 			}
 		}, error => {
-			onError(error);
+			events.get('error').trigger(error);
 		});
 	}
 
@@ -165,7 +165,7 @@ export default function View({
 			if(error.code === errors.body.DB_DUPLICATE) {
 				errSet(TEXT[locale].add.thumb.duplicate);
 			} else {
-				onError(error);
+				events.get('error').trigger(error);
 			}
 		});
 	}
@@ -333,7 +333,6 @@ export default function View({
 View.propTypes = {
 	locale: PropTypes.string.isRequired,
 	onClose: PropTypes.func.isRequired,
-	onError: PropTypes.func.isRequired,
 	onThumbAdded: PropTypes.func.isRequired,
 	onThumbRemoved: PropTypes.func.isRequired,
 	rights: PropTypes.exact({

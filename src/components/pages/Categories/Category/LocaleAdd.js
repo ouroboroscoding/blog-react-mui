@@ -11,6 +11,7 @@
 // Ouroboros modules
 import blog, { errors } from '@ouroboros/blog';
 import { DefineParent } from '@ouroboros/define-mui';
+import events from '@ouroboros/events';
 import { pathToTree } from '@ouroboros/tools';
 
 // NPM modules
@@ -42,7 +43,7 @@ import TEXT from '../../../../translations/categories';
  * @returns React.Component
  */
 export default function LocaleAdd({
-	category, locale, locales, onAdded, onCancel, onError, tree
+	category, locale, locales, onAdded, onCancel, tree
 }) {
 
 	// State
@@ -72,7 +73,7 @@ export default function LocaleAdd({
 			} else if(error.code === errors.body.DB_DUPLICATE) {
 				refForm.current.error({ slug: TEXT[locale].duplicate });
 			} else {
-				onError(error);
+				events.get('error').trigger(error);
 			}
 		});
 	}
@@ -136,6 +137,5 @@ LocaleAdd.propTypes = {
 	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onAdded: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
-	onError: PropTypes.func.isRequired,
 	tree: PropTypes.object.isRequired
 }

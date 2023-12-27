@@ -13,6 +13,7 @@ import blog from '@ouroboros/blog';
 import { increment, iso, timestamp } from '@ouroboros/dates';
 import safeLocalStorage from '@ouroboros/browser/safeLocalStorage'
 import clone from '@ouroboros/clone';
+import events from '@ouroboros/events';
 import { compare, empty } from '@ouroboros/tools';
 
 // NPM modules
@@ -335,7 +336,7 @@ export default class Filter extends React.Component {
 			this.props.onRecords(false);
 			blog.read('admin/media/filter', dData).then(
 				this.props.onRecords,
-				this.props.onError
+				error => events.get('error').trigger(error)
 			);
 
 			// Store it
@@ -442,7 +443,6 @@ export default class Filter extends React.Component {
 Filter.propTypes = {
 	imagesOnly: PropTypes.bool,
 	locale: PropTypes.string.isRequired,
-	onError: PropTypes.func.isRequired,
 	onRecords: PropTypes.func.isRequired
 }
 

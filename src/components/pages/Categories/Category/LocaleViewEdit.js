@@ -11,6 +11,7 @@
 // Ouroboros modules
 import blog, { errors } from '@ouroboros/blog';
 import { DefineParent } from '@ouroboros/define-mui';
+import events from '@ouroboros/events';
 import { afindo, pathToTree } from '@ouroboros/tools';
 
 // NPM modules
@@ -40,7 +41,7 @@ import TEXT from '../../../../translations/categories';
  * @returns React.Component
  */
 export default function LocaleViewEdit({
-	baseURL, count, locale, locales, onDeleted, onError, onUpdated, rights,
+	baseURL, count, locale, locales, onDeleted, onUpdated, rights,
 	tree, value
 }) {
 
@@ -61,7 +62,9 @@ export default function LocaleViewEdit({
 			if(data) {
 				onDeleted(value._locale);
 			}
-		}, onError)
+		}, error => {
+			events.get('error').trigger(error);
+		});
 	}
 
 	// Called to update the locale record
@@ -88,7 +91,7 @@ export default function LocaleViewEdit({
 			} else if(error.code === errors.body.DB_UPDATE_FAILED) {
 				return;
 			} else {
-				onError(error);
+				events.get('error').trigger(error);
 			}
 		});
 	}
@@ -162,7 +165,6 @@ LocaleViewEdit.propTypes = {
 	locale: PropTypes.string.isRequired,
 	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onDeleted: PropTypes.func.isRequired,
-	onError: PropTypes.func.isRequired,
 	onUpdated: PropTypes.func.isRequired,
 	rights: PropTypes.object.isRequired,
 	tree: PropTypes.object.isRequired,

@@ -50,7 +50,7 @@ import TEXT from '../../../translations/media';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Media({ locale, onError }) {
+export default function Media({ locale }) {
 
 	// State
 	const [ add, addSet ] = useState(false);
@@ -120,7 +120,7 @@ export default function Media({ locale, onError }) {
 				removeSet(null);
 			}
 		}, error => {
-			onError(error);
+			events.get('error').trigger(error);
 		});
 	}
 
@@ -191,7 +191,6 @@ export default function Media({ locale, onError }) {
 		<Box id="blog_media">
 			<Filter
 				locale={locale}
-				onError={onError}
 				onRecords={recordsSet}
 			/>
 			{rights.create &&
@@ -276,7 +275,6 @@ export default function Media({ locale, onError }) {
 					locale={locale}
 					onAdded={mediaAdded}
 					onCancel={() => addSet(false)}
-					onError={onError}
 					open={add}
 				/>
 			}
@@ -303,7 +301,6 @@ export default function Media({ locale, onError }) {
 				<View
 					locale={locale}
 					onClose={() => viewSet(null)}
-					onError={onError}
 					onThumbAdded={thumbAdded}
 					onThumbRemoved={thumbRemoved}
 					rights={rights}
@@ -316,6 +313,5 @@ export default function Media({ locale, onError }) {
 
 // Valid props
 Media.propTypes = {
-	locale: PropTypes.string.isRequired,
-	onError: PropTypes.func.isRequired
+	locale: PropTypes.string.isRequired
 }
