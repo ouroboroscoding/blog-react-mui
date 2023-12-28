@@ -37,7 +37,7 @@ import Add from './Add';
 import Category from './Category';
 
 // Local modules
-import categoryTitle from '../../../functions/categoryTitle';
+import localeTitle from '../../../functions/localeTitle';
 
 // Translations
 import TEXT from '../../../translations/categories';
@@ -207,9 +207,9 @@ export default function Categories({ baseURL, locale }) {
 					onClose={() => removeSet(null)}
 					open={true}
 				>
-					<DialogTitle>{_.remove.title.replace('{TITLE}', categoryTitle(locale, remove))}</DialogTitle>
+					<DialogTitle>{_.remove.title.replace('{TITLE}', localeTitle(locale, remove))}</DialogTitle>
 					<DialogContent>
-						<DialogContentText>{_.remove.confirm.replace('{TITLE}', categoryTitle(locale, remove))}</DialogContentText>
+						<DialogContentText>{_.remove.confirm.replace('{TITLE}', localeTitle(locale, remove))}</DialogContentText>
 					</DialogContent>
 					<DialogActions>
 						<Button

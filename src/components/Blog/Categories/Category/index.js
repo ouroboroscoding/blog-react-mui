@@ -9,8 +9,6 @@
  */
 
 // Ouroboros modules
-import blog from '@ouroboros/blog';
-import { DefineParent } from '@ouroboros/define-mui';
 import { combine, omap } from '@ouroboros/tools';
 
 // NPM modules
@@ -23,21 +21,13 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Paper from '@mui/material/Paper';
-import Select from '@mui/material/Select';
-import Typography from '@mui/material/Typography';
 
 // Locale components
 import LocaleAdd from './LocaleAdd';
 import LocaleViewEdit from './LocaleViewEdit';
 
 // Locale modules
-import categoryTitle from '../../../../functions/categoryTitle';
-
-// Translations
-import TEXT from '../../../../translations/categories';
+import localeTitle from '../../../../functions/localeTitle';
 
 /**
  * Category
@@ -97,13 +87,10 @@ export default function Category({
 		onUpdated(o);
 	}
 
-	// Text
-	const _ = TEXT[locale];
-
 	// Render
 	return (
 		<Accordion className="blog_categories_record">
-			<AccordionSummary>{categoryTitle(locale, value)}</AccordionSummary>
+			<AccordionSummary>{localeTitle(locale, value)}</AccordionSummary>
 			<AccordionDetails>
 				<Box className="blog_categories_record_actions">
 					{rights.delete &&
@@ -131,7 +118,7 @@ export default function Category({
 						}}
 					/>
 				)}
-				{(rights.update && !add && Object.keys(value.locales).length != locales.length) &&
+				{(rights.update && !add && Object.keys(value.locales).length !== locales.length) &&
 					<Box className="blog_category_record_locale_add">
 						<Button color="primary" onClick={() => addSet(true)} variant="contained">
 							<i className="fa-solid fa-plus" />

@@ -39,7 +39,7 @@ import HTML from '../../elements/HTML';
 import Tags from '../../elements/Tags';
 
 // Project modules
-import categoryTitle from '../../../functions/categoryTitle';
+import localeTitle from '../../../functions/localeTitle';
 import titleToSlug from '../../../functions/titleToSlug';
 
 // Translations
@@ -238,7 +238,7 @@ export default function New({ basePath, baseURL, locale }) {
 														onChange={ev => catChange(o._id, ev.target.checked)}
 													/>
 												}
-												label={categoryTitle(locale, o)}
+												label={localeTitle(locale, o)}
 											/>
 										</Box>
 									)}

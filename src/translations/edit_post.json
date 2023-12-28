@@ -4,6 +4,11 @@
 			"added": "Category added",
 			"deleted": "Category removed"
 		},
+		"error_saving": "There was an error while saving. Please check each language",
+		"errors": {
+			"duplicate": "URL already exists for another post",
+			"missing": "Value is missing"
+		},
 		"labels": {
 			"categories": "Categories",
 			"slug": "URL",
@@ -11,18 +16,24 @@
 			"title": "Title"
 		},
 		"new_locale": "Add Language",
-		"no_save": "Nothing to save",
+		"no_changes": "Nothing to save",
 		"placeholders": {
 			"tags": "tag #1, tag two, third tag",
 			"title": "My new blog post"
 		},
 		"publish": "Publish Changes",
+		"saved": "Post saved",
 		"submit": "Save Changes"
 	},
 	"en-US": {
 		"category": {
 			"added": "Category added",
 			"deleted": "Category removed"
+		},
+		"error_saving": "There was an error while saving. Please check each language",
+		"errors": {
+			"duplicate": "URL already exists for another post",
+			"missing": "Value is missing"
 		},
 		"labels": {
 			"categories": "Categories",
@@ -32,18 +43,24 @@
 			"title": "Title"
 		},
 		"new_locale": "Add Language",
-		"no_save": "Nothing to save",
+		"no_changes": "Nothing to save",
 		"placeholders": {
 			"tags": "tag #1, tag two, third tag",
 			"title": "My new blog post"
 		},
 		"publish": "Publish Changes",
+		"saved": "Post saved",
 		"submit": "Save Changes"
 	},
 	"fr-CA": {
 		"category": {
 			"added": "Catégorie ajoutée",
 			"deleted": "Catégorie supprimée"
+		},
+		"error_saving": "Une erreur s'est produite lors de l'enregistrement. Veuillez vérifier chaque langue",
+		"errors": {
+			"duplicate": "L'URL existe déjà pour un autre article de blog",
+			"missing": "Valeur manquante"
 		},
 		"labels": {
 			"categories": "Catégories",
@@ -53,12 +70,13 @@
 			"title": "Titre"
 		},
 		"new_locale": "Ajouter Langue",
-		"no_save": "Rien à enregistrer",
+		"no_changes": "Rien à enregistrer",
 		"placeholders": {
 			"tags": "étiquette n°1, étiquette deux, troisième étiquette",
 			"title": "Mon nouvel article de blog"
 		},
 		"publish": "Publier les Modifications",
+		"saved": "Article de blog sauvegardé",
 		"submit": "Enregistrer les Modifications"
 	}
 }

@@ -43,7 +43,7 @@ import HTML from '../../elements/HTML';
 import Tags from '../../elements/Tags';
 
 // Project modules
-import categoryTitle from '../../../functions/categoryTitle';
+import localeTitle from '../../../functions/localeTitle';
 import titleToSlug from '../../../functions/titleToSlug';
 
 // Translations
@@ -109,7 +109,7 @@ export default function Edit({ _id, baseURL, locale }) {
 			// If we have data and at least one locale
 			if(data && !empty(data.locales)) {
 				locSet(Object.keys(data['locales'])[0])
-				originalSet(data);
+				originalSet(clone(data));
 				postSet(data);
 			} else {
 				events.get('error').trigger('Missing locales');
@@ -182,6 +182,32 @@ export default function Edit({ _id, baseURL, locale }) {
 			oData.locales[_locale][which] = value;
 			return oData;
 		});
+	}
+
+	// Called to see if an error exists
+	function errorExists(_locale, which) {
+		return 'locales' in error &&
+				_locale in error.locales &&
+				which in error.locales[_locale];
+	}
+
+	// Called to get the error message
+	function errorMsg(_locale, which) {
+
+		// Check for a message in the specific locale
+		let mMsg = ('locales' in error &&
+				_locale in error.locales &&
+				which in error.locales[_locale]) ?
+					error.locales[_locale][which] :
+					false;
+
+		// If we have a message, translate it
+		if(mMsg !== false) {
+			mMsg = TEXT[locale].errors[mMsg];
+		}
+
+		// Return the result
+		return mMsg;
 	}
 
 	// Called to add a new locale to the post
@@ -281,6 +307,9 @@ export default function Edit({ _id, baseURL, locale }) {
 	// Called to submit changes
 	function submit() {
 
+		// Clear errors
+		errorSet({});
+
 		// Copy the post data
 		const oData = clone(post);
 
@@ -293,16 +322,26 @@ export default function Edit({ _id, baseURL, locale }) {
 
 		// If nothing has changed from the original
 		if(compare(oData, original)) {
-			events.get('success').trigger(TEXT[locale].no_save);
+			events.get('success').trigger(TEXT[locale].no_changes);
 			return;
 		}
 
 		// Send the request to the server
 		blog.update('admin/post', oData).then(data => {
-
+			if(data) {
+				oData._updated = timestamp();
+				postSet(oData);
+				events.get('success').trigger(TEXT[locale].saved);
+			}
 		}, error => {
-
-		})
+			if(error.code === errors.body.DATA_FIELDS) {
+				const dErrors = pathToTree(error.msg);
+				errorSet(dErrors);
+				events.get('success').trigger(TEXT[locale].error_saving);
+			} else {
+				events.get('error').trigger(error);
+			}
+		});
 	}
 
 	// If we don't have the post, the categories, or the locales
@@ -359,7 +398,7 @@ export default function Edit({ _id, baseURL, locale }) {
 												onChange={ev => catChange(o._id, ev.target.checked)}
 											/>
 										}
-										label={categoryTitle(locale, o)}
+										label={localeTitle(locale, o)}
 									/>
 								</Box>
 							)}
@@ -379,8 +418,8 @@ export default function Edit({ _id, baseURL, locale }) {
 								<AccordionDetails>
 									<Box className="field">
 										<TextField
-											error={'title' in error}
-											helperText={error.title || ''}
+											error={errorExists(k, 'title')}
+											helperText={errorMsg(k, 'title')}
 											InputLabelProps={{
 												shrink: true,
 											}}
@@ -393,8 +432,8 @@ export default function Edit({ _id, baseURL, locale }) {
 									</Box>
 									<Box className="field">
 										<TextField
-											error={'slug' in error}
-											helperText={error.slug || ''}
+											error={errorExists(k, 'slug')}
+											helperText={errorMsg(k, 'slug')}
 											InputProps={{
 												startAdornment:
 													<InputAdornment position="start">
@@ -409,8 +448,9 @@ export default function Edit({ _id, baseURL, locale }) {
 									</Box>
 									<Box className="field">
 										<Tags
-											error={'tags' in error ? error.tags : false}
+											error={errorMsg(k, 'tags') }
 											label={_.labels.tags}
+											onChange={val => dataChange(k, 'tags', val)}
 											placeholder={_.placeholders.tags}
 											ref={refTags}
 											value={post.locales[k].tags}

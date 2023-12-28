@@ -1,0 +1,38 @@
+#blog_home {
+	flex-basis: 0;
+	flex-grow: 1;
+	flex-shrink: 1;
+	padding: 10px;
+	width: 100%;
+
+	.blog_home_unpublished {
+
+		.blog_home_unpublished_post {
+			display: flex;
+			flex-direction: row;
+			padding: 10px;
+
+			.unpublished_post_text {
+				flex-basis: 0;
+				flex-grow: 1;
+				flex-shrink: 1;
+
+				.post_title {
+					font-size: 1.2rem;
+					font-weight: bold;
+				}
+			}
+
+			.unpublished_post_actions {
+				flex-basis: auto;
+				flex-grow: 0;
+				flex-shrink: 0;
+
+				i.fa-solid {
+					font-size: 1.3rem;
+					margin-left: 10px;
+				}
+			}
+		}
+	}
+}

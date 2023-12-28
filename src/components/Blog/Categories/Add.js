@@ -55,7 +55,6 @@ export default function Add({
 }) {
 
 	// State
-	const [ errs, errsSet ] = useState({});
 	const [ data, dataSet ] = useState(null);
 
 	// Hooks
@@ -87,7 +86,7 @@ export default function Add({
 			}
 		});
 
-	}, []);
+	}, [ locale, locales ]);
 
 	// Called to add a new locale to the data
 	function dataAdd() {
@@ -164,9 +163,6 @@ export default function Add({
 	// Called to upload the file
 	function submit() {
 
-		// Clear errors
-		errsSet({});
-
 		// Init the data with the name
 		const oData = { locales: {} };
 
@@ -215,8 +211,7 @@ export default function Add({
 					data[loc].ref.current.error(oErrors.locale[loc]);
 				}
 			} else if(error.code === errors.body.DB_DUPLICATE) {
-				const [ loc, slug ] = error.msg[0];
-				data[loc].ref.current.error({ slug: 'duplicate' });
+				data[error.msg[0][0]].ref.current.error({ slug: 'duplicate' });
 			} else {
 				events.get('error').trigger(error);
 			}
@@ -302,7 +297,7 @@ export default function Add({
 								)}
 							</React.Fragment>
 						}
-						{Object.keys(data).length != locales.length &&
+						{Object.keys(data).length !== locales.length &&
 							<Box className="blog_category_add_locale_add">
 								<Button color="primary" onClick={dataAdd} variant="contained">
 									<i className="fa-solid fa-plus" />

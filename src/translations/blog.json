@@ -1,6 +1,5 @@
 {
 	"en-CA": {
-		"home_message": "Welcome to your Blogging system.",
 		"tab": {
 			"categories": "Categories",
 			"home": "Home",
@@ -10,7 +9,6 @@
 		}
 	},
 	"en-US": {
-		"home_message": "Welcome to your Blogging system.",
 		"tab": {
 			"categories": "Categories",
 			"home": "Home",
@@ -20,13 +18,12 @@
 		}
 	},
 	"fr-CA": {
-		"home_message": "Bienvenue dans votre système de blogs.",
 		"tab": {
 			"categories": "Catégories",
 			"home": "Accueil",
 			"invalid": "Lieu non valid: {path}",
 			"media": "Médias",
-			"new": "Nouveau Poste"
+			"new": "Nouveau Article"
 		}
 	}
 }

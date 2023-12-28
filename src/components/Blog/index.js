@@ -22,6 +22,7 @@ import Typography from '@mui/material/Typography';
 // Local pages
 import Categories from './Categories';
 import Edit from './Edit';
+import Home from './Home';
 import Media from './Media';
 import New from './New';
 
@@ -33,7 +34,8 @@ import TEXT from '../../translations/blog';
 
 // Tab indexes to types
 const TAB_MAP = {
-	invalid: -1,
+	invalid: -100,
+	edit: -1,
 	home: 0,
 	new: 1,
 	categories: 2,
@@ -54,6 +56,7 @@ export default function Blog({ basePath, baseURL, locale }) {
 
 	// State
 	const [ tab, tabSet ] = useState(TAB_MAP.home);
+	const [ id, idSet ] = useState(null);
 
 	// Hooks
 	const location = useLocation();
@@ -90,6 +93,7 @@ export default function Blog({ basePath, baseURL, locale }) {
 		// Else, if the location is an exist post
 		else if(location.pathname.substring(basePath.length, basePath.length + 5) === '/edit') {
 			tabSet(TAB_MAP.edit);
+			idSet(location.pathname.slice(-36));
 		}
 
 		// Else, unknown location
@@ -105,7 +109,7 @@ export default function Blog({ basePath, baseURL, locale }) {
 	// Render
 	return (
 		<Box id="blog">
-			<Tabs id="blog_tabs" value={tab} onChange={(ev, i) => tabSet(i)}>
+			<Tabs id="blog_tabs" value={tab < 0 ? false : tab} onChange={(ev, i) => tabSet(i)}>
 				<Tab
 					className={tab === TAB_MAP.home ? 'selected' : ''}
 					label={_.tab.home}
@@ -133,9 +137,10 @@ export default function Blog({ basePath, baseURL, locale }) {
 			</Tabs>
 			<Box id="blog_content">
 				{(tab === TAB_MAP.home &&
-					<Box id="blog_home">
-						<Typography>{_.home_message}</Typography>
-					</Box>
+					<Home
+						basePath={basePath}
+						locale={locale}
+					/>
 				) || (tab === TAB_MAP.new &&
 					<New
 						basePath={basePath}
@@ -153,7 +158,7 @@ export default function Blog({ basePath, baseURL, locale }) {
 					/>
 				) || (tab === TAB_MAP.edit &&
 					<Edit
-						_id={location.pathname.slice(-36)}
+						_id={id}
 						baseURL={baseURL}
 						locale={locale}
 					/>
