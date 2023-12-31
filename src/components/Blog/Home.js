@@ -87,6 +87,7 @@ export default function Home({ basePath, locale }) {
 			if(data) {
 				unpublishedSet(l => arrayFindDelete(l, '_id', remove._id, true));
 				removeSet(null);
+				events.get('success').trigger(TEXT[locale].remove.success);
 			}
 		}, error => {
 			events.get('error').trigger(error);
