@@ -10,6 +10,7 @@
 
 // Ouroboros modules
 import blog, { errors } from '@ouroboros/blog';
+import { useRights } from '@ouroboros/brain-react';
 import clone from '@ouroboros/clone';
 import { timestamp } from '@ouroboros/dates';
 import events from '@ouroboros/events';
@@ -74,6 +75,8 @@ export default function Edit({ _id, baseURL, locale }) {
 
 	// Hooks
 	const fullScreen = useMediaQuery('(max-width:600px)');
+	const rightsPost = useRights('blog_post');
+	const rightsPublish = useRights('blog_publish');
 
 	// Refs
 	const refHtml = useRef(null);
@@ -302,6 +305,21 @@ export default function Edit({ _id, baseURL, locale }) {
 	// Called to publish the changes
 	function publish() {
 
+		// Send the request to the server
+		blog.update('admin/post/publish', { _id }).then(data => {
+			if(data) {
+				events.get('success').trigger(TEXT[locale].publish.success);
+				const i = timestamp();
+				postSet(o => {
+					const oPost = { ...o };
+					oPost._updated = i;
+					oPost.last_published = i;
+					return oPost;
+				});
+			}
+		}, error => {
+			events.get('error').trigger(error);
+		})
 	}
 
 	// Called to submit changes
@@ -376,13 +394,13 @@ export default function Edit({ _id, baseURL, locale }) {
 				</Box>
 			}
 			<Box className={'blog_post_edit_drawer' + (menu ? ' drawer_open' : '')}>
-				{post._updated > post.last_published &&
+				{(rightsPublish.update && post._updated > post.last_published) &&
 					<Box className="blog_post_edit_drawer_publish">
 						<Button
 							color="primary"
 							onClick={publish}
 							variant="contained"
-						>{_.publish}</Button>
+						>{_.publish.button}</Button>
 					</Box>
 				}
 				<Box className="blog_post_edit_drawer_fields">
@@ -543,13 +561,15 @@ export default function Edit({ _id, baseURL, locale }) {
 						}
 					</Box>
 				</Box>
-				<Box className="blog_post_edit_drawer_actions">
-					<Button
-						color="primary"
-						onClick={submit}
-						variant="contained"
-					>{_.submit}</Button>
-				</Box>
+				{rightsPost.update &&
+					<Box className="blog_post_edit_drawer_actions">
+						<Button
+							color="primary"
+							onClick={submit}
+							variant="contained"
+						>{_.submit}</Button>
+					</Box>
+				}
 			</Box>
 		</Box>
 	);
