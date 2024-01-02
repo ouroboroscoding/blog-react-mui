@@ -314,6 +314,7 @@ export default function Edit({ _id, baseURL, locale }) {
 					const oPost = { ...o };
 					oPost._updated = i;
 					oPost.last_published = i;
+					originalSet(oPost);
 					return oPost;
 				});
 			}
@@ -349,6 +350,7 @@ export default function Edit({ _id, baseURL, locale }) {
 			if(data) {
 				oData._updated = timestamp();
 				postSet(oData);
+				originalSet(oData);
 				events.get('success').trigger(TEXT[locale].saved);
 			}
 		}, error => {

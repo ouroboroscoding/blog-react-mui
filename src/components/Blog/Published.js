@@ -1,11 +1,11 @@
 /**
- * Home
+ * Published
  *
- * Home page of blog component
+ * Published page of blog component
  *
  * @author Chris Nasr <chris@ouroboroscoding.com>
  * @copyright Ouroboros Coding Inc.
- * @created 2023-12-28
+ * @created 2024-01-02
  */
 
 // Ouroboros modules
@@ -38,24 +38,24 @@ import localeTitle from '../../functions/localeTitle';
 import '../../sass/blog.scss';
 
 // Translations
-import TEXT from '../../translations/home';
+import TEXT from '../../translations/published';
 
 /**
- * Home
+ * Published
  *
  * Handles mapping of routers in types path
  *
- * @name Home
+ * @name Published
  * @access public
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Home({ basePath, locale }) {
+export default function Published({ basePath, locale }) {
 
 	// State
 	const [ categories, categoriesSet ] = useState(false);
+	const [ published, publishedSet ] = useState(false);
 	const [ remove, removeSet ] = useState(null);
-	const [ unpublished, unpublishedSet ] = useState(false);
 
 	// Hooks
 	const rights = useRights('blog_post');
@@ -63,14 +63,14 @@ export default function Home({ basePath, locale }) {
 	// Load effect
 	useEffect(() => {
 
-		// Fetch unpublished
+		// Fetch published
 		blog.read('__list', [
 			'admin/category',
-			'admin/post/unpublished'
+			'admin/posts'
 		]).then(data => {
 			if(data) {
 				categoriesSet(data[0][1].data);
-				unpublishedSet(data[1][1].data);
+				publishedSet(data[1][1].data);
 			}
 
 		}, error => events.get('error').trigger(error));
@@ -82,10 +82,10 @@ export default function Home({ basePath, locale }) {
 
 		// Send the delete request to the server
 		blog.delete('admin/post', {
-			_id: remove._id
+			_id: remove._raw
 		}).then(data => {
 			if(data) {
-				unpublishedSet(l => arrayFindDelete(l, '_id', remove._id, true));
+				publishedSet(l => arrayFindDelete(l, '_raw', remove._raw, true));
 				removeSet(null);
 				events.get('success').trigger(TEXT[locale].remove.success);
 			}
@@ -99,36 +99,33 @@ export default function Home({ basePath, locale }) {
 
 	// Render
 	return (
-		<Box id="blog_home">
-			<Typography>{_.message}</Typography>
-			{unpublished !== false && unpublished.length > 0 &&
-				<Box className="blog_home_unpublished">
-					<Typography variant="h3">{_.unpublished.title}</Typography>
-					<Grid container spacing={2}>
-						{unpublished.map(o =>
-							<Grid key={o._id} item xs={12} md={6} lg={4} xl={3}>
-								<Paper className="blog_home_unpublished_post">
-									<Box className="unpublished_post_text">
-										<Typography className="post_title">{localeTitle(locale, o)}</Typography>
-									</Box>
-									<Box className="unpublished_post_actions">
-										{rights.update &&
-											<Link to={`${basePath}/edit/${o._id}`}>
-												<i className="fa-solid fa-edit" />
-											</Link>
-										}
-										{rights.delete &&
-											<i
-												className="fa-solid fa-trash-alt"
-												onClick={() => removeSet(o)}
-											/>
-										}
-									</Box>
-								</Paper>
-							</Grid>
-						)}
-					</Grid>
-				</Box>
+		<Box id="blog_published">
+			{published !== false && published.length > 0 &&
+				<Grid container spacing={2}>
+					{published.map(o =>
+						<Grid key={o._lug} item xs={12} md={6} lg={4} xl={3}>
+							<Paper className="blog_post">
+								<Box className="post_text">
+									<Typography className="post_title">{localeTitle(locale, o)}</Typography>
+									<Typography></Typography>
+								</Box>
+								<Box className="post_actions">
+									{rights.update &&
+										<Link to={`${basePath}/edit/${o._raw}`}>
+											<i className="fa-solid fa-edit" />
+										</Link>
+									}
+									{rights.delete &&
+										<i
+											className="fa-solid fa-trash-alt"
+											onClick={() => removeSet(o)}
+										/>
+									}
+								</Box>
+							</Paper>
+						</Grid>
+					)}
+				</Grid>
 			}
 			{remove !== null &&
 				<Dialog
@@ -154,7 +151,7 @@ export default function Home({ basePath, locale }) {
 }
 
 // Valid props
-Home.propTypes = {
+Published.propTypes = {
 	basePath: PropTypes.string.isRequired,
 	locale: PropTypes.string.isRequired
 }

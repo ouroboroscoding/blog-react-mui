@@ -5,7 +5,8 @@
 			"home": "Home",
 			"invalid": "Invalid location: {path}",
 			"media": "Media",
-			"new": "New Post"
+			"new": "New Post",
+			"published": "Published"
 		}
 	},
 	"en-US": {
@@ -14,7 +15,8 @@
 			"home": "Home",
 			"invalid": "Invalid location: {path}",
 			"media": "Media",
-			"new": "New Post"
+			"new": "New Post",
+			"published": "Published"
 		}
 	},
 	"fr-CA": {
@@ -23,7 +25,8 @@
 			"home": "Accueil",
 			"invalid": "Lieu non valid: {path}",
 			"media": "Médias",
-			"new": "Nouveau Article"
+			"new": "Nouveau Article",
+			"published": "Publié"
 		}
 	}
 }

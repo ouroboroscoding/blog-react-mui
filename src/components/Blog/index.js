@@ -25,6 +25,7 @@ import Edit from './Edit';
 import Home from './Home';
 import Media from './Media';
 import New from './New';
+import Published from './Published';
 
 // Styling
 import '../../sass/blog.scss';
@@ -38,8 +39,9 @@ const TAB_MAP = {
 	edit: -1,
 	home: 0,
 	new: 1,
-	categories: 2,
-	media: 3
+	published: 2,
+	categories: 3,
+	media: 4
 }
 
 /**
@@ -90,6 +92,11 @@ export default function Blog({ basePath, baseURL, locale }) {
 			tabSet(TAB_MAP.new);
 		}
 
+		// Else, if the location is published
+		else if(location.pathname === `${basePath}/published`) {
+			tabSet(TAB_MAP.published);
+		}
+
 		// Else, if the location is an exist post
 		else if(location.pathname.substring(basePath.length, basePath.length + 5) === '/edit') {
 			tabSet(TAB_MAP.edit);
@@ -123,6 +130,12 @@ export default function Blog({ basePath, baseURL, locale }) {
 					to={`${basePath}/new`}
 				/>
 				<Tab
+					className={tab === TAB_MAP.published ? 'selected' : ''}
+					label={_.tab.published}
+					component={Link}
+					to={`${basePath}/published`}
+				/>
+				<Tab
 					className={tab === TAB_MAP.categories ? 'selected' : ''}
 					label={_.tab.categories}
 					component={Link}
@@ -145,6 +158,11 @@ export default function Blog({ basePath, baseURL, locale }) {
 					<New
 						basePath={basePath}
 						baseURL={baseURL}
+						locale={locale}
+					/>
+				) || (tab === TAB_MAP.published &&
+					<Published
+						basePath={basePath}
 						locale={locale}
 					/>
 				) || (tab === TAB_MAP.categories &&
