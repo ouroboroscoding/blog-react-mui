@@ -1,6 +1,9 @@
 {
 	"en-CA": {
 		"message": "Welcome to your Blogging system.",
+		"published": {
+			"title": "Published Posts"
+		},
 		"remove": {
 			"button": "Click to confirm delete",
 			"confirm": "Are you sure you want to delete the post \"{TITLE}\"? Once you do this, you will not be able to get this post back.",
@@ -13,6 +16,9 @@
 	},
 	"en-US": {
 		"message": "Welcome to your Blogging system.",
+		"published": {
+			"title": "Published Posts"
+		},
 		"remove": {
 			"button": "Click to confirm delete",
 			"confirm": "Are you sure you want to delete the post \"{TITLE}\"? Once you do this, you will not be able to get this post back.",
@@ -25,6 +31,9 @@
 	},
 	"fr-CA": {
 		"message": "Bienvenue dans votre système de blogs.",
+		"published": {
+			"title": "Articles publiés"
+		},
 		"remove": {
 			"button": "Cliquer pour confirmer la suppression",
 			"confirm": "Êtes-vous sûr de vouloir supprimer l'article \"{TITLE}\" ? Une fois que vous l'aurez fait, vous ne pourrez plus récupérer ce article.",

@@ -15,7 +15,7 @@ import clone from '@ouroboros/clone';
 import { timestamp } from '@ouroboros/dates';
 import events from '@ouroboros/events';
 import { locales as Locales } from '@ouroboros/mouth-mui';
-import { afindo, arrayFindDelete, compare, empty, omap, pathToTree } from '@ouroboros/tools';
+import { afindo, arrayFindDelete, compare, empty, isObject, omap, pathToTree } from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
@@ -41,6 +41,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Project components
 import HTML from '../../elements/HTML';
+import Meta from '../../composites/Meta';
 import Tags from '../../elements/Tags';
 
 // Project modules
@@ -206,7 +207,13 @@ export default function Edit({ _id, baseURL, locale }) {
 
 		// If we have a message, translate it
 		if(mMsg !== false) {
-			mMsg = TEXT[locale].errors[mMsg];
+			if(isObject(mMsg)) {
+				for(const k in Object.keys(mMsg)) {
+					mMsg[k] = TEXT[locale].errors[mMsg[k]]
+				}
+			} else {
+				mMsg = TEXT[locale].errors[mMsg];
+			}
 		}
 
 		// Return the result
@@ -476,6 +483,12 @@ export default function Edit({ _id, baseURL, locale }) {
 											value={post.locales[k].tags}
 										/>
 									</Box>
+									<Meta
+										errors={errorMsg(k, 'meta') || {}}
+										locale={locale}
+										onChange={val => dataChange(k, 'meta', val)}
+										value={post.locales[k].meta || {}}
+									/>
 								</AccordionDetails>
 							</Accordion>
 						)}

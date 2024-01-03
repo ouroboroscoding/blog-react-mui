@@ -36,6 +36,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Project components
 import HTML from '../../elements/HTML';
+import Meta from '../../composites/Meta';
 import Tags from '../../elements/Tags';
 
 // Project modules
@@ -60,7 +61,7 @@ export default function New({ basePath, baseURL, locale }) {
 	// State
 	const [ cats, catsSet ] = useState(false);
 	const [ data, dataSet ] = useState({
-		categories: [], locale: locale, slug: '', title: ''
+		categories: [], locale: locale, slug: '', title: '', meta: {}
 	});
 	const [ error, errorSet ] = useState({});
 	const [ locales, localesSet ] = useState(false);
@@ -308,6 +309,12 @@ export default function New({ basePath, baseURL, locale }) {
 									value={data.tags}
 								/>
 							</Box>
+							<Meta
+								errors={'meta' in error ? error.meta : {}}
+								locale={locale}
+								onChange={val => dataChange('meta', val)}
+								value={data.meta || {}}
+							/>
 						</Box>
 						<Box className="blog_new_post_drawer_actions">
 							<Button
