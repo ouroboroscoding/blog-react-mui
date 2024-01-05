@@ -54,10 +54,10 @@ const TAB_MAP = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Blog({ basePath, baseURL, locale }) {
+export default function Blog({ allowedMeta, basePath, baseURL, locale }) {
 
 	// State
-	const [ tab, tabSet ] = useState(TAB_MAP.home);
+	const [ tab, tabSet ] = useState(TAB_MAP.invalid);
 	const [ id, idSet ] = useState(null);
 
 	// Hooks
@@ -156,6 +156,7 @@ export default function Blog({ basePath, baseURL, locale }) {
 					/>
 				) || (tab === TAB_MAP.new &&
 					<New
+						allowedMeta={allowedMeta}
 						basePath={basePath}
 						baseURL={baseURL}
 						locale={locale}
@@ -177,6 +178,7 @@ export default function Blog({ basePath, baseURL, locale }) {
 				) || (tab === TAB_MAP.edit &&
 					<Edit
 						_id={id}
+						allowedMeta={allowedMeta}
 						baseURL={baseURL}
 						locale={locale}
 					/>
@@ -194,6 +196,7 @@ export default function Blog({ basePath, baseURL, locale }) {
 
 // Valid props
 Blog.propTypes = {
+	allowedMeta: PropTypes.arrayOf(PropTypes.string),
 	basePath: PropTypes.string,
 	baseURL: PropTypes.string,
 	locale: PropTypes.string
@@ -201,6 +204,7 @@ Blog.propTypes = {
 
 // Default props
 Blog.defaultProps = {
+	allowedMeta: ['title', 'description', 'image', 'url'],
 	basePath: '/blog',
 	baseURL: 'http://localhost',
 	locale: 'en-US'

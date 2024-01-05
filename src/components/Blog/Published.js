@@ -103,7 +103,7 @@ export default function Published({ basePath, locale }) {
 			{published !== false && published.length > 0 &&
 				<Grid container spacing={2}>
 					{published.map(o =>
-						<Grid key={o._lug} item xs={12} md={6} lg={4} xl={3}>
+						<Grid key={o._raw} item xs={12} md={6} lg={4} xl={3}>
 							<Paper className="blog_post">
 								<Box className="post_text">
 									<Typography className="post_title">{localeTitle(locale, o)}</Typography>

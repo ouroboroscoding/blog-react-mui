@@ -15,15 +15,9 @@ import { Editor } from '@tinymce/tinymce-react';
 
 // Material UI
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Paper from '@mui/material/Paper';
 
 // Project components
-import MediaFilter from '../composites/MediaFilter';
+import MediaSelect from '../composites/MediaSelect';
 
 // Text
 import TEXT from '../../translations/media_select';
@@ -97,59 +91,12 @@ export default class HTML extends React.Component {
 					}}
 				/>
 				{this.state.select !== false &&
-					<Dialog
-						fullScreen={this.props.fullScreen}
-						fullWidth={true}
-						id="blog_post_media_select"
-						maxWidth="lg"
+					<MediaSelect
+						callback={val => this.setUrl(val)}
+						current={this.state.select[1]}
+						locale={this.props.locale}
 						onClose={() => this.setState({ select: false })}
-						open={true}
-					>
-						<DialogTitle>{_.title}</DialogTitle>
-						<DialogContent>
-							<MediaFilter
-								imagesOnly={true}
-								locale={this.props.locale}
-								onRecords={records => this.setState({ images: records })}
-							/>
-							<br />
-							{(this.state.images === false &&
-								<DialogContentText>...</DialogContentText>
-							) || (this.state.images.length === 0 &&
-								<DialogContentText>{_.no_records}</DialogContentText>
-							) ||
-								<Box className="blog_post_media_select_records">
-									{this.state.images.map(o =>
-										<Paper
-											className="blog_post_media_select_record"
-											key={o._id}
-										>
-											<Box
-												className="blog_post_media_select_record_image"
-												style={{backgroundImage: `url(${o.urls.source})`}}
-											/>
-											<Box className="blog_post_media_select_record_urls">
-												<Button
-													color={o.urls.source === this.state.select[1] ? 'info' : 'primary'}
-													onClick={() => this.setUrl(o.urls.source)}
-													variant="contained"
-												>{_.source}</Button><br />
-												{o.image.thumbnails.map(s =>
-													<React.Fragment key={s}>
-														<Button
-															color={o.urls[s] === this.state.select[1] ? 'info' : 'primary'}
-															onClick={() => this.setUrl(o.urls[s])}
-															variant="contained"
-														>{s[0] === 'f' ? _.fit : _.crop} {s.substring(1)}</Button><br />
-													</React.Fragment>
-												)}
-											</Box>
-										</Paper>
-									)}
-								</Box>
-							}
-						</DialogContent>
-					</Dialog>
+					/>
 				}
 			</Box>
 		);
@@ -168,13 +115,11 @@ export default class HTML extends React.Component {
 HTML.propTypes = {
 	error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 	locale: PropTypes.string.isRequired,
-	fullScreen: PropTypes.bool,
 	value: PropTypes.string
 }
 
 // Default props
 HTML.defaultProps = {
 	error: false,
-	fullScreen: false,
 	value: ''
 }

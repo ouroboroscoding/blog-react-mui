@@ -40,16 +40,16 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Project components
-import HTML from '../../elements/HTML';
-import Meta from '../../composites/Meta';
-import Tags from '../../elements/Tags';
+import HTML from '../elements/HTML';
+import Meta from '../composites/Meta';
+import Tags from '../elements/Tags';
 
 // Project modules
-import localeTitle from '../../../functions/localeTitle';
-import titleToSlug from '../../../functions/titleToSlug';
+import localeTitle from '../../functions/localeTitle';
+import titleToSlug from '../../functions/titleToSlug';
 
 // Translations
-import TEXT from '../../../translations/edit_post';
+import TEXT from '../../translations/edit_post';
 
 /**
  * Edit
@@ -61,7 +61,7 @@ import TEXT from '../../../translations/edit_post';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Edit({ _id, baseURL, locale }) {
+export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 
 	// State
 	const [ cats, catsSet ] = useState(false);
@@ -87,8 +87,8 @@ export default function Edit({ _id, baseURL, locale }) {
 	useEffect(() => {
 
 		// Fetch categories
-		blog.read('admin/category').then(catsSet, error => {
-			events.get('error').trigger(error);
+		blog.read('admin/category').then(catsSet, err => {
+			events.get('error').trigger(err);
 		});
 
 		// Subscribe to locales
@@ -112,13 +112,13 @@ export default function Edit({ _id, baseURL, locale }) {
 
 			// If we have data and at least one locale
 			if(data && !empty(data.locales)) {
-				locSet(Object.keys(data['locales'])[0])
+				locSet(Object.keys(data.locales)[0])
 				originalSet(clone(data));
 				postSet(data);
 			} else {
 				events.get('error').trigger('Missing locales');
 			}
-		}, error => events.get('error').trigger(error));
+		}, err => events.get('error').trigger(err));
 
 	}, [ _id ]);
 
@@ -148,15 +148,15 @@ export default function Edit({ _id, baseURL, locale }) {
 	}, [ locales, post ]);
 
 	// Called when a category is changes
-	function catChange(_id, checked) {
+	function catChange(id, checked) {
 
 		// If we are adding the category
 		if(checked) {
 			postSet(o => {
-				const i = o.categories.indexOf(_id);
+				const i = o.categories.indexOf(id);
 				if(i === -1) {
 					const oPost = { ...o }
-					oPost.categories.push(_id);
+					oPost.categories.push(id);
 					return oPost;
 				} else {
 					return o;
@@ -208,7 +208,7 @@ export default function Edit({ _id, baseURL, locale }) {
 		// If we have a message, translate it
 		if(mMsg !== false) {
 			if(isObject(mMsg)) {
-				for(const k in Object.keys(mMsg)) {
+				for(const k of Object.keys(mMsg)) {
 					mMsg[k] = TEXT[locale].errors[mMsg[k]]
 				}
 			} else {
@@ -325,8 +325,8 @@ export default function Edit({ _id, baseURL, locale }) {
 					return oPost;
 				});
 			}
-		}, error => {
-			events.get('error').trigger(error);
+		}, err => {
+			events.get('error').trigger(err);
 		})
 	}
 
@@ -360,13 +360,13 @@ export default function Edit({ _id, baseURL, locale }) {
 				originalSet(oData);
 				events.get('success').trigger(TEXT[locale].saved);
 			}
-		}, error => {
-			if(error.code === errors.body.DATA_FIELDS) {
-				const dErrors = pathToTree(error.msg);
+		}, err => {
+			if(err.code === errors.body.DATA_FIELDS) {
+				const dErrors = pathToTree(err.msg);
 				errorSet(dErrors);
 				events.get('success').trigger(TEXT[locale].error_saving);
 			} else {
-				events.get('error').trigger(error);
+				events.get('error').trigger(err);
 			}
 		});
 	}
@@ -389,7 +389,6 @@ export default function Edit({ _id, baseURL, locale }) {
 			<Box className="blog_post_edit_content">
 				<HTML
 					error={'content' in error ? error.content : false}
-					fullScreen={fullScreen}
 					locale={locale}
 					ref={refHtml}
 					value={loc === 'new' ? newLang.content : post.locales[loc].content}
@@ -484,6 +483,7 @@ export default function Edit({ _id, baseURL, locale }) {
 										/>
 									</Box>
 									<Meta
+										allowed={allowedMeta}
 										errors={errorMsg(k, 'meta') || {}}
 										locale={locale}
 										onChange={val => dataChange(k, 'meta', val)}
@@ -593,6 +593,7 @@ export default function Edit({ _id, baseURL, locale }) {
 // Valid props
 Edit.propTypes = {
 	_id: PropTypes.string.isRequired,
+	allowedMeta: PropTypes.arrayOf(PropTypes.string).isRequired,
 	baseURL: PropTypes.string.isRequired,
 	locale: PropTypes.string.isRequired
 }

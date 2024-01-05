@@ -1,6 +1,6 @@
 {
 	"name": "@ouroboros/blog-react-mui",
-	"version": "1.2.3",
+	"version": "0.1.0",
 	"description": "React Material-UI Components for use with the Blog service",
 	"main": "src/index.js",
 	"types": "src/index.d.ts",
@@ -34,12 +34,13 @@
 		"typescript": "^4.8.3"
 	},
 	"dependencies": {
-		"@ouroboros/blog": "file:../blog",
+		"@ouroboros/blog": "^0.1.0",
 		"@ouroboros/browser": "^0.1.7",
 		"@ouroboros/clone": "^1.0.1",
 		"@ouroboros/dates": "^1.0.0",
 		"@ouroboros/define": "^1.0.3",
-		"@ouroboros/tools": "^0.5.1",
+		"@ouroboros/tools": "^0.5.3",
+		"@tinymce/tinymce-react": "^4.3.0",
 		"prop-types": "^15.8.1",
 		"uuid": "^9.0.0"
 	},

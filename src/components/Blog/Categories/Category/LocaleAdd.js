@@ -99,7 +99,7 @@ export default function LocaleAdd({
 							value={loc}
 						>
 							{locales.map(o =>
-								<option key={o['_id']} value={o['_id']}>{o['name']}</option>
+								<option key={o._id} value={o._id}>{o.name}</option>
 							)}
 						</Select>
 					</FormControl>

@@ -33,15 +33,15 @@ import Typography from '@mui/material/Typography';
 import TEXT from '../../translations/media_filter';
 
 /**
- * Filter
+ * Media Filter
  *
  * Handles UI to filter media
  *
- * @name Filter
+ * @name MediaFilter
  * @access public
  * @extends React.Component
  */
-export default class Filter extends React.Component {
+export default class MediaFilter extends React.Component {
 
 	// Constructor
 	constructor(props) {
@@ -440,13 +440,13 @@ export default class Filter extends React.Component {
 }
 
 // Valid props
-Filter.propTypes = {
+MediaFilter.propTypes = {
 	imagesOnly: PropTypes.bool,
 	locale: PropTypes.string.isRequired,
 	onRecords: PropTypes.func.isRequired
 }
 
 // Default props
-Filter.defaultProps = {
+MediaFilter.defaultProps = {
 	imagesOnly: false
 }

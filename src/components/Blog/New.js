@@ -35,16 +35,16 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Project components
-import HTML from '../../elements/HTML';
-import Meta from '../../composites/Meta';
-import Tags from '../../elements/Tags';
+import HTML from '../elements/HTML';
+import Meta from '../composites/Meta';
+import Tags from '../elements/Tags';
 
 // Project modules
-import localeTitle from '../../../functions/localeTitle';
-import titleToSlug from '../../../functions/titleToSlug';
+import localeTitle from '../../functions/localeTitle';
+import titleToSlug from '../../functions/titleToSlug';
 
 // Translations
-import TEXT from '../../../translations/new_post';
+import TEXT from '../../translations/new_post';
 
 /**
  * New
@@ -56,7 +56,7 @@ import TEXT from '../../../translations/new_post';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function New({ basePath, baseURL, locale }) {
+export default function New({ allowedMeta, basePath, baseURL, locale }) {
 
 	// State
 	const [ cats, catsSet ] = useState(false);
@@ -80,7 +80,7 @@ export default function New({ basePath, baseURL, locale }) {
 		// Get the available categories
 		blog.read('admin/category').then(
 			catsSet,
-			error => events.get('error').trigger(error)
+			err => events.get('error').trigger(err)
 		);
 
 		// Subscribe to locales
@@ -91,8 +91,7 @@ export default function New({ basePath, baseURL, locale }) {
 
 			// If we don't have the locale in the locales, just use the first
 			//	one in the list
-			const o = afindo(l, '_id', locale);
-			if(!o) {
+			if(!afindo(l, '_id', locale)) {
 				dataSet(o => {
 					const oData = { ...o };
 					oData.locale = l[0]._id;
@@ -177,13 +176,13 @@ export default function New({ basePath, baseURL, locale }) {
 			if(_id) {
 				navigate(`${basePath}/edit/${_id}`);
 			}
-		}, error => {
-			if(error.code === errors.body.DATA_FIELDS) {
-				errorSet(pathToTree(error.msg));
-			} else if(error.code === errors.body.DB_DUPLICATE) {
+		}, err => {
+			if(err.code === errors.body.DATA_FIELDS) {
+				errorSet(pathToTree(err.msg));
+			} else if(err.code === errors.body.DB_DUPLICATE) {
 				errorSet({'slug': 'duplicate'});
 			} else {
-				events.get('error').trigger(error);
+				events.get('error').trigger(err);
 			}
 		});
 	}
@@ -209,7 +208,6 @@ export default function New({ basePath, baseURL, locale }) {
 			<Box className="blog_new_post_content">
 				<HTML
 					error={'content' in error ? error.content : false}
-					fullScreen={fullScreen}
 					locale={locale}
 					ref={refHtml}
 				/>
@@ -310,6 +308,7 @@ export default function New({ basePath, baseURL, locale }) {
 								/>
 							</Box>
 							<Meta
+								allowed={allowedMeta}
 								errors={'meta' in error ? error.meta : {}}
 								locale={locale}
 								onChange={val => dataChange('meta', val)}
@@ -333,6 +332,7 @@ export default function New({ basePath, baseURL, locale }) {
 
 // Valid props
 New.propTypes = {
+	allowedMeta: PropTypes.arrayOf(PropTypes.string).isRequired,
 	basePath: PropTypes.string.isRequired,
 	baseURL: PropTypes.string.isRequired,
 	locale: PropTypes.string.isRequired

@@ -101,7 +101,7 @@ export default function Add({
 
 			// Get the new locale by filtering out the ones already used and
 			//	then using the first one we find in the remaining
-			const sLocale = locales.filter(o => !(o['_id'] in data))[0]._id;
+			const sLocale = locales.filter(d => !(d._id in data))[0]._id;
 
 			// Shallow copy the data and add the new empty locale to the copy
 			const oData = { ...o };
@@ -170,7 +170,7 @@ export default function Add({
 		const lSlugs = [];
 
 		// Go through each locale
-		for(const k in data) {
+		for(const k of Object.keys(data)) {
 
 			// If the form data is invalid, stop immediately
 			if(!data[k].ref.current.valid()) {
@@ -195,10 +195,10 @@ export default function Add({
 		// Make the request to the server
 		blog.create('admin/category', {
 			record: oData
-		}).then(data => {
+		}).then(res => {
 
 			// Add the ID and created timestamp
-			oData._id = data;
+			oData._id = res;
 			oData._created = timestamp();
 
 			// Pass along the data to the parent
@@ -207,7 +207,7 @@ export default function Add({
 		}, error => {
 			if(error.code === errors.body.DATA_FIELDS) {
 				const oErrors = pathToTree(error.msg).records;
-				for(const loc in oErrors.locale) {
+				for(const loc of Object.keys(oErrors.locale)) {
 					data[loc].ref.current.error(oErrors.locale[loc]);
 				}
 			} else if(error.code === errors.body.DB_DUPLICATE) {
@@ -264,9 +264,9 @@ export default function Add({
 														value={k}
 													>
 														{locales.filter(o => {
-															return o['_id'] === k || !(o['_id'] in data);
+															return o._id === k || !(o._id in data);
 														}).map(o =>
-															<option key={o['_id']} value={o['_id']}>{o['name']}</option>
+															<option key={o._id} value={o._id}>{o.name}</option>
 														)}
 													</Select>
 												</FormControl>
