@@ -14,6 +14,7 @@ import {
 	bytesHuman, combine
 } from '@ouroboros/tools';
 import { copy } from '@ouroboros/browser/clipboard';
+import clone from '@ouroboros/clone';
 import events from '@ouroboros/events';
 
 // NPM modules
@@ -37,6 +38,27 @@ import Translation from '../../../translations';
 // Project components
 import ConfirmDelete from '../../elements/ConfirmDelete';
 
+// Types
+import { MediaStruct } from '../../composites/MediaFilter';
+export type ViewProps = {
+	onClose: () => void,
+	onThumbAdded: (size: string, data: any) => void,
+	onThumbRemoved: (size: string) => void,
+	rights: {
+		create: boolean,
+		delete: boolean,
+		read: boolean,
+		update: boolean
+	},
+	value: MediaStruct
+}
+type ThumbStruct = {
+	type: 'f' | 'c',
+	height: number,
+	chain: boolean,
+	width: number
+}
+
 /**
  * Media View
  *
@@ -47,16 +69,16 @@ import ConfirmDelete from '../../elements/ConfirmDelete';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function View({
-	onClose, onThumbAdded, onThumbRemoved, translations, value
-}) {
+export default function View(
+	{ onClose, onThumbAdded, onThumbRemoved, value }: ViewProps
+) {
 
 	// Text
 	const _ = Translation.get().media;
 
 	// State
-	const [ err, errSet ] = useState(false);
-	const [ thumb, thumbSet ] = useState(null);
+	const [ err, errSet ] = useState<string | false>(false);
+	const [ thumb, thumbSet ] = useState<ThumbStruct | null>(null);
 
 	// Called to add the new thumbnail
 	function thumbAdd() {
@@ -71,13 +93,13 @@ export default function View({
 	}
 
 	// Called when a thumbnail changes
-	function thumbChange(type, val) {
+	function thumbChange(type: keyof ThumbStruct, val: any) {
 
 		// Make sure we're up to date
 		thumbSet(o => {
 
 			// Init new values
-			const oNew = { }
+			const oNew = clone(o);
 
 			// If we're changing the height or width
 			if(type === 'height' || type === 'width') {
@@ -92,7 +114,7 @@ export default function View({
 				}
 
 				// If we're chained
-				if(thumb.chain) {
+				if((o as ThumbStruct).chain) {
 
 					// If we're changing the height
 					if(type === 'height') {
@@ -129,12 +151,12 @@ export default function View({
 			oNew[type] = val;
 
 			// Merge the new data and return
-			return combine(o, oNew);
+			return oNew;
 		});
 	}
 
 	// Called to delete an existing thumbnail
-	function thumbDelete(size) {
+	function thumbDelete(size: string) {
 
 		// Send the request to the server
 		blog.delete('admin/media/thumbnail', {
@@ -153,7 +175,7 @@ export default function View({
 	function thumbSubmit() {
 
 		// Create the size
-		const sSize = `${thumb.type}${thumb.width}x${thumb.height}`;
+		const sSize = `${(thumb as ThumbStruct).type}${(thumb as ThumbStruct).width}x${(thumb as ThumbStruct).height}`;
 
 		// Send the request to the server
 		blog.create('admin/media/thumbnail', {
@@ -223,7 +245,7 @@ export default function View({
 					</Box>
 					<Box className="blog_media_view_details_right">
 						<Typography>
-							<nobr>
+							<span className="nobr">
 								<i
 									className="fa-solid fa-copy"
 									onClick={() => {
@@ -237,12 +259,12 @@ export default function View({
 									rel="noreferrer"
 									target="_blank"
 								>{value.filename}</a>
-							</nobr><br />
-							<nobr>{value.mime}</nobr><br />
-							<nobr>{bytesHuman(value.length)}</nobr><br />
+							</span><br />
+							<span className="nobr">{value.mime}</span><br />
+							<span className="nobr">{bytesHuman(value.length)}</span><br />
 							{value.image &&
 								<React.Fragment>
-									<nobr>{`${value.image.resolution.width}x${value.image.resolution.height}`}</nobr><br />
+									<span className="nobr">{`${value.image.resolution.width}x${value.image.resolution.height}`}</span><br />
 								</React.Fragment>
 							}
 							{value.image && value.image.thumbnails && value.image.thumbnails.map(s =>
@@ -273,10 +295,10 @@ export default function View({
 						{thumb !== null &&
 							<Box className="blog_media_upload_thumb">
 								<FormControl className="blog_thumb_type">
-									<InputLabel id={value.key}>{_.add.thumb.type}</InputLabel>
+									<InputLabel id={value._id}>{_.add.thumb.type}</InputLabel>
 									<Select
 										label={_.add.thumb.type}
-										labelId={value.key}
+										labelId={value._id}
 										onChange={ev => thumbChange('type', ev.target.value)}
 										native
 										size="small"
@@ -297,7 +319,7 @@ export default function View({
 									value={thumb.width}
 								/>
 								<i
-									className={'blog_thumb_chain fa-solid ' + (thumb.link ? 'fa-link' : 'fa-link-slash')}
+									className={'blog_thumb_chain fa-solid ' + (thumb.chain ? 'fa-link' : 'fa-link-slash')}
 									onClick={() => thumbChange('chain', !thumb.chain)}
 								/>
 								<TextField
