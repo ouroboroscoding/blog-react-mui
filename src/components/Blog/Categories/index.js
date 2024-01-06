@@ -36,11 +36,9 @@ import Typography from '@mui/material/Typography';
 import Add from './Add';
 import Category from './Category';
 
-// Local modules
+// Project modules
 import localeTitle from '../../../functions/localeTitle';
-
-// Translations
-import TEXT from '../../../translations/categories';
+import Translation from '../../../translations';
 
 // Create the category locale Tree
 const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
@@ -60,7 +58,7 @@ const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Categories({ baseURL, locale }) {
+export default function Categories({ baseURL }) {
 
 	// State
 	const [ add, addSet ] = useState(false);
@@ -143,7 +141,7 @@ export default function Categories({ baseURL, locale }) {
 	}
 
 	// Text
-	const _ = TEXT[locale];
+	const _ = Translation.get().categories;
 
 	// If we don't have locales yet
 	if(locales === false) {
@@ -180,7 +178,6 @@ export default function Categories({ baseURL, locale }) {
 						<Category
 							baseURL={baseURL}
 							key={o._id}
-							locale={locale}
 							locales={locales}
 							onDelete={() => removeSet(o)}
 							onUpdated={cat => categoryUpdated(o._id, cat)}
@@ -193,7 +190,6 @@ export default function Categories({ baseURL, locale }) {
 			</Box>
 			{rights.create &&
 				<Add
-					locale={locale}
 					locales={locales}
 					onAdded={categoryAdded}
 					onCancel={() => addSet(false)}
@@ -207,9 +203,9 @@ export default function Categories({ baseURL, locale }) {
 					onClose={() => removeSet(null)}
 					open={true}
 				>
-					<DialogTitle>{_.remove.title.replace('{TITLE}', localeTitle(locale, remove))}</DialogTitle>
+					<DialogTitle>{_.remove.title.replace('{TITLE}', localeTitle(remove))}</DialogTitle>
 					<DialogContent>
-						<DialogContentText>{_.remove.confirm.replace('{TITLE}', localeTitle(locale, remove))}</DialogContentText>
+						<DialogContentText>{_.remove.confirm.replace('{TITLE}', localeTitle(remove))}</DialogContentText>
 					</DialogContent>
 					<DialogActions>
 						<Button
@@ -226,6 +222,5 @@ export default function Categories({ baseURL, locale }) {
 
 // Valid props
 Categories.propTypes = {
-	baseURL: PropTypes.string.isRequired,
-	locale: PropTypes.string.isRequired
+	baseURL: PropTypes.string.isRequired
 }

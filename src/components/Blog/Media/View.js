@@ -31,11 +31,11 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+// Project modules
+import Translation from '../../../translations';
+
 // Project components
 import ConfirmDelete from '../../elements/ConfirmDelete';
-
-// Translations
-import TEXT from '../../../translations/media';
 
 /**
  * Media View
@@ -48,8 +48,11 @@ import TEXT from '../../../translations/media';
  * @returns React.Component
  */
 export default function View({
-	locale, onClose, onThumbAdded, onThumbRemoved, value
+	onClose, onThumbAdded, onThumbRemoved, translations, value
 }) {
+
+	// Text
+	const _ = Translation.get().media;
 
 	// State
 	const [ err, errSet ] = useState(false);
@@ -163,15 +166,12 @@ export default function View({
 			}
 		}, error => {
 			if(error.code === errors.body.DB_DUPLICATE) {
-				errSet(TEXT[locale].add.thumb.duplicate);
+				errSet(_.add.thumb.duplicate);
 			} else {
 				events.get('error').trigger(error);
 			}
 		});
 	}
-
-	// Text
-	const _ = TEXT[locale];
 
 	// Render
 	return (
@@ -331,7 +331,6 @@ export default function View({
 
 // Valid props
 View.propTypes = {
-	locale: PropTypes.string.isRequired,
 	onClose: PropTypes.func.isRequired,
 	onThumbAdded: PropTypes.func.isRequired,
 	onThumbRemoved: PropTypes.func.isRequired,

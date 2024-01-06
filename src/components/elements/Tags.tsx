@@ -12,13 +12,26 @@ import { empty } from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { KeyboardEvent } from 'react';
 
 // Material UI
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+
+// Types
+export type TagsProps = {
+	error: string | false,
+	label?: string,
+	onChange?: (val: string[]) => void,
+	placeholder?: string,
+	value: string[]
+}
+type TagsState = {
+	error: string | false,
+	value: string[]
+}
 
 /**
  * Tags
@@ -29,16 +42,33 @@ import Typography from '@mui/material/Typography';
  * @access public
  * @extends NodeBase
  */
-export default class Tags extends React.Component {
+export default class Tags extends React.Component<TagsProps, TagsState> {
+
+	// Member variables
+	private refText: React.RefObject<any>;
+
+	// Props types
+	static propTypes = {
+		error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+		label: PropTypes.string,
+		onChange: PropTypes.func,
+		placeholder: PropTypes.string,
+		value: PropTypes.arrayOf(PropTypes.string).isRequired
+	}
+	static defaultProps = {
+		error: false,
+		value: []
+	}
 
 	// Constructor
-	constructor(props) {
+	constructor(props: TagsProps) {
 
 		// Call the parent
 		super(props);
 
 		// Set initial state
 		this.state = {
+			error: props.error,
 			value: props.value
 		}
 
@@ -51,10 +81,10 @@ export default class Tags extends React.Component {
 	}
 
 	// Called when props passed to the component have changed
-	componentDidUpdate(prevProps) {
+	componentDidUpdate(prevProps: TagsProps) {
 
 		// Init the new state
-		const oState = {};
+		const oState: Record<string, any> = {};
 
 		// If the error changed
 		if(prevProps.error !== this.props.error) {
@@ -68,24 +98,23 @@ export default class Tags extends React.Component {
 
 		// If we have changes, set the new state
 		if(!empty(oState)) {
-			this.setState(oState);
+			this.setState(oState as TagsState);
 		}
 	}
 
 	// Called to set the error message
-	error(msg) {
+	error(msg: string) {
 		this.setState({ error: msg });
 	}
 
 	// Called to check keys for anything that would trigger a new tag
-	keyUp(ev) {
+	keyUp(ev: KeyboardEvent) {
 
 		// If we got an Enter or a comma
 		if(ev.key === 'Enter' || ev.key === ',') {
 
 			// Cancel the key press
 			ev.preventDefault();
-			ev.cancelBubble = true;
 
 			// Get the initial value
 			let sTag = this.refText.current.value;
@@ -180,12 +209,10 @@ export default class Tags extends React.Component {
 						<Box className="node_tags_adornment">
 							{this.state.value.map(tag =>
 								<Box key={tag} className="node_tags_tag">
-									<nobr>
-										<Typography variant="span">{tag}</Typography>
-										<IconButton onClick={() => this.tagRemove(tag)}>
-											<i className="fa-solid fa-circle-xmark" />
-										</IconButton>
-									</nobr>
+									<span>{tag}</span>
+									<IconButton onClick={() => this.tagRemove(tag)}>
+										<i className="fa-solid fa-circle-xmark" />
+									</IconButton>
 								</Box>
 							)}
 						</Box>
@@ -196,7 +223,7 @@ export default class Tags extends React.Component {
 	}
 
 	// Called to remove a tag
-	tagRemove(name) {
+	tagRemove(name: string) {
 
 		// Filter out the tag and set the new state
 		this.setState({
@@ -210,25 +237,12 @@ export default class Tags extends React.Component {
 	}
 
 	// Get value
-	get value() {
+	get value(): string[] {
 		return this.state.value;
 	}
 
 	// Set value
-	set value(val) {
+	set value(val: string[]) {
 		this.setState({ value: val });
 	}
-}
-
-// Valid props
-Tags.propTypes = {
-	label: PropTypes.string,
-	onChange: PropTypes.func,
-	placeholder: PropTypes.string,
-	value: PropTypes.arrayOf(PropTypes.string).isRequired
-}
-
-// Default props
-Tags.defaultProps = {
-	value: []
 }

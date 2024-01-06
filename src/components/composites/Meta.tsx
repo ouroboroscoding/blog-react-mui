@@ -17,11 +17,26 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+// Project modules
+import Translation from '../../translations';
+
 // Project components
 import MediaSelect from './MediaSelect';
 
-// Translations
-import TEXT from '../../translations/meta';
+// Types
+export type MetaStruct = {
+	description?: string,
+	image?: string,
+	title?: string,
+	url?: string
+}
+export type MetaKey = keyof MetaStruct;
+export type MetaProps = {
+	allowed: MetaKey[],
+	errors: MetaStruct,
+	onChange: (val: MetaStruct) => void,
+	value: MetaStruct
+}
 
 /**
  * Meta
@@ -31,13 +46,13 @@ import TEXT from '../../translations/meta';
  * @name Meta
  * @access public
  */
-export default function Meta({ allowed, errors, locale, onChange, value }) {
+export default function Meta({ allowed, errors, onChange, value }: MetaProps) {
 
 	// State
-	const [ imageSelect, imageSelectSet ] = useState(false);
+	const [ imageSelect, imageSelectSet ] = useState<string | false>(false);
 
 	// Called when any state value changes
-	function valueChange(which, val) {
+	function valueChange(which: MetaKey, val: string) {
 		const oNew = { ...value };
 		if(val.trim() === '') {
 			delete oNew[which];
@@ -47,8 +62,10 @@ export default function Meta({ allowed, errors, locale, onChange, value }) {
 		onChange(oNew);
 	}
 
+	// Text
+	const _ = Translation.get().meta;
+
 	// Render
-	const _ = TEXT[locale];
 	return (
 		<Box className="blog_meta_form">
 			<Typography className="legend">{_.title}</Typography>
@@ -135,7 +152,6 @@ export default function Meta({ allowed, errors, locale, onChange, value }) {
 					}}
 					current={imageSelect}
 					onClose={() => imageSelectSet(false)}
-					locale={locale}
 				/>
 			}
 		</Box>
@@ -151,7 +167,6 @@ Meta.propTypes = {
 		title: PropTypes.string,
 		url: PropTypes.string
 	}),
-	locale: PropTypes.string.isRequired,
 	onChange: PropTypes.func.isRequired,
 	value: PropTypes.exact({
 		description: PropTypes.string,

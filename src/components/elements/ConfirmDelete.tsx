@@ -12,6 +12,11 @@
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
 
+// Types
+export type ConfirmDeleteProps = {
+	onConfirm: () => void
+}
+
 /**
  * Confirm Delete
  *
@@ -20,24 +25,24 @@ import React, { useRef, useState } from 'react';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function ConfirmDelete({ onConfirm }) {
+export default function ConfirmDelete({ onConfirm }: ConfirmDeleteProps) {
 
 	// State
 	const [ state, stateSet ] = useState(false);
 
 	// Timer reference
-	const refTimer = useRef(null);
+	const refTimer = useRef<number | null>(null);
 
 	// Called when clicked on
 	function click() {
 		if(!state) {
 			stateSet(true);
-			refTimer.current = setTimeout(() => stateSet(false), 3000);
+			refTimer.current = window.setTimeout(() => stateSet(false), 3000);
 		} else {
 			stateSet(false);
 			onConfirm();
 			if(refTimer.current !== null) {
-				clearTimeout(refTimer.current);
+				window.clearTimeout(refTimer.current);
 				refTimer.current = null;
 			}
 		}

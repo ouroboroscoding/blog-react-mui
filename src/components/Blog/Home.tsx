@@ -31,14 +31,21 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-// Project functions
+// Project modules
 import localeTitle from '../../functions/localeTitle';
+import Translation from '../../translations';
 
 // Styling
 import '../../sass/blog.scss';
 
-// Translations
-import TEXT from '../../translations/home';
+// Types
+export type HomeProps = {
+	basePath: string
+}
+interface RecordType {
+	_id: string,
+	locales: Record<string, any>
+}
 
 /**
  * Home
@@ -50,12 +57,14 @@ import TEXT from '../../translations/home';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Home({ basePath, locale }) {
+export default function Home({ basePath }: HomeProps) {
+
+	// Text
+	const _ = Translation.get().home;
 
 	// State
-	const [ categories, categoriesSet ] = useState(false);
-	const [ remove, removeSet ] = useState(null);
-	const [ unpublished, unpublishedSet ] = useState(false);
+	const [ remove, removeSet ] = useState<RecordType | null>(null);
+	const [ unpublished, unpublishedSet ] = useState<RecordType[] | false>(false);
 
 	// Hooks
 	const rights = useRights('blog_post');
@@ -64,16 +73,11 @@ export default function Home({ basePath, locale }) {
 	useEffect(() => {
 
 		// Fetch unpublished
-		blog.read('__list', [
-			'admin/category',
-			'admin/post/unpublished'
-		]).then(data => {
+		blog.read('admin/post/unpublished').then(data => {
 			if(data) {
-				categoriesSet(data[0][1].data);
-				unpublishedSet(data[1][1].data);
+				unpublishedSet(data);
 			}
-
-		}, error => events.get('error').trigger(error));
+		}, err => events.get('error').trigger(err));
 
 	}, []);
 
@@ -82,20 +86,17 @@ export default function Home({ basePath, locale }) {
 
 		// Send the delete request to the server
 		blog.delete('admin/post', {
-			_id: remove._id
+			_id: (remove as RecordType)._id
 		}).then(data => {
 			if(data) {
-				unpublishedSet(l => arrayFindDelete(l, '_id', remove._id, true));
+				unpublishedSet(l => arrayFindDelete(l as RecordType[], '_id', (remove as RecordType)._id, true) as RecordType[]);
 				removeSet(null);
-				events.get('success').trigger(TEXT[locale].remove.success);
+				events.get('success').trigger(_.remove.success);
 			}
 		}, error => {
 			events.get('error').trigger(error);
 		});
 	}
-
-	// Text
-	const _ = TEXT[locale];
 
 	// Render
 	return (
@@ -109,7 +110,7 @@ export default function Home({ basePath, locale }) {
 							<Grid key={o._id} item xs={12} md={6} lg={4} xl={3}>
 								<Paper className="blog_home_unpublished_post">
 									<Box className="unpublished_post_text">
-										<Typography className="post_title">{localeTitle(locale, o)}</Typography>
+										<Typography className="post_title">{localeTitle(o)}</Typography>
 									</Box>
 									<Box className="unpublished_post_actions">
 										{rights.update &&
@@ -136,9 +137,9 @@ export default function Home({ basePath, locale }) {
 					onClose={() => removeSet(null)}
 					open={true}
 				>
-					<DialogTitle>{_.remove.title.replace('{TITLE}', localeTitle(locale, remove))}</DialogTitle>
+					<DialogTitle>{_.remove.title.replace('{TITLE}', localeTitle(remove))}</DialogTitle>
 					<DialogContent>
-						<DialogContentText>{_.remove.confirm.replace('{TITLE}', localeTitle(locale, remove))}</DialogContentText>
+						<DialogContentText>{_.remove.confirm.replace('{TITLE}', localeTitle(remove))}</DialogContentText>
 					</DialogContent>
 					<DialogActions>
 						<Button
@@ -155,6 +156,5 @@ export default function Home({ basePath, locale }) {
 
 // Valid props
 Home.propTypes = {
-	basePath: PropTypes.string.isRequired,
-	locale: PropTypes.string.isRequired
+	basePath: PropTypes.string.isRequired
 }

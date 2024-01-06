@@ -1,0 +1,175 @@
+{
+	"categories": {
+		"add": {
+			"submit": "Create Category",
+			"title": "Add new Category"
+		},
+		"cancel": "Cancel",
+		"duplicate": "URL already exists for another category",
+		"label": {
+			"description": "Meta (SEO) Description",
+			"language": "Language",
+			"slug": "URL",
+			"title": "Page and Meta (SEO) Title"
+		},
+		"locale": {
+			"add": "Add Language",
+			"update": "Update Language"
+		},
+		"no_records": "No categories found. Please add one or more.",
+		"remove": {
+			"button": "Click to confirm delete",
+			"confirm": "Are you sure you want to delete the category \"{TITLE}\"?",
+			"title": "Delete \"{TITLE}\"?"
+		}
+	},
+	"edit": {
+		"category": {
+			"added": "Category added",
+			"deleted": "Category removed"
+		},
+		"error_saving": "There was an error while saving. Please check each language",
+		"errors": {
+			"duplicate": "URL already exists for another post",
+			"missing": "Value is missing"
+		},
+		"labels": {
+			"categories": "Categories",
+			"language": "Language",
+			"slug": "URL",
+			"tags": "Tag",
+			"title": "Title"
+		},
+		"new_locale": "Add Language",
+		"no_changes": "Nothing to save",
+		"placeholders": {
+			"tags": "tag #1, tag two, third tag",
+			"title": "My new blog post"
+		},
+		"publish": {
+			"button": "Publish Changes",
+			"success": "Updates published"
+		},
+		"saved": "Post saved",
+		"submit": "Save Changes"
+	},
+	"home": {
+		"message": "Welcome to your Blogging system.",
+		"published": {
+			"title": "Published Posts"
+		},
+		"remove": {
+			"button": "Click to confirm delete",
+			"confirm": "Are you sure you want to delete the post \"{TITLE}\"? Once you do this, you will not be able to get this post back.",
+			"success": "Post deleted",
+			"title": "Delete \"{TITLE}\"?"
+		},
+		"unpublished": {
+			"title": "Unpublished Posts"
+		}
+	},
+	"media": {
+		"add": {
+			"cancel": "Cancel",
+			"descr": "Drop file or click to upload (max file size of 10MiB)",
+			"duplicate": "Filename already exists",
+			"thumb": {
+				"crop": "Crop",
+				"duplicate": "Thumbnail already exists",
+				"fit": "Fit",
+				"height": "Height",
+				"type": "Resize Type",
+				"width": "Width"
+			},
+			"title": "Upload new Media",
+			"upload": "Upload"
+		},
+		"details": {
+			"dimensions": "Dimensions",
+			"filename": "Filename",
+			"mime": "Mime type",
+			"size": "Size",
+			"source": "Source",
+			"thumbnails": "Thumbnails"
+		},
+		"remove": {
+			"button": "Click to confirm delete",
+			"confirm": "Are you sure you want to delete the file \"{FILE}\"? Once you do this, you will not be able to get this file back, and any blog posts using it will appear broken.",
+			"title": "Delete \"{FILE}\"?"
+		},
+		"no_records": "No media found. Please adjust your search filter.",
+		"url_copied": "URL copied to clipboard"
+	},
+	"media_filter": {
+		"filename": "Filename filter",
+		"from": "From",
+		"range": {
+			"explicit": "Select a range",
+			"last_week": "Uploaded in the last 7 days",
+			"last_two_weeks": "Uploaded in the last 14 days",
+			"last_thirty": "Uploaded in the last 30 days",
+			"last_ninety": "Uploaded in the last 90 days",
+			"last_year": "Uploaded in the last 365 days",
+			"this_month": "Uploaded this month",
+			"this_year": "Uploaded this year",
+			"today": "Today's uploads"
+		},
+		"my_uploads": "Only my uploads",
+		"to": "To",
+		"whose": {
+			"mine": "Showing only your uploads"
+		}
+	},
+	"media_select": {
+		"crop": "Crop",
+		"fit": "Fit",
+		"no_records": "No Images found. Please adjust your search filter.",
+		"source": "Source",
+		"title": "Select an Image from Media"
+	},
+	"meta": {
+		"labels": {
+			"description": "Description",
+			"image": "Open Graph Image",
+			"title": "Title",
+			"url": "Alternate URL"
+		},
+		"placeholders": {
+			"description": "Alternate description for search engines",
+			"image": "https://",
+			"title": "Alternate title for search engines",
+			"url": "https://"
+		},
+		"title": "Meta"
+	},
+	"new": {
+		"labels": {
+			"categories": "Categories",
+			"language": "Language",
+			"slug": "URL",
+			"tags": "Tag",
+			"title": "Title"
+		},
+		"placeholders": {
+			"tags": "tag #1, tag two, third tag",
+			"title": "My new blog post"
+		},
+		"submit": "Create Post"
+	},
+	"published": {
+		"remove": {
+			"button": "Click to confirm delete",
+			"confirm": "Are you sure you want to delete the post \"{TITLE}\"? Once you do this, you will not be able to get this post back.",
+			"success": "Post deleted",
+			"title": "Delete \"{TITLE}\"?"
+		}
+	},
+	"tabs": {
+		"categories": "Categories",
+		"home": "Home",
+		"invalid": "Invalid location: {path}",
+		"media": "Media",
+		"new": "New Post",
+		"published": "Published"
+	}
+}

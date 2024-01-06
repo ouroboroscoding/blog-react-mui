@@ -24,11 +24,11 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
+// Project modules
+import Translation from '../../../../translations';
+
 // Project components
 import ConfirmDelete from '../../../elements/ConfirmDelete';
-
-// Translations
-import TEXT from '../../../../translations/categories';
 
 /**
  * Category Locale View/Edit
@@ -41,7 +41,7 @@ import TEXT from '../../../../translations/categories';
  * @returns React.Component
  */
 export default function LocaleViewEdit({
-	baseURL, count, locale, locales, onDeleted, onUpdated, rights,
+	baseURL, count, locales, onDeleted, onUpdated, rights, translations,
 	tree, value
 }) {
 
@@ -87,7 +87,9 @@ export default function LocaleViewEdit({
 			if(error.code === errors.body.DATA_FIELDS) {
 				refForm.current.error(pathToTree(error.msg).record);
 			} else if(error.code === errors.body.DB_DUPLICATE) {
-				refForm.current.error({ slug: TEXT[locale].duplicate });
+				refForm.current.error({
+					slug: translations.categories.duplicate
+				});
 			} else if(error.code === errors.body.DB_UPDATE_FAILED) {
 				return;
 			} else {
@@ -97,7 +99,7 @@ export default function LocaleViewEdit({
 	}
 
 	// Text
-	const _ = TEXT[locale];
+	const _ = Translation.get().categories;
 
 	// Render
 	return edit ? (
@@ -162,7 +164,6 @@ export default function LocaleViewEdit({
 LocaleViewEdit.propTypes = {
 	baseURL: PropTypes.string.isRequired,
 	count: PropTypes.number.isRequired,
-	locale: PropTypes.string.isRequired,
 	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onDeleted: PropTypes.func.isRequired,
 	onUpdated: PropTypes.func.isRequired,

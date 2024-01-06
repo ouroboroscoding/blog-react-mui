@@ -1,0 +1,176 @@
+{
+	"categories": {
+		"add": {
+			"name": "Nom",
+			"submit": "Créer Catégorie",
+			"title": "Ajouter une nouvelle Catégorie"
+		},
+		"cancel": "Annuler",
+		"duplicate": "L'URL existe déjà pour une autre catégorie",
+		"label": {
+			"description": "Description meta (SEO)",
+			"language": "Langue",
+			"slug": "URL",
+			"title": "Titre de la page et meta (SEO)"
+		},
+		"locale": {
+			"add": "Ajouter langue",
+			"update": "Mise à jour langue"
+		},
+		"no_records": "Aucune catégorie n'a été trouvée. Veuillez en ajouter une ou plusieurs.",
+		"remove": {
+			"button": "Cliquer pour confirmer la suppression",
+			"confirm": "Êtes-vous sûr de vouloir supprimer la catégorie \"{TITLE}\" ?",
+			"title": "Supprimer \"{TITLE}\"?"
+		}
+	},
+	"edit": {
+		"category": {
+			"added": "Catégorie ajoutée",
+			"deleted": "Catégorie supprimée"
+		},
+		"error_saving": "Une erreur s'est produite lors de l'enregistrement. Veuillez vérifier chaque langue",
+		"errors": {
+			"duplicate": "L'URL existe déjà pour un autre article de blog",
+			"missing": "Valeur manquante"
+		},
+		"labels": {
+			"categories": "Catégories",
+			"language": "Langue",
+			"slug": "URL",
+			"tags": "Étiquette",
+			"title": "Titre"
+		},
+		"new_locale": "Ajouter Langue",
+		"no_changes": "Rien à enregistrer",
+		"placeholders": {
+			"tags": "étiquette n°1, étiquette deux, troisième étiquette",
+			"title": "Mon nouvel article de blog"
+		},
+		"publish": {
+			"button": "Publier les Modifications",
+			"success": "Mises à jour publiées"
+		},
+		"saved": "Article de blog sauvegardé",
+		"submit": "Enregistrer les Modifications"
+	},
+	"home": {
+		"message": "Bienvenue dans votre système de blogs.",
+		"published": {
+			"title": "Articles publiés"
+		},
+		"remove": {
+			"button": "Cliquer pour confirmer la suppression",
+			"confirm": "Êtes-vous sûr de vouloir supprimer l'article \"{TITLE}\" ? Une fois que vous l'aurez fait, vous ne pourrez plus récupérer ce article.",
+			"success": "Article supprimé",
+			"title": "Supprimer \"{TITLE}\"?"
+		},
+		"unpublished": {
+			"title": "Articles non publiés"
+		}
+	},
+	"media": {
+		"add": {
+			"cancel": "Annuler",
+			"descr": "Déposez le fichier ou cliquez pour le télécharger (taille maximale du fichier : 10MiB)",
+			"duplicate": "Le nom de fichier existe déjà",
+			"thumb": {
+				"crop": "Découper",
+				"duplicate": "Le vignette existe déjà",
+				"fit": "Insérer",
+				"height": "Hauteur",
+				"type": "Type",
+				"width": "Largeur"
+			},
+			"title": "Télécharger un nouveau Média",
+			"upload": "Télécharger"
+		},
+		"details": {
+			"dimensions": "Dimensions",
+			"filename": "Nom de fichier",
+			"mime": "Type de mime",
+			"size": "Taille",
+			"source": "Source",
+			"thumbnails": "Vignettes"
+		},
+		"remove": {
+			"button": "Cliquer pour confirmer la suppression",
+			"confirm": "Êtes-vous sûr de vouloir supprimer le fichier \"{FILE}\" ? Une fois que vous l'aurez fait, vous ne pourrez plus récupérer ce fichier, et tous les articles de blog qui l'utiliseront seront interrompus.",
+			"title": "Supprimer \"{FILE}\"?"
+		},
+		"no_records": "Aucun média n'a été trouvé. Veuillez ajuster votre filtre de recherche.",
+		"url_copied": "URL copié dans le presse-papiers"
+	},
+	"media_filter": {
+		"filename": "Filtre de nom de fichier",
+		"from": "De",
+		"range": {
+			"explicit": "Sélectionner un intervalle",
+			"last_week": "Téléchargé au cours des 7 derniers jours",
+			"last_two_weeks": "Téléchargé au cours des 14 derniers jours",
+			"last_thirty": "Téléchargé au cours des 30 derniers jours",
+			"last_ninety": "Téléchargé au cours des 90 derniers jours",
+			"last_year": "Téléchargé au cours des 365 derniers jours",
+			"this_month": "Téléchargé ce mois-ci",
+			"this_year": "Téléchargé cette année",
+			"today": "Téléchargements d'aujourd'hui"
+		},
+		"my_uploads": "Seulement mes téléchargements",
+		"to": "À",
+		"whose": {
+			"mine": "Afficher uniquement vos téléchargements"
+		}
+	},
+	"media_select": {
+		"crop": "Découper",
+		"fit": "Insérer",
+		"no_records": "Aucune image n'a été trouvée. Veuillez ajuster votre filtre de recherche.",
+		"source": "Source",
+		"title": "Sélection d'une image à partir d'un Média"
+	},
+	"meta": {
+		"labels": {
+			"description": "Description",
+			"image": "Image Open Graph",
+			"title": "Titre",
+			"url": "URL Alternatif"
+		},
+		"placeholders": {
+			"description": "Description alternative pour les moteurs de recherche",
+			"image": "https://",
+			"title": "Titre alternatif pour les moteurs de recherche",
+			"url": "https://"
+		},
+		"title": "Meta"
+	},
+	"new": {
+		"labels": {
+			"categories": "Catégories",
+			"language": "Langue",
+			"slug": "URL",
+			"tags": "Étiquette",
+			"title": "Titre"
+		},
+		"placeholders": {
+			"tags": "étiquette n°1, étiquette deux, troisième étiquette",
+			"title": "Mon nouvel article de blog"
+		},
+		"submit": "Créer Poste"
+	},
+	"published": {
+		"remove": {
+			"button": "Cliquer pour confirmer la suppression",
+			"confirm": "Êtes-vous sûr de vouloir supprimer l'article \"{TITLE}\" ? Une fois que vous l'aurez fait, vous ne pourrez plus récupérer ce article.",
+			"success": "Article supprimé",
+			"title": "Supprimer \"{TITLE}\"?"
+		}
+	},
+	"tabs": {
+		"categories": "Catégories",
+		"home": "Accueil",
+		"invalid": "Lieu non valid: {path}",
+		"media": "Médias",
+		"new": "Nouveau Article",
+		"published": "Publié"
+	}
+}

@@ -42,9 +42,34 @@ import Tags from '../elements/Tags';
 // Project modules
 import localeTitle from '../../functions/localeTitle';
 import titleToSlug from '../../functions/titleToSlug';
+import Translation from '../../translations';
 
-// Translations
-import TEXT from '../../translations/new_post';
+// Types
+import { MetaKey, MetaStruct } from '../composites/Meta';
+type LocaleStruct = {
+	_id: string,
+	name: string
+}
+export type NewProps = {
+	allowedMeta: MetaKey[],
+	basePath: string,
+	baseURL: string
+}
+type NewData = {
+	categories: string[],
+	locale: string,
+	slug: string,
+	title: string,
+	meta: MetaStruct,
+	tags?: string[]
+}
+type NewDataKeys = keyof NewData;
+type CatData = {
+	_id: string,
+	locales: Record<string, {
+		title: string
+	}>
+}
 
 /**
  * New
@@ -56,15 +81,19 @@ import TEXT from '../../translations/new_post';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function New({ allowedMeta, basePath, baseURL, locale }) {
+export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 
 	// State
-	const [ cats, catsSet ] = useState(false);
-	const [ data, dataSet ] = useState({
-		categories: [], locale: locale, slug: '', title: '', meta: {}
+	const [ cats, catsSet ] = useState<CatData[] | false>(false);
+	const [ data, dataSet ] = useState<NewData>({
+		categories: [],
+		locale: Translation.locale(),
+		slug: '',
+		title: '',
+		meta: {}
 	});
-	const [ error, errorSet ] = useState({});
-	const [ locales, localesSet ] = useState(false);
+	const [ error, errorSet ] = useState<Record<string, any>>({});
+	const [ locales, localesSet ] = useState<LocaleStruct[] | false>(false);
 	const [ menu, menuSet ] = useState(false);
 
 	// Hooks
@@ -72,7 +101,7 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 	const navigate = useNavigate();
 
 	// Refs
-	const refHtml = useRef(null);
+	const refHtml = useRef<HTML>(null);
 
 	// Load effect
 	useEffect(() => {
@@ -91,7 +120,7 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 
 			// If we don't have the locale in the locales, just use the first
 			//	one in the list
-			if(!afindo(l, '_id', locale)) {
+			if(!afindo(l, '_id', Translation.locale())) {
 				dataSet(o => {
 					const oData = { ...o };
 					oData.locale = l[0]._id;
@@ -108,10 +137,10 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 			oL.unsubscribe();
 		}
 
-	}, [ locale ]);
+	}, [ ]);
 
 	// Called when a category is changes
-	function catChange(_id, checked) {
+	function catChange(_id: string, checked: boolean) {
 		dataSet(o => {
 			const oData = { ...o }
 			if(checked) {
@@ -133,16 +162,17 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 	function create() {
 
 		// Init data and possible errors
-		const oData = {
+		const oData: Record<string, any> = {
 			categories: data.categories,
 			locales: {
 				[data.locale]: {
+					content: '',
 					title: data.title.trim(),
 					slug: data.slug.trim(),
 				}
 			}
 		};
-		const oErrors = {};
+		const oErrors: Record<string, any> = {};
 
 		// Check the title
 		if(oData.locales[data.locale].title === '') {
@@ -150,12 +180,12 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 		}
 
 		// Check the slug
-		if(oData.locales[data.locale] === '') {
+		if(oData.locales[data.locale].slug === '') {
 			oErrors.slug = 'missing';
 		}
 
 		// Add the content and check if it's empty
-		oData.locales[data.locale].content = refHtml.current.value;
+		oData.locales[data.locale].content = (refHtml.current as HTML).value;
 		if(empty(oData.locales[data.locale].content)) {
 			oErrors.content = 'missing';
 		}
@@ -167,7 +197,7 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 		}
 
 		// If we have any tags, add them
-		if(data.tags.length) {
+		if(data.tags && data.tags.length) {
 			oData.locales[data.locale].tags = [ ...data.tags ];
 		}
 
@@ -188,7 +218,7 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 	}
 
 	// Called when any data point changes
-	function dataChange(which, value) {
+	function dataChange(which: NewDataKeys, value: any) {
 		dataSet(o => {
 			const oData = { ...o };
 			oData[which] = value;
@@ -200,7 +230,7 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 	}
 
 	// Text
-	const _ = TEXT[locale];
+	const _ = Translation.get().new;
 
 	// Render
 	return (
@@ -208,7 +238,6 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 			<Box className="blog_new_post_content">
 				<HTML
 					error={'content' in error ? error.content : false}
-					locale={locale}
 					ref={refHtml}
 				/>
 			</Box>
@@ -237,7 +266,7 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 														onChange={ev => catChange(o._id, ev.target.checked)}
 													/>
 												}
-												label={localeTitle(locale, o)}
+												label={localeTitle(o)}
 											/>
 										</Box>
 									)}
@@ -310,7 +339,6 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 							<Meta
 								allowed={allowedMeta}
 								errors={'meta' in error ? error.meta : {}}
-								locale={locale}
 								onChange={val => dataChange('meta', val)}
 								value={data.meta || {}}
 							/>
@@ -334,6 +362,5 @@ export default function New({ allowedMeta, basePath, baseURL, locale }) {
 New.propTypes = {
 	allowedMeta: PropTypes.arrayOf(PropTypes.string).isRequired,
 	basePath: PropTypes.string.isRequired,
-	baseURL: PropTypes.string.isRequired,
-	locale: PropTypes.string.isRequired
+	baseURL: PropTypes.string.isRequired
 }

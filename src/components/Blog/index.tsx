@@ -19,6 +19,9 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 
+// Project modules
+import Translation from '../../translations';
+
 // Local pages
 import Categories from './Categories';
 import Edit from './Edit';
@@ -30,11 +33,9 @@ import Published from './Published';
 // Styling
 import '../../sass/blog.scss';
 
-// Translations
-import TEXT from '../../translations/blog';
-
 // Tab indexes to types
 const TAB_MAP = {
+	none: -101,
 	invalid: -100,
 	edit: -1,
 	home: 0,
@@ -42,6 +43,15 @@ const TAB_MAP = {
 	published: 2,
 	categories: 3,
 	media: 4
+}
+
+// Types
+import { MetaKey } from '../composites/Meta';
+export type BlogProps = {
+	allowedMeta: MetaKey[],
+	basePath: string,
+	baseURL: string,
+	locale: string
 }
 
 /**
@@ -54,15 +64,25 @@ const TAB_MAP = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Blog({ allowedMeta, basePath, baseURL, locale }) {
+export default function Blog(
+	{ allowedMeta, basePath, baseURL, locale }: BlogProps
+) {
 
 	// State
-	const [ tab, tabSet ] = useState(TAB_MAP.invalid);
-	const [ id, idSet ] = useState(null);
+	const [ tab, tabSet ] = useState(TAB_MAP.none);
+	const [ id, idSet ] = useState<string | null>(null);
 
 	// Hooks
 	const location = useLocation();
 	const navigate = useNavigate();
+
+	// Locale effect
+	useEffect(() => {
+
+		// Set the locale for the translations
+		Translation.set(locale);
+
+	}, [ locale ]);
 
 	useEffect(() => {
 
@@ -108,10 +128,15 @@ export default function Blog({ allowedMeta, basePath, baseURL, locale }) {
 			tabSet(TAB_MAP.invalid);
 		}
 
-	}, [basePath, locale, location, navigate]);
+	}, [basePath, location, navigate]);
 
 	// Set proper translation object
-	const _ = TEXT[locale];
+	const _ = Translation.get();
+
+	// Until we have a tab, even a 404, do nothing
+	if(tab === TAB_MAP.none) {
+		return null;
+	}
 
 	// Render
 	return (
@@ -119,31 +144,31 @@ export default function Blog({ allowedMeta, basePath, baseURL, locale }) {
 			<Tabs id="blog_tabs" value={tab < 0 ? false : tab} onChange={(ev, i) => tabSet(i)}>
 				<Tab
 					className={tab === TAB_MAP.home ? 'selected' : ''}
-					label={_.tab.home}
+					label={_.tabs.home}
 					component={Link}
 					to={basePath}
 				/>
 				<Tab
 					className={tab === TAB_MAP.new ? 'selected' : ''}
-					label={_.tab.new}
+					label={_.tabs.new}
 					component={Link}
 					to={`${basePath}/new`}
 				/>
 				<Tab
 					className={tab === TAB_MAP.published ? 'selected' : ''}
-					label={_.tab.published}
+					label={_.tabs.published}
 					component={Link}
 					to={`${basePath}/published`}
 				/>
 				<Tab
 					className={tab === TAB_MAP.categories ? 'selected' : ''}
-					label={_.tab.categories}
+					label={_.tabs.categories}
 					component={Link}
 					to={`${basePath}/categories`}
 				/>
 				<Tab
 					className={tab === TAB_MAP.media ? 'selected' : ''}
-					label={_.tab.media}
+					label={_.tabs.media}
 					component={Link}
 					to={`${basePath}/media`}
 				/>
@@ -152,40 +177,34 @@ export default function Blog({ allowedMeta, basePath, baseURL, locale }) {
 				{(tab === TAB_MAP.home &&
 					<Home
 						basePath={basePath}
-						locale={locale}
 					/>
 				) || (tab === TAB_MAP.new &&
 					<New
 						allowedMeta={allowedMeta}
 						basePath={basePath}
 						baseURL={baseURL}
-						locale={locale}
 					/>
 				) || (tab === TAB_MAP.published &&
 					<Published
 						basePath={basePath}
-						locale={locale}
 					/>
 				) || (tab === TAB_MAP.categories &&
 					<Categories
 						baseURL={baseURL}
-						locale={locale}
 					/>
 				) || (tab === TAB_MAP.media &&
 					<Media
-						locale={locale}
 					/>
 				) || (tab === TAB_MAP.edit &&
 					<Edit
-						_id={id}
+						_id={id as string}
 						allowedMeta={allowedMeta}
 						baseURL={baseURL}
-						locale={locale}
 					/>
 				) || (tab === TAB_MAP.invalid &&
 					<Box className="padding">
 						<Typography>
-							{_.tab.invalid.replace('{path}', location.pathname)}
+							{_.tabs.invalid.replace('{path}', location.pathname)}
 						</Typography>
 					</Box>
 				)}

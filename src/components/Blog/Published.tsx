@@ -33,12 +33,19 @@ import Typography from '@mui/material/Typography';
 
 // Project functions
 import localeTitle from '../../functions/localeTitle';
+import Translation from '../../translations';
 
 // Styling
 import '../../sass/blog.scss';
 
-// Translations
-import TEXT from '../../translations/published';
+// Types
+export type PublishedProps = {
+	basePath: string
+}
+interface RecordType {
+	_raw: string,
+	locales: Record<string, any>
+}
 
 /**
  * Published
@@ -50,12 +57,14 @@ import TEXT from '../../translations/published';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Published({ basePath, locale }) {
+export default function Published({ basePath }: PublishedProps) {
+
+	// Text
+	const _ = Translation.get().published;
 
 	// State
-	const [ categories, categoriesSet ] = useState(false);
-	const [ published, publishedSet ] = useState(false);
-	const [ remove, removeSet ] = useState(null);
+	const [ published, publishedSet ] = useState<RecordType[] | false>(false);
+	const [ remove, removeSet ] = useState<RecordType | null>(null);
 
 	// Hooks
 	const rights = useRights('blog_post');
@@ -64,13 +73,9 @@ export default function Published({ basePath, locale }) {
 	useEffect(() => {
 
 		// Fetch published
-		blog.read('__list', [
-			'admin/category',
-			'admin/posts'
-		]).then(data => {
+		blog.read('admin/posts').then(data => {
 			if(data) {
-				categoriesSet(data[0][1].data);
-				publishedSet(data[1][1].data);
+				publishedSet(data);
 			}
 
 		}, error => events.get('error').trigger(error));
@@ -82,20 +87,17 @@ export default function Published({ basePath, locale }) {
 
 		// Send the delete request to the server
 		blog.delete('admin/post', {
-			_id: remove._raw
+			_id: (remove as RecordType)._raw
 		}).then(data => {
 			if(data) {
-				publishedSet(l => arrayFindDelete(l, '_raw', remove._raw, true));
+				publishedSet(l => arrayFindDelete(l as RecordType[], '_raw', (remove as RecordType)._raw, true) as RecordType[]);
 				removeSet(null);
-				events.get('success').trigger(TEXT[locale].remove.success);
+				events.get('success').trigger(_.remove.success);
 			}
 		}, error => {
 			events.get('error').trigger(error);
 		});
 	}
-
-	// Text
-	const _ = TEXT[locale];
 
 	// Render
 	return (
@@ -106,7 +108,7 @@ export default function Published({ basePath, locale }) {
 						<Grid key={o._raw} item xs={12} md={6} lg={4} xl={3}>
 							<Paper className="blog_post">
 								<Box className="post_text">
-									<Typography className="post_title">{localeTitle(locale, o)}</Typography>
+									<Typography className="post_title">{localeTitle(o)}</Typography>
 									<Typography></Typography>
 								</Box>
 								<Box className="post_actions">
@@ -133,9 +135,9 @@ export default function Published({ basePath, locale }) {
 					onClose={() => removeSet(null)}
 					open={true}
 				>
-					<DialogTitle>{_.remove.title.replace('{TITLE}', localeTitle(locale, remove))}</DialogTitle>
+					<DialogTitle>{_.remove.title.replace('{TITLE}', localeTitle(remove))}</DialogTitle>
 					<DialogContent>
-						<DialogContentText>{_.remove.confirm.replace('{TITLE}', localeTitle(locale, remove))}</DialogContentText>
+						<DialogContentText>{_.remove.confirm.replace('{TITLE}', localeTitle(remove))}</DialogContentText>
 					</DialogContent>
 					<DialogActions>
 						<Button
@@ -152,6 +154,5 @@ export default function Published({ basePath, locale }) {
 
 // Valid props
 Published.propTypes = {
-	basePath: PropTypes.string.isRequired,
-	locale: PropTypes.string.isRequired
+	basePath: PropTypes.string.isRequired
 }

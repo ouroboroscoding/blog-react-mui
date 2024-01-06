@@ -35,10 +35,8 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Project modules
+import Translation from '../../../translations';
 import { define_titleToSlug } from '../../../functions/titleToSlug';
-
-// Translations
-import TEXT from '../../../translations/categories';
 
 /**
  * Category Add
@@ -51,7 +49,7 @@ import TEXT from '../../../translations/categories';
  * @returns React.Component
  */
 export default function Add({
-	locale, locales, onAdded, onCancel, open, tree
+	locales, onAdded, onCancel, open, tree
 }) {
 
 	// State
@@ -63,17 +61,14 @@ export default function Add({
 	// Load effect
 	useEffect(() => {
 
-		// Init the first data key
-		let sLocale = null;
+		// Get the current locale and init the one to be selected
+		let sLocale = Translation.locale()
 
-		// If the current locale matches one in the list
-		const i = afindi(locales, '_id', locale)
-		if(i !== -1) {
-			sLocale = locales[i]._id;
-		}
+		// If the current locale doesn't match one in the list
+		const i = afindi(locales, '_id', sLocale);
+		if(i < 0) {
 
-		// Else, just grab the first one
-		else {
+			// Grab the first one available
 			sLocale = locales[0]._id;
 		}
 
@@ -86,7 +81,7 @@ export default function Add({
 			}
 		});
 
-	}, [ locale, locales ]);
+	}, [ locales ]);
 
 	// Called to add a new locale to the data
 	function dataAdd() {
@@ -219,7 +214,7 @@ export default function Add({
 	}
 
 	// Text
-	const _ = TEXT[locale];
+	const _ = Translation.get().categories;
 
 	// Render
 	return (
@@ -327,7 +322,6 @@ export default function Add({
 
 // Valid props
 Add.propTypes = {
-	locale: PropTypes.string.isRequired,
 	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onAdded: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,

@@ -26,11 +26,11 @@ import InputLabel from '@mui/material/InputLabel';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
 
+// Project modules
+import Translation from '../../../../translations';
+
 // Local modules
 import { define_titleToSlug } from '../../../../functions/titleToSlug';
-
-// Translations
-import TEXT from '../../../../translations/categories';
 
 /**
  * Category Locale View/Edit
@@ -43,8 +43,11 @@ import TEXT from '../../../../translations/categories';
  * @returns React.Component
  */
 export default function LocaleAdd({
-	category, locale, locales, onAdded, onCancel, tree
+	category, locales, onAdded, onCancel, tree
 }) {
+
+	// Text
+	const _ = Translation.get().categories;
 
 	// State
 	const [ loc, locSet ] = useState(locales[0]._id);
@@ -71,15 +74,14 @@ export default function LocaleAdd({
 			if(error.code === errors.body.DATA_FIELDS) {
 				refForm.current.error(pathToTree(error.msg).record);
 			} else if(error.code === errors.body.DB_DUPLICATE) {
-				refForm.current.error({ slug: TEXT[locale].duplicate });
+				refForm.current.error({
+					slug: _.duplicate
+				});
 			} else {
 				events.get('error').trigger(error);
 			}
 		});
 	}
-
-	// Text
-	const _ = TEXT[locale];
 
 	// Render
 	return (
@@ -133,9 +135,9 @@ export default function LocaleAdd({
 
 // Valid props
 LocaleAdd.propTypes = {
-	locale: PropTypes.string.isRequired,
 	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onAdded: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
+	translations: PropTypes.object.isRequired,
 	tree: PropTypes.object.isRequired
 }

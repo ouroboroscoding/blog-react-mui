@@ -22,11 +22,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Paper from '@mui/material/Paper';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-// Project components
-import MediaFilter from './MediaFilter';
+// Project modules
+import Translation from '../../translations';
 
-// Translations
-import TEXT from '../../translations/media_select';
+// Project components
+import MediaFilter, { MediaStruct } from './MediaFilter';
+
+// Types
+export type MediaSelectProps = {
+	callback: (val: string) => void,
+	current: string,
+	onClose: () => void
+}
 
 /**
  * Media Select
@@ -37,16 +44,18 @@ import TEXT from '../../translations/media_select';
  * @access public
  * @extends React.Component
  */
-export default function MediaSelect({ callback, current, locale, onClose }) {
+export default function MediaSelect(
+	{ callback, current, onClose }: MediaSelectProps
+) {
 
 	// State
-	const [ images, imagesSet ] = useState(false);
+	const [ images, imagesSet ] = useState<MediaStruct[] | false>(false);
 
 	// Hooks
 	const fullScreen = useMediaQuery('(max-width:600px)');
 
 	// Text
-	const _ = TEXT[locale];
+	const _ = Translation.get().media_select;
 
 	// Render
 	return (
@@ -62,17 +71,16 @@ export default function MediaSelect({ callback, current, locale, onClose }) {
 			<DialogContent>
 				<MediaFilter
 					imagesOnly={true}
-					locale={locale}
 					onRecords={imagesSet}
 				/>
 				<br />
 				{(images === false &&
 					<DialogContentText>...</DialogContentText>
-				) || (images.length === 0 &&
+				) || ((images as MediaStruct[]).length === 0 &&
 					<DialogContentText>{_.no_records}</DialogContentText>
 				) ||
 					<Box className="blog_post_media_select_records">
-						{images.map(o =>
+						{(images as MediaStruct[]).map(o =>
 							<Paper
 								className="blog_post_media_select_record"
 								key={o._id}
@@ -110,6 +118,5 @@ export default function MediaSelect({ callback, current, locale, onClose }) {
 MediaSelect.propTypes = {
 	callback: PropTypes.func.isRequired,
 	current: PropTypes.string.isRequired,
-	locale: PropTypes.string.isRequired,
 	onClose: PropTypes.func.isRequired
 }

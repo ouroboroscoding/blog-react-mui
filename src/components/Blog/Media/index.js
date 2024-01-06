@@ -17,7 +17,6 @@ import events from '@ouroboros/events';
 import { afindi, arrayFindDelete } from '@ouroboros/tools';
 
 // NPM modules
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 // Material UI
@@ -32,13 +31,13 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
+// Project modules
+import Translation from '../../../translations';
+
 // Local components
 import Add from './Add';
 import Filter from '../../composites/MediaFilter';
 import View from './View';
-
-// Translations
-import TEXT from '../../../translations/media';
 
 /**
  * Media
@@ -50,7 +49,7 @@ import TEXT from '../../../translations/media';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Media({ locale }) {
+export default function Media(props) {
 
 	// State
 	const [ add, addSet ] = useState(false);
@@ -184,13 +183,12 @@ export default function Media({ locale }) {
 	}
 
 	// Text
-	const _ = TEXT[locale];
+	const _ = Translation.get().media;
 
 	// Render
 	return (
 		<Box id="blog_media">
 			<Filter
-				locale={locale}
 				onRecords={recordsSet}
 			/>
 			{rights.create &&
@@ -272,7 +270,6 @@ export default function Media({ locale }) {
 			</Box>
 			{rights.create &&
 				<Add
-					locale={locale}
 					onAdded={mediaAdded}
 					onCancel={() => addSet(false)}
 					open={add}
@@ -299,7 +296,6 @@ export default function Media({ locale }) {
 			}
 			{view !== null &&
 				<View
-					locale={locale}
 					onClose={() => viewSet(null)}
 					onThumbAdded={thumbAdded}
 					onThumbRemoved={thumbRemoved}
@@ -309,9 +305,4 @@ export default function Media({ locale }) {
 			}
 		</Box>
 	);
-}
-
-// Valid props
-Media.propTypes = {
-	locale: PropTypes.string.isRequired
 }

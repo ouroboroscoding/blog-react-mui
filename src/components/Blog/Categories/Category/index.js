@@ -40,7 +40,7 @@ import localeTitle from '../../../../functions/localeTitle';
  * @returns React.Component
  */
 export default function Category({
-	baseURL, locale, locales, onDelete, onUpdated, rights, tree, value
+	baseURL, locales, onDelete, onUpdated, rights, tree, value
 }) {
 
 	// State
@@ -90,7 +90,7 @@ export default function Category({
 	// Render
 	return (
 		<Accordion className="blog_categories_record">
-			<AccordionSummary>{localeTitle(locale, value)}</AccordionSummary>
+			<AccordionSummary>{localeTitle(value)}</AccordionSummary>
 			<AccordionDetails>
 				<Box className="blog_categories_record_actions">
 					{rights.delete &&
@@ -105,7 +105,6 @@ export default function Category({
 						baseURL={baseURL}
 						count={Object.keys(value.locales).length}
 						key={k}
-						locale={locale}
 						locales={locales}
 						onDeleted={() => localeDeleted(k)}
 						onUpdated={data => localeUpdated(k, data)}
@@ -128,7 +127,6 @@ export default function Category({
 				{add &&
 					<LocaleAdd
 						category={value._id}
-						locale={locale}
 						locales={locales.filter(o => {
 							return !(o._id in value.locales);
 						})}
@@ -145,7 +143,6 @@ export default function Category({
 // Valid props
 Category.propTypes = {
 	baseURL: PropTypes.string.isRequired,
-	locale: PropTypes.string.isRequired,
 	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onDelete: PropTypes.func.isRequired,
 	onUpdated: PropTypes.func.isRequired,

@@ -47,9 +47,41 @@ import Tags from '../elements/Tags';
 // Project modules
 import localeTitle from '../../functions/localeTitle';
 import titleToSlug from '../../functions/titleToSlug';
+import Translation from '../../translations';
 
-// Translations
-import TEXT from '../../translations/edit_post';
+// Types
+import { MetaKey, MetaStruct } from '../composites/Meta';
+type LocaleStruct = {
+	_id: string,
+	name: string
+}
+export type EditProps = {
+	_id: string,
+	allowedMeta: MetaKey[],
+	baseURL: string
+}
+type PostLocaleStruct = {
+	title: string,
+	slug: string,
+	content: string,
+	tags: string[],
+	meta: MetaStruct
+}
+type PostStruct = {
+	_id: string,
+	_created: number,
+	_updated: number,
+	last_published: number,
+	categories: string[],
+	locales: Record<string, PostLocaleStruct>
+}
+type NewLangStruct = { locale: string } & PostLocaleStruct
+type CatData = {
+	_id: string,
+	locales: Record<string, {
+		title: string
+	}>
+}
 
 /**
  * Edit
@@ -61,18 +93,21 @@ import TEXT from '../../translations/edit_post';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Edit({ _id, allowedMeta, baseURL, locale }) {
+export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
+
+	// Text
+	const _ = Translation.get().edit;
 
 	// State
-	const [ cats, catsSet ] = useState(false);
-	const [ error, errorSet ] = useState({});
-	const [ loc, locSet ] = useState(false);
-	const [ locales, localesSet ] = useState(false);
+	const [ cats, catsSet ] = useState<CatData[] | false>(false);
+	const [ error, errorSet ] = useState<Record<string, any>>({});
+	const [ loc, locSet ] = useState<string | false>(false);
+	const [ locales, localesSet ] = useState<LocaleStruct[] | false>(false);
 	const [ menu, menuSet ] = useState(false);
-	const [ newLang, newLangSet ] = useState({});
-	const [ original, originalSet ] = useState(false);
-	const [ post, postSet ] = useState(false);
-	const [ remaining, remainingSet ] = useState([]);
+	const [ newLang, newLangSet ] = useState<NewLangStruct | null>(null);
+	const [ original, originalSet ] = useState<PostStruct | false>(false);
+	const [ post, postSet ] = useState<PostStruct | false>(false);
+	const [ remaining, remainingSet ] = useState<LocaleStruct[]>([]);
 
 	// Hooks
 	const fullScreen = useMediaQuery('(max-width:600px)');
@@ -147,15 +182,15 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 
 	}, [ locales, post ]);
 
-	// Called when a category is changes
-	function catChange(id, checked) {
+	// Called when a category is changed
+	function catChange(id: string, checked: boolean) {
 
 		// If we are adding the category
 		if(checked) {
 			postSet(o => {
-				const i = o.categories.indexOf(id);
+				const i = (o as PostStruct).categories.indexOf(id);
 				if(i === -1) {
-					const oPost = { ...o }
+					const oPost: PostStruct = clone(o);
 					oPost.categories.push(id);
 					return oPost;
 				} else {
@@ -167,9 +202,9 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 		// Else, if we are removing the category
 		else {
 			postSet(o => {
-				const i = o.categories.indexOf(_id);
+				const i = (o as PostStruct).categories.indexOf(_id);
 				if(i > -1) {
-					const oPost = { ...o }
+					const oPost: PostStruct = clone(o);
 					oPost.categories.splice(i, 1);
 					return oPost;
 				} else {
@@ -180,23 +215,23 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 	}
 
 	// Called when a specific value in a locale has been changed
-	function dataChange(_locale, which, value) {
+	function dataChange(_locale: string, which: string, value: any) {
 		postSet(o => {
-			const oData = { ...o };
+			const oData = clone(o);
 			oData.locales[_locale][which] = value;
 			return oData;
 		});
 	}
 
 	// Called to see if an error exists
-	function errorExists(_locale, which) {
+	function errorExists(_locale: string, which: string) {
 		return 'locales' in error &&
 				_locale in error.locales &&
 				which in error.locales[_locale];
 	}
 
 	// Called to get the error message
-	function errorMsg(_locale, which) {
+	function errorMsg(_locale: string, which: string) {
 
 		// Check for a message in the specific locale
 		let mMsg = ('locales' in error &&
@@ -209,10 +244,10 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 		if(mMsg !== false) {
 			if(isObject(mMsg)) {
 				for(const k of Object.keys(mMsg)) {
-					mMsg[k] = TEXT[locale].errors[mMsg[k]]
+					mMsg[k] = _.errors[mMsg[k]]
 				}
 			} else {
-				mMsg = TEXT[locale].errors[mMsg];
+				mMsg = _.errors[mMsg];
 			}
 		}
 
@@ -224,32 +259,32 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 	function localeAdd() {
 
 		// Store the new locale
-		const sLocale = newLang.locale;
+		const sLocale = (newLang as NewLangStruct).locale;
 
 		// Update the post using the latest data
 		postSet(o => {
-			const oPost = { ...o };
+			const oPost = clone(o);
 			oPost.locales[sLocale] = {
-				title: newLang.title,
-				slug: newLang.slug,
-				tags: newLang.tags,
-				content: refHtml.current.value
+				title: (newLang as NewLangStruct).title,
+				slug: (newLang as NewLangStruct).slug,
+				tags: (newLang as NewLangStruct).tags,
+				content: (refHtml.current as unknown as HTML).value
 			};
 			return oPost;
 		});
 
 		// Remove the locale used from the remaining
-		remainingSet(l => arrayFindDelete(l, '_id', sLocale, true));
+		remainingSet(l => arrayFindDelete(l as LocaleStruct[], '_id', sLocale, true) as LocaleStruct[]);
 
 		// Clear the new lang content
-		newLangSet({});
+		newLangSet(null);
 
 		// Set the new selected locale
 		locSet(sLocale);
 	}
 
 	// Called when the location changes
-	function locChanged(value, expanded) {
+	function locChanged(value: string, expanded: boolean) {
 
 		// If we're not expanding, or already on that locale, do nothing
 		if(!expanded || value === loc) {
@@ -260,14 +295,16 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 		if(value === 'new') {
 
 			// Do we have values?
-			if(!newLang.locale) {
+			if(!(newLang as NewLangStruct).locale) {
 
 				// Init the new object using the first available locale
-				const oLang = {
+				const oLang: NewLangStruct = {
+					content: '',
 					locale: remaining[0]._id,
 					title: '',
 					slug: '',
-					tags: []
+					tags: [],
+					meta: {}
 				};
 
 				// Set the new language data
@@ -278,8 +315,8 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 		// If the old locale was new
 		if(loc === 'new') {
 			newLangSet(o => {
-				const oLang = { ...o };
-				oLang.content = refHtml.current.value;
+				const oLang = clone(o);
+				oLang.content = (refHtml.current as unknown as HTML).value;
 				return oLang;
 			});
 		}
@@ -287,8 +324,8 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 		// Else, make sure we update the content in the post
 		else {
 			postSet(o => {
-				const oData = { ...o };
-				oData.locales[loc].content = refHtml.current.value;
+				const oData = clone(o);
+				oData.locales[loc as string].content = (refHtml.current as unknown as HTML).value;
 				return oData;
 			});
 		}
@@ -298,9 +335,9 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 	}
 
 	// Called when a specific value in a new locale has been changed
-	function newChange(which, value) {
+	function newChange(which: string, value: any) {
 		newLangSet(o => {
-			const oData = { ...o };
+			const oData = clone(o);
 			oData[which] = value;
 			if(which === 'title') {
 				oData.slug = titleToSlug(value);
@@ -315,10 +352,10 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 		// Send the request to the server
 		blog.update('admin/post/publish', { _id }).then(data => {
 			if(data) {
-				events.get('success').trigger(TEXT[locale].publish.success);
+				events.get('success').trigger(_.publish.success);
 				const i = timestamp();
 				postSet(o => {
-					const oPost = { ...o };
+					const oPost = clone(o);
 					oPost._updated = i;
 					oPost.last_published = i;
 					originalSet(oPost);
@@ -343,12 +380,12 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 		if(loc !== 'new') {
 
 			// Update the current content in the post
-			oData.locales[loc].content = refHtml.current.value;
+			oData.locales[loc as string].content = (refHtml.current as unknown as HTML).value;
 		}
 
 		// If nothing has changed from the original
 		if(compare(oData, original)) {
-			events.get('success').trigger(TEXT[locale].no_changes);
+			events.get('success').trigger(_.no_changes);
 			return;
 		}
 
@@ -358,13 +395,13 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 				oData._updated = timestamp();
 				postSet(oData);
 				originalSet(oData);
-				events.get('success').trigger(TEXT[locale].saved);
+				events.get('success').trigger(_.saved);
 			}
 		}, err => {
 			if(err.code === errors.body.DATA_FIELDS) {
 				const dErrors = pathToTree(err.msg);
 				errorSet(dErrors);
-				events.get('success').trigger(TEXT[locale].error_saving);
+				events.get('success').trigger(_.error_saving);
 			} else {
 				events.get('error').trigger(err);
 			}
@@ -380,18 +417,14 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 		);
 	}
 
-	// Text
-	const _ = TEXT[locale];
-
 	// Render
 	return (
 		<Box id="blog_post_edit">
 			<Box className="blog_post_edit_content">
 				<HTML
 					error={'content' in error ? error.content : false}
-					locale={locale}
 					ref={refHtml}
-					value={loc === 'new' ? newLang.content : post.locales[loc].content}
+					value={loc === 'new' ? (newLang as NewLangStruct).content : post.locales[loc].content}
 				/>
 			</Box>
 			{fullScreen &&
@@ -424,7 +457,7 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 												onChange={ev => catChange(o._id, ev.target.checked)}
 											/>
 										}
-										label={localeTitle(locale, o)}
+										label={localeTitle(o)}
 									/>
 								</Box>
 							)}
@@ -439,7 +472,7 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 								onChange={(ev, expanded) => locChanged(k, expanded)}
 							>
 								<AccordionSummary>
-									{afindo(locales, '_id', k).name}
+									{(afindo(locales, '_id', k) as LocaleStruct).name}
 								</AccordionSummary>
 								<AccordionDetails>
 									<Box className="field">
@@ -485,7 +518,6 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 									<Meta
 										allowed={allowedMeta}
 										errors={errorMsg(k, 'meta') || {}}
-										locale={locale}
 										onChange={val => dataChange(k, 'meta', val)}
 										value={post.locales[k].meta || {}}
 									/>
@@ -513,7 +545,7 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 												native
 												onChange={ev => newChange('locale', ev.target.value)}
 												size={fullScreen ? 'small' : 'medium'}
-												value={newLang.locale}
+												value={(newLang as NewLangStruct).locale}
 												variant="outlined"
 											>
 												{remaining.map(o =>
@@ -536,7 +568,7 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 											onChange={ev => newChange('title', ev.currentTarget.value)}
 											placeholder={_.placeholders.title}
 											size={fullScreen ? 'small' : 'medium'}
-											value={newLang.title}
+											value={(newLang as NewLangStruct).title}
 										/>
 									</Box>
 									<Box className="field">
@@ -552,7 +584,7 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 											label={_.labels.slug}
 											onChange={ev => newChange('slug', ev.currentTarget.value)}
 											size={fullScreen ? 'small' : 'medium'}
-											value={newLang.slug}
+											value={(newLang as NewLangStruct).slug}
 										/>
 									</Box>
 									<Box className="field">
@@ -561,7 +593,7 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 											label={_.labels.tags}
 											onChange={val => newChange('tags', val)}
 											placeholder={_.placeholders.tags}
-											value={newLang.tags}
+											value={(newLang as NewLangStruct).tags}
 										/>
 									</Box>
 									<Box className="actions">
@@ -594,6 +626,5 @@ export default function Edit({ _id, allowedMeta, baseURL, locale }) {
 Edit.propTypes = {
 	_id: PropTypes.string.isRequired,
 	allowedMeta: PropTypes.arrayOf(PropTypes.string).isRequired,
-	baseURL: PropTypes.string.isRequired,
-	locale: PropTypes.string.isRequired
+	baseURL: PropTypes.string.isRequired
 }

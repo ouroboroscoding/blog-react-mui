@@ -3,7 +3,6 @@
 	"version": "0.1.0",
 	"description": "React Material-UI Components for use with the Blog service",
 	"main": "src/index.js",
-	"types": "src/index.d.ts",
 	"scripts": {
 		"build": "tslint -p tsconfig.json && tsc",
 		"clean": "cd src; find . -type f -name \"*.js\" -delete; find . -type f -name \"*.d.ts\" -delete",

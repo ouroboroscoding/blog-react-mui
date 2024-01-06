@@ -19,8 +19,15 @@ import Box from '@mui/material/Box';
 // Project components
 import MediaSelect from '../composites/MediaSelect';
 
-// Text
-import TEXT from '../../translations/media_select';
+// Types
+export type HTMLProps = {
+	error: string | false,
+	value: string
+}
+type HTMLState = {
+	callback: ((value: string, meta?: Record<string, any> | undefined) => void) | null,
+	current: string | false
+}
 
 /**
  * HTML
@@ -31,18 +38,31 @@ import TEXT from '../../translations/media_select';
  * @access public
  * @extends React.Component
  */
-export default class HTML extends React.Component {
+export default class HTML extends React.Component<HTMLProps, HTMLState> {
+
+	// Member variables
+	private refEditor: any;
+
+	// Props types
+	static propTypes = {
+		error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+		value: PropTypes.string
+	}
+	static defaultProps = {
+		error: false,
+		value: ''
+	}
 
 	// Constructor
-	constructor(props) {
+	constructor(props: HTMLProps) {
 
 		// Call the parent
 		super(props);
 
 		// Init state
 		this.state = {
-			images: false,
-			select: false
+			callback: null,
+			current: false
 		}
 
 		// Refs
@@ -53,15 +73,13 @@ export default class HTML extends React.Component {
 	}
 
 	// Called to set the URL for an image
-	setUrl(url) {
-		this.state.select[0](url);
-		this.setState({ select: false });
+	setUrl(url: string) {
+		this.state.callback!(url);
+		this.setState({ callback: null, current: false });
 	}
 
 	// Render
 	render() {
-		const _ = TEXT[this.props.locale];
-
 		return (
 			<Box id="blog_post_html">
 				<Editor
@@ -72,7 +90,7 @@ export default class HTML extends React.Component {
 						block_formats: 'Heading 1=h1; Heading 2=h2; Heading 3=h3; Paragraph=p; Preformatted=pre',
 						content_style: 'body { font-family: "Roboto","Helvetica","Arial",sans-serif; font-size: 1rem }',
 						file_picker_callback: (callback, value, meta) => {
-							this.setState({ select: [ callback, value ] });
+							this.setState({ callback, current: value });
 						},
 						height: '100%',
 						image_advtab: true,
@@ -90,36 +108,24 @@ export default class HTML extends React.Component {
 									'removeformat code'
 					}}
 				/>
-				{this.state.select !== false &&
+				{this.state.current !== false &&
 					<MediaSelect
 						callback={val => this.setUrl(val)}
-						current={this.state.select[1]}
-						locale={this.props.locale}
-						onClose={() => this.setState({ select: false })}
+						current={this.state.current}
+						onClose={() => this.setState({
+							callback: null, current: false
+						})}
 					/>
 				}
 			</Box>
 		);
 	}
 
-	get value() {
+	get value(): string {
 		return this.refEditor.current.getContent();
 	}
 
-	set value(value) {
+	set value(value: string) {
 		this.refEditor.current.setContent(value);
 	}
-}
-
-// Valid props
-HTML.propTypes = {
-	error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-	locale: PropTypes.string.isRequired,
-	value: PropTypes.string
-}
-
-// Default props
-HTML.defaultProps = {
-	error: false,
-	value: ''
 }

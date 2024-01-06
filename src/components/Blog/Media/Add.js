@@ -35,11 +35,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
+// Project modules
+import Translation from '../../../translations';
+
 // Local components
 import Upload from './Upload';
-
-// Translations
-import TEXT from '../../../translations/media';
 
 /**
  * Media Add
@@ -51,7 +51,7 @@ import TEXT from '../../../translations/media';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Add({ locale, onAdded, onCancel, open }) {
+export default function Add({ onAdded, onCancel, open }) {
 
 	// State
 	const [ errs, errsSet ] = useState({});
@@ -208,7 +208,7 @@ export default function Add({ locale, onAdded, onCancel, open }) {
 	}
 
 	// Text
-	const _ = TEXT[locale]
+	const _ = Translation.get().media
 
 	// Render
 	return (
@@ -357,7 +357,6 @@ export default function Add({ locale, onAdded, onCancel, open }) {
 
 // Valid props
 Add.propTypes = {
-	locale: PropTypes.string.isRequired,
 	onAdded: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
 	open: PropTypes.bool.isRequired

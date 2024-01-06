@@ -14,6 +14,11 @@ import { normalize } from '@ouroboros/tools';
 // Constants
 const TITLE_TO_SLUG = /[ a-z0-9-]/;
 
+// Types
+interface HasTitle { title: string }
+interface HasData { data: HasTitle }
+interface HasSlug { slug: string }
+
 /**
  * Define Title To Slug
  *
@@ -22,10 +27,10 @@ const TITLE_TO_SLUG = /[ a-z0-9-]/;
  *
  * @name define_titleToSlug
  * @access public
- * @param {Event} ev The event sent from the Form/Parent
+ * @param ev The event sent from the Form/Parent
  * @returns object
  */
-export function define_titleToSlug(ev) {
+export function define_titleToSlug(ev: HasData): HasSlug {
 
 	// Use the regular function to generate the slug, then return it in a format
 	//	define can handle
@@ -39,11 +44,11 @@ export function define_titleToSlug(ev) {
  *
  * @name titleToSlug
  * @access public
- * @param {string} title The title to convert
- * @returns object
+ * @param title The title to convert
+ * @returns string
  */
 
-export default function titleToSlug(title) {
+export default function titleToSlug(title: string): string {
 
 	// Clean the title of any special characters, then convert it to
 	//	lowercase

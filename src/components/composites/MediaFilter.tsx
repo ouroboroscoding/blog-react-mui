@@ -23,14 +23,46 @@ import React from 'react';
 // Material UI
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Select from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 
-// Translations
-import TEXT from '../../translations/media_filter';
+// Project modules
+import Translation from '../../translations';
+
+// Types
+export type MediaStruct = {
+	"_id": string,
+	"_created": number,
+	"uploader": string,
+	"filename": string,
+	"mime": string,
+	"length": number,
+	"image": {
+		"resolution": {
+			"width": number,
+			"height": number
+		},
+		"thumbnails": string[]
+	},
+	"urls": Record<string, string>
+}
+export type MediaFilterProps = {
+	imagesOnly: boolean,
+	onRecords: (val: MediaStruct[] | false) => void
+}
+type MediaFilterFilter = {
+	filename?: string,
+	range?: string | string[],
+	mine?: boolean
+}
+type MediaFilterState = {
+	filename: string | false,
+	range: string | string[] | false,
+	toggle: string[]
+}
 
 /**
  * Media Filter
@@ -41,10 +73,24 @@ import TEXT from '../../translations/media_filter';
  * @access public
  * @extends React.Component
  */
-export default class MediaFilter extends React.Component {
+export default class MediaFilter extends
+	React.Component<MediaFilterProps, MediaFilterState> {
+
+	// Member variables
+	private filenameTimer: number | null;
+	private lastFilter: MediaFilterFilter;
+
+	// Props variables
+	static propTypes = {
+		imagesOnly: PropTypes.bool,
+		onRecords: PropTypes.func.isRequired
+	}
+	static defaultProps = {
+		imagesOnly: false
+	}
 
 	// Constructor
-	constructor(props) {
+	constructor(props: MediaFilterProps) {
 
 		// Call the parent
 		super(props);
@@ -56,7 +102,9 @@ export default class MediaFilter extends React.Component {
 		});
 
 		// Calculate the state
-		const oState = { filename: false, range: false, toggle: [] };
+		const oState: MediaFilterState = {
+			filename: false, range: false, toggle: []
+		};
 		if(dFilter.filename) {
 			oState.filename = dFilter.filename;
 			oState.toggle.push('file');
@@ -79,7 +127,7 @@ export default class MediaFilter extends React.Component {
 		this.send();
 
 		// Keep track of filename timer
-		this.iFilenameTimer = null;
+		this.filenameTimer = null;
 
 		// Bind functions for events
 		this.filenameChanged = this.filenameChanged.bind(this);
@@ -88,7 +136,7 @@ export default class MediaFilter extends React.Component {
 	}
 
 	// Date changed
-	dateChanged(which, value) {
+	dateChanged(which: 'from' | 'to', value: string) {
 
 		// Copy the existing range
 		const lRange = clone(this.state.range);
@@ -122,7 +170,7 @@ export default class MediaFilter extends React.Component {
 	}
 
 	// Filename changed
-	filenameChanged(ev) {
+	filenameChanged(ev: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
 
 		// Set the state
 		this.setState({
@@ -130,8 +178,8 @@ export default class MediaFilter extends React.Component {
 		});
 
 		// If we have an existing timer, stop it
-		if(this.iFilenameTimer !== null) {
-			clearTimeout(this.iFilenameTimer);
+		if(this.filenameTimer !== null) {
+			clearTimeout(this.filenameTimer);
 		}
 
 		// Set a new timer
@@ -139,7 +187,7 @@ export default class MediaFilter extends React.Component {
 	}
 
 	// Range changed
-	rangeChanged(ev) {
+	rangeChanged(ev: SelectChangeEvent<string | false>) {
 
 		// The new state
 		let mRange = null;
@@ -160,7 +208,7 @@ export default class MediaFilter extends React.Component {
 	}
 
 	// Togle changed
-	toggleChanged(ev, list) {
+	toggleChanged(ev: any, list: string[]) {
 
 		// New state
 		const oState = clone(this.state);
@@ -196,10 +244,10 @@ export default class MediaFilter extends React.Component {
 	send() {
 
 		// Init the storage
-		const dStorage = {};
+		const dStorage: MediaFilterFilter = {};
 
 		// Init the server filter
-		const dFilter = {};
+		const dFilter: MediaFilterFilter = {};
 
 		// If we have a filename
 		if(this.state.filename !== false) {
@@ -319,7 +367,7 @@ export default class MediaFilter extends React.Component {
 
 			// Else, fetch the records from the server, start by cloning the
 			//	filter
-			const dData = dFilter;
+			const dData: Record<string, any> = dFilter;
 
 			// If we have a range, convert it
 			if(dData.range) {
@@ -348,7 +396,7 @@ export default class MediaFilter extends React.Component {
 	render() {
 
 		// Text
-		const _ = TEXT[this.props.locale];
+		const _ = Translation.get().media_filter;
 
 		// Actual render
 		return (
@@ -437,16 +485,4 @@ export default class MediaFilter extends React.Component {
 			</Box>
 		)
 	}
-}
-
-// Valid props
-MediaFilter.propTypes = {
-	imagesOnly: PropTypes.bool,
-	locale: PropTypes.string.isRequired,
-	onRecords: PropTypes.func.isRequired
-}
-
-// Default props
-MediaFilter.defaultProps = {
-	imagesOnly: false
 }
