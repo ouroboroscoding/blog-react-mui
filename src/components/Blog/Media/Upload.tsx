@@ -56,10 +56,10 @@ export type ElementProps = {
 export default function Upload(props: UploadProps) {
 
 	// State
-	let [uploadDragging, uploadDraggingSet] = useState(false);
+	const [uploadDragging, uploadDraggingSet] = useState(false);
 
 	// Refs
-	let refInput = useRef<HTMLInputElement>(null);
+	const refInput = useRef<HTMLInputElement>(null);
 
 	// Called when the file changes
 	async function change(files: FileList) {
@@ -149,7 +149,9 @@ export default function Upload(props: UploadProps) {
 	function dragStart(ev: DragEvent<HTMLDivElement>) {
 		ev.preventDefault();
 		ev.stopPropagation();
-		ev.dataTransfer && ev.dataTransfer.clearData();
+		if(ev.dataTransfer) {
+			ev.dataTransfer.clearData();
+		}
 	};
 
 	// Called when the input changes

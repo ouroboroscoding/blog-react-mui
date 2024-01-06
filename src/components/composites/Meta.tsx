@@ -122,7 +122,7 @@ export default function Meta({ allowed, errors, onChange, value }: MetaProps) {
 					<Box className="blog_meta_form_image_icon">
 						<i
 							className="fa-solid fa-upload"
-							onClick={() => imageSelectSet(value.image)}
+							onClick={() => imageSelectSet(value.image as string)}
 						/>
 					</Box>
 				</Box>

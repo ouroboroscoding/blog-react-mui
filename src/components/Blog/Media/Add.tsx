@@ -82,7 +82,7 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 
 	// State
 	const [ errs, errsSet ] = useState({});
-	const [ file, fileSet ] = useState<FileStruct | null>(null);
+	const [ upload, uploadSet ] = useState<FileStruct | null>(null);
 	const [ thumbs, thumbsSet ] = useState<ThumbStruct[]>([]);
 
 	// Hooks
@@ -96,8 +96,8 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 				key: uuidv4(),
 				chain: true,
 				type: 'f',
-				height: Math.round(((file as FileStruct).dimensions as DimensionStruct).height / 2),
-				width: Math.round(((file as FileStruct).dimensions as DimensionStruct).width / 2)
+				height: Math.round(((upload as FileStruct).dimensions as DimensionStruct).height / 2),
+				width: Math.round(((upload as FileStruct).dimensions as DimensionStruct).width / 2)
 			});
 			return lThumbs;
 		});
@@ -131,8 +131,8 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 
 				// If it's higher than it's equivalent file dimension, set it to
 				//	that
-				if(val > ((file as FileStruct).dimensions as DimensionStruct)[type]) {
-					val = ((file as FileStruct).dimensions as DimensionStruct)[type];
+				if(val > ((upload as FileStruct).dimensions as DimensionStruct)[type]) {
+					val = ((upload as FileStruct).dimensions as DimensionStruct)[type];
 				}
 
 				// If we're linked
@@ -142,20 +142,20 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 					if(type === 'height') {
 
 						// Get the percentage of the height based on the image height
-						const fPerc = ((file as FileStruct).dimensions as DimensionStruct).height / val;
+						const fPerc = ((upload as FileStruct).dimensions as DimensionStruct).height / val;
 
 						// Set new values
-						o.width = Math.round(((file as FileStruct).dimensions as DimensionStruct).width / fPerc);
+						o.width = Math.round(((upload as FileStruct).dimensions as DimensionStruct).width / fPerc);
 					}
 
 					// Else, if we're changing the width
 					else {
 
 						// Get the percentage of the height based on the image height
-						const fPerc = ((file as FileStruct).dimensions as DimensionStruct).width / val;
+						const fPerc = ((upload as FileStruct).dimensions as DimensionStruct).width / val;
 
 						// Set new values
-						o.height = Math.round(((file as FileStruct).dimensions as DimensionStruct).height / fPerc);
+						o.height = Math.round(((upload as FileStruct).dimensions as DimensionStruct).height / fPerc);
 					}
 				}
 			}
@@ -175,20 +175,20 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 	}
 
 	// Called when the photo changes
-	function uploadChange(upload: UploadedStruct) {
+	function uploadChange(data: UploadedStruct) {
 
 		// Split the URL
-		const lData = upload.url.split(';');
+		const lData = data.url.split(';');
 
 		// Change the data
-		fileSet({
+		uploadSet({
 			data: lData[1].substring(7),
-			dimensions: upload.file.dimensions,
-			name: upload.file.name.replace(/ /g, '_'),
-			mime: upload.file.type,
-			length: upload.file.size,
-			type: upload.file.type,
-			url: upload.url
+			dimensions: data.file.dimensions,
+			name: data.file.name.replace(/ /g, '_'),
+			mime: data.file.type,
+			length: data.file.size,
+			type: data.file.type,
+			url: data.url
 		});
 	}
 
@@ -200,8 +200,8 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 
 		// Generate the data
 		const oData: Record<string, any> = {
-			base64: (file as FileStruct).data,
-			filename: (file as FileStruct).name
+			base64: (upload as FileStruct).data,
+			filename: (upload as FileStruct).name
 		};
 
 		// If we have thumbs
@@ -220,7 +220,7 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 			onAdded(data);
 
 			// Clear the local data
-			fileSet(null);
+			uploadSet(null);
 			thumbsSet([]);
 
 		}, error => {
@@ -250,11 +250,11 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 							<Box className="blog_media_upload">
 								{(file.type === 'image/jpeg' || file.type === 'image/png') ? (
 									<Box className="blog_media_upload_photo" style={{backgroundImage: `url(${file.url})`}}>
-										<i className="fas fa-times-circle close" onClick={() => { fileSet(null); thumbsSet([]); }} />
+										<i className="fas fa-times-circle close" onClick={() => { uploadSet(null); thumbsSet([]); }} />
 									</Box>
 								) : (
 									<Box className="blog_media_upload_photo">
-										<i className="fas fa-times-circle close" onClick={() => { fileSet(null); thumbsSet([]); }} />
+										<i className="fas fa-times-circle close" onClick={() => { uploadSet(null); thumbsSet([]); }} />
 										<i className="mime fa-solid fa-file" />
 									</Box>
 								)}
@@ -359,7 +359,7 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 					}}
 					maxFileSize={10485760}
 					onChange={uploadChange}
-					value={file}
+					value={upload}
 				/>
 			</DialogContent>
 			<DialogActions>
@@ -368,7 +368,7 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 					onClick={onCancel}
 					variant="contained"
 				>{_.add.cancel}</Button>
-				{file &&
+				{upload &&
 					<Button
 						color="primary"
 						onClick={uploadSubmit}

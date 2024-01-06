@@ -26,9 +26,10 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Translation from '../../translations';
 
 // Project components
-import MediaFilter, { MediaStruct } from './MediaFilter';
+import MediaFilter from './MediaFilter';
 
 // Types
+import type { MediaStruct } from './MediaFilter';
 export type MediaSelectProps = {
 	callback: (val: string) => void,
 	current: string,
@@ -95,7 +96,7 @@ export default function MediaSelect(
 										onClick={() => callback(o.urls.source)}
 										variant="contained"
 									>{_.source}</Button><br />
-									{o.image.thumbnails.map(s =>
+									{o.image && o.image.thumbnails.map(s =>
 										<React.Fragment key={s}>
 											<Button
 												color={o.urls[s] === current ? 'info' : 'primary'}
