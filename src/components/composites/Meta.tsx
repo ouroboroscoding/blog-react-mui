@@ -48,6 +48,9 @@ export type MetaProps = {
  */
 export default function Meta({ allowed, errors, onChange, value }: MetaProps) {
 
+	// Text
+	const _ = Translation.get().meta;
+
 	// State
 	const [ imageSelect, imageSelectSet ] = useState<string | false>(false);
 
@@ -61,9 +64,6 @@ export default function Meta({ allowed, errors, onChange, value }: MetaProps) {
 		}
 		onChange(oNew);
 	}
-
-	// Text
-	const _ = Translation.get().meta;
 
 	// Render
 	return (

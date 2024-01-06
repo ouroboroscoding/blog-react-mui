@@ -34,20 +34,22 @@ import Translation from '../../translations';
 
 // Types
 export type MediaStruct = {
-	"_id": string,
-	"_created": number,
-	"uploader": string,
-	"filename": string,
-	"mime": string,
-	"length": number,
-	"image": {
-		"resolution": {
-			"width": number,
-			"height": number
-		},
-		"thumbnails": string[]
+	_id?: string,
+	_created?: number,
+	_hover?: boolean,
+	uploader: string,
+	filename: string,
+	mime: string,
+	length: number,
+	image?: MediaImageStruct,
+	urls: Record<string, string>
+}
+export type MediaImageStruct = {
+	resolution: {
+		width: number,
+		height: number
 	},
-	"urls": Record<string, string>
+	thumbnails: string[]
 }
 export type MediaFilterProps = {
 	imagesOnly: boolean,

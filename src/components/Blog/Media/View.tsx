@@ -10,9 +10,7 @@
 
 // Ouroboros modules
 import blog, { errors } from '@ouroboros/blog';
-import {
-	bytesHuman, combine
-} from '@ouroboros/tools';
+import { bytesHuman } from '@ouroboros/tools';
 import { copy } from '@ouroboros/browser/clipboard';
 import clone from '@ouroboros/clone';
 import events from '@ouroboros/events';
@@ -39,24 +37,15 @@ import Translation from '../../../translations';
 import ConfirmDelete from '../../elements/ConfirmDelete';
 
 // Types
-import { MediaStruct } from '../../composites/MediaFilter';
+import type { rightsStruct } from '@ouroboros/brain-react';
+import type { MediaImageStruct, MediaStruct } from '../../composites/MediaFilter';
+import type { ThumbStruct } from './index';
 export type ViewProps = {
 	onClose: () => void,
 	onThumbAdded: (size: string, data: any) => void,
 	onThumbRemoved: (size: string) => void,
-	rights: {
-		create: boolean,
-		delete: boolean,
-		read: boolean,
-		update: boolean
-	},
+	rights: rightsStruct,
 	value: MediaStruct
-}
-type ThumbStruct = {
-	type: 'f' | 'c',
-	height: number,
-	chain: boolean,
-	width: number
 }
 
 /**
@@ -86,9 +75,9 @@ export default function View(
 		// Fill the form
 		thumbSet({
 			type: 'f',
-			height: Math.round(value.image.resolution.height / 2),
+			height: Math.round((value.image as MediaImageStruct).resolution.height / 2),
 			chain: true,
-			width: Math.round(value.image.resolution.width / 2)
+			width: Math.round((value.image as MediaImageStruct).resolution.width / 2)
 		});
 	}
 
@@ -109,8 +98,8 @@ export default function View(
 
 				// If it's higher than it's equivalent file dimension, set it to
 				//	that
-				if(val > value.image.resolution[type]) {
-					val = value.image.resolution[type];
+				if(val > (value.image as MediaImageStruct).resolution[type]) {
+					val = (value.image as MediaImageStruct).resolution[type];
 				}
 
 				// If we're chained
@@ -120,20 +109,20 @@ export default function View(
 					if(type === 'height') {
 
 						// Get the percentage of the height based on the image height
-						const fPerc = value.image.resolution.height / val;
+						const fPerc = (value.image as MediaImageStruct).resolution.height / val;
 
 						// Set new values
-						oNew.width = Math.round(value.image.resolution.width / fPerc);
+						oNew.width = Math.round((value.image as MediaImageStruct).resolution.width / fPerc);
 					}
 
 					// Else, if we're changing the width
 					else {
 
 						// Get the percentage of the height based on the image height
-						const fPerc = value.image.resolution.width / val;
+						const fPerc = (value.image as MediaImageStruct).resolution.width / val;
 
 						// Set new values
-						oNew.height = Math.round(value.image.resolution.height / fPerc);
+						oNew.height = Math.round((value.image as MediaImageStruct).resolution.height / fPerc);
 					}
 				}
 			}

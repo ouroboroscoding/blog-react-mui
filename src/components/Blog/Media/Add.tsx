@@ -41,6 +41,30 @@ import Translation from '../../../translations';
 // Local components
 import Upload from './Upload';
 
+// Types
+import type { ThumbStruct } from './index';
+import type { ElementProps, UploadedStruct } from './Upload';
+import type { MediaStruct } from '../../composites/MediaFilter';
+export type AddProps = {
+	onAdded: (val: MediaStruct) => void,
+	onCancel: () => void,
+	open: boolean
+}
+type DimensionStruct = {
+	height: number,
+	width: number
+}
+export type FileStruct = {
+	_id?: string,
+	data: string,
+	dimensions?: DimensionStruct,
+	name: string,
+	mime: string,
+	length: number,
+	type: string,
+	url: string
+}
+
 /**
  * Media Add
  *
@@ -51,12 +75,15 @@ import Upload from './Upload';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Add({ onAdded, onCancel, open }) {
+export default function Add({ onAdded, onCancel, open }: AddProps) {
+
+	// Text
+	const _ = Translation.get().media
 
 	// State
 	const [ errs, errsSet ] = useState({});
-	const [ file, fileSet ] = useState(null);
-	const [ thumbs, thumbsSet ] = useState([]);
+	const [ file, fileSet ] = useState<FileStruct | null>(null);
+	const [ thumbs, thumbsSet ] = useState<ThumbStruct[]>([]);
 
 	// Hooks
 	const mobile = useMediaQuery('(max-width:400px)');
@@ -67,17 +94,17 @@ export default function Add({ onAdded, onCancel, open }) {
 			const lThumbs = clone(l);
 			lThumbs.push({
 				key: uuidv4(),
-				link: true,
+				chain: true,
 				type: 'f',
-				height: Math.round(file.dimensions.height / 2),
-				width: Math.round(file.dimensions.width / 2)
+				height: Math.round(((file as FileStruct).dimensions as DimensionStruct).height / 2),
+				width: Math.round(((file as FileStruct).dimensions as DimensionStruct).width / 2)
 			});
 			return lThumbs;
 		});
 	}
 
 	// Called when a thumbnail changes
-	function thumbChange(key, type, val) {
+	function thumbChange(key: string, type: keyof ThumbStruct, val: any) {
 
 		// Make sure we're up to date
 		thumbsSet(l => {
@@ -94,7 +121,7 @@ export default function Add({ onAdded, onCancel, open }) {
 			}
 
 			// Init new values
-			const o = { }
+			const o = clone(lThumbs[iThumb])
 
 			// If we're changing the height or width
 			if(type === 'height' || type === 'width') {
@@ -104,8 +131,8 @@ export default function Add({ onAdded, onCancel, open }) {
 
 				// If it's higher than it's equivalent file dimension, set it to
 				//	that
-				if(val > file.dimensions[type]) {
-					val = file.dimensions[type];
+				if(val > ((file as FileStruct).dimensions as DimensionStruct)[type]) {
+					val = ((file as FileStruct).dimensions as DimensionStruct)[type];
 				}
 
 				// If we're linked
@@ -115,20 +142,20 @@ export default function Add({ onAdded, onCancel, open }) {
 					if(type === 'height') {
 
 						// Get the percentage of the height based on the image height
-						const fPerc = file.dimensions.height / val;
+						const fPerc = ((file as FileStruct).dimensions as DimensionStruct).height / val;
 
 						// Set new values
-						o.width = Math.round(file.dimensions.width / fPerc);
+						o.width = Math.round(((file as FileStruct).dimensions as DimensionStruct).width / fPerc);
 					}
 
 					// Else, if we're changing the width
 					else {
 
 						// Get the percentage of the height based on the image height
-						const fPerc = file.dimensions.width / val;
+						const fPerc = ((file as FileStruct).dimensions as DimensionStruct).width / val;
 
 						// Set new values
-						o.height = Math.round(file.dimensions.height / fPerc);
+						o.height = Math.round(((file as FileStruct).dimensions as DimensionStruct).height / fPerc);
 					}
 				}
 			}
@@ -137,18 +164,18 @@ export default function Add({ onAdded, onCancel, open }) {
 			o[type] = val;
 
 			// Merge the new data and return
-			merge(lThumbs[iThumb], o);
+			lThumbs[iThumb] = o;
 			return lThumbs;
 		});
 	}
 
 	// Called to remove a thumbnail
-	function thumbRemove(key) {
-		thumbsSet(l => arrayFindDelete(l, 'key', key, true));
+	function thumbRemove(key: string) {
+		thumbsSet(l => arrayFindDelete(l as ThumbStruct[], 'key', key, true) as ThumbStruct[]);
 	}
 
 	// Called when the photo changes
-	function uploadChange(upload) {
+	function uploadChange(upload: UploadedStruct) {
 
 		// Split the URL
 		const lData = upload.url.split(';');
@@ -172,9 +199,9 @@ export default function Add({ onAdded, onCancel, open }) {
 		errsSet({});
 
 		// Generate the data
-		const oData = {
-			base64: file.data,
-			filename: file.name
+		const oData: Record<string, any> = {
+			base64: (file as FileStruct).data,
+			filename: (file as FileStruct).name
 		};
 
 		// If we have thumbs
@@ -207,9 +234,6 @@ export default function Add({ onAdded, onCancel, open }) {
 		});
 	}
 
-	// Text
-	const _ = Translation.get().media
-
 	// Render
 	return (
 		<Dialog
@@ -221,15 +245,11 @@ export default function Add({ onAdded, onCancel, open }) {
 			<DialogTitle>{_.add.title}</DialogTitle>
 			<DialogContent>
 				<Upload
-					maxFileSize={10485760}
-					onChange={uploadChange}
-					value={file}
-				>
-					{({ uploadFile, uploadClick, uploadDragProps }) => (
-						uploadFile ? (
+					element={({ file, click, drag }: ElementProps) => {
+						return file ? (
 							<Box className="blog_media_upload">
-								{(uploadFile.type === 'image/jpeg' || uploadFile.type === 'image/png') ? (
-									<Box className="blog_media_upload_photo" style={{backgroundImage: `url(${uploadFile.url})`}}>
+								{(file.type === 'image/jpeg' || file.type === 'image/png') ? (
+									<Box className="blog_media_upload_photo" style={{backgroundImage: `url(${file.url})`}}>
 										<i className="fas fa-times-circle close" onClick={() => { fileSet(null); thumbsSet([]); }} />
 									</Box>
 								) : (
@@ -244,7 +264,7 @@ export default function Add({ onAdded, onCancel, open }) {
 											{_.details.filename}<br />
 											{_.details.mime}<br />
 											{_.details.size}<br />
-											{uploadFile.dimensions && [
+											{file.dimensions && [
 												_.details.dimensions,
 												<br />
 											]}
@@ -252,11 +272,11 @@ export default function Add({ onAdded, onCancel, open }) {
 									</Box>
 									<Box className="blog_media_upload_details_right">
 										<Typography>
-											{uploadFile.name}<br />
-											{uploadFile.type}<br />
-											{bytesHuman(uploadFile.length)}<br />
-											{uploadFile.dimensions && [
-												`${uploadFile.dimensions.width}x${uploadFile.dimensions.height}`,
+											{file.name}<br />
+											{file.type}<br />
+											{bytesHuman(file.length)}<br />
+											{file.dimensions && [
+												`${file.dimensions.width}x${file.dimensions.height}`,
 												<br />
 											]}
 										</Typography>
@@ -279,7 +299,7 @@ export default function Add({ onAdded, onCancel, open }) {
 													<Select
 														label={_.add.thumb.type}
 														labelId={o.key}
-														onChange={ev => thumbChange(o.key, 'type', ev.target.value)}
+														onChange={ev => thumbChange(o.key as string, 'type', ev.target.value)}
 														native
 														size="small"
 														value={o.type}
@@ -292,21 +312,21 @@ export default function Add({ onAdded, onCancel, open }) {
 													className="blog_thumb_dimension"
 													InputProps={{ inputProps: { min: 1, max: file.dimensions.width } }}
 													label={_.add.thumb.width}
-													onChange={ev => thumbChange(o.key, 'width', ev.target.value)}
+													onChange={ev => thumbChange(o.key as string, 'width', ev.target.value)}
 													placeholder={_.add.thumb.width}
 													size="small"
 													type="number"
 													value={o.width}
 												/>
 												<i
-													className={'blog_thumb_link fa-solid ' + (o.link ? 'fa-link' : 'fa-link-slash')}
-													onClick={() => thumbChange(o.key, 'link', !o.link)}
+													className={'blog_thumb_link fa-solid ' + (o.chain ? 'fa-link' : 'fa-link-slash')}
+													onClick={() => thumbChange(o.key as string, 'chain', !o.chain)}
 												/>
 												<TextField
 													className="blog_thumb_dimension"
 													InputProps={{ inputProps: { min: 1, max: file.dimensions.height } }}
 													label={_.add.thumb.height}
-													onChange={ev => thumbChange(o.key, 'height', ev.target.value)}
+													onChange={ev => thumbChange(o.key as string, 'height', ev.target.value)}
 													placeholder={_.add.thumb.height}
 													size="small"
 													type="number"
@@ -314,28 +334,33 @@ export default function Add({ onAdded, onCancel, open }) {
 												/>
 												<i
 													className="blog_thumb_remove fa-solid fa-trash-alt"
-													onClick={() => thumbRemove(o.key)}
+													onClick={() => thumbRemove(o.key as string)}
 												/>
 												<br />
 											</Box>
 										)}
 									</Box>
 								}
-								{errs.duplicate &&
+								{'duplicate' in errs &&
 									<Typography className="error">{_.add.duplicate}</Typography>
 								}
 							</Box>
 						) : (
-							<React.Fragment>
-								<Box className="blog_media_upload_text link" onClick={uploadClick} {...uploadDragProps}>
-									<Typography className="link">
-										{_.add.descr}
-									</Typography>
-								</Box>
-							</React.Fragment>
+							<Box
+								className="blog_media_upload_text link"
+								onClick={click}
+								{ ...drag }
+							>
+								<Typography className="link">
+									{_.add.descr}
+								</Typography>
+							</Box>
 						)
-					)}
-				</Upload>
+					}}
+					maxFileSize={10485760}
+					onChange={uploadChange}
+					value={file}
+				/>
 			</DialogContent>
 			<DialogActions>
 				<Button

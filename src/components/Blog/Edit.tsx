@@ -50,11 +50,9 @@ import titleToSlug from '../../functions/titleToSlug';
 import Translation from '../../translations';
 
 // Types
-import { MetaKey, MetaStruct } from '../composites/Meta';
-type LocaleStruct = {
-	_id: string,
-	name: string
-}
+import type { MetaKey, MetaStruct } from '../composites/Meta';
+import type { CategoryStruct } from './Categories';
+import type { LocaleStruct } from '../../types';
 export type EditProps = {
 	_id: string,
 	allowedMeta: MetaKey[],
@@ -76,12 +74,6 @@ type PostStruct = {
 	locales: Record<string, PostLocaleStruct>
 }
 type NewLangStruct = { locale: string } & PostLocaleStruct
-type CatData = {
-	_id: string,
-	locales: Record<string, {
-		title: string
-	}>
-}
 
 /**
  * Edit
@@ -99,7 +91,7 @@ export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
 	const _ = Translation.get().edit;
 
 	// State
-	const [ cats, catsSet ] = useState<CatData[] | false>(false);
+	const [ cats, catsSet ] = useState<CategoryStruct[] | false>(false);
 	const [ error, errorSet ] = useState<Record<string, any>>({});
 	const [ loc, locSet ] = useState<string | false>(false);
 	const [ locales, localesSet ] = useState<LocaleStruct[] | false>(false);
@@ -453,8 +445,8 @@ export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
 									<FormControlLabel
 										control={
 											<Switch
-												checked={post.categories.includes(o._id)}
-												onChange={ev => catChange(o._id, ev.target.checked)}
+												checked={post.categories.includes(o._id as string)}
+												onChange={ev => catChange(o._id as string, ev.target.checked)}
 											/>
 										}
 										label={localeTitle(o)}

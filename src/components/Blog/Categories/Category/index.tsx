@@ -9,6 +9,7 @@
  */
 
 // Ouroboros modules
+import clone from '@ouroboros/clone';
 import { combine, omap } from '@ouroboros/tools';
 
 // NPM modules
@@ -29,6 +30,21 @@ import LocaleViewEdit from './LocaleViewEdit';
 // Locale modules
 import localeTitle from '../../../../functions/localeTitle';
 
+// Types
+import type { rightsStruct } from '@ouroboros/brain-react';
+import type { Tree } from '@ouroboros/define';
+import type { CategoryLocaleStruct, CategoryStruct } from '..';
+import type { LocaleStruct } from '../../../../types';
+export type CategoryProps = {
+	baseURL: string,
+	locales: LocaleStruct[],
+	onDelete: () => void,
+	onUpdated: (data: CategoryStruct) => void,
+	rights: rightsStruct,
+	tree: Tree,
+	value: CategoryStruct
+}
+
 /**
  * Category
  *
@@ -41,19 +57,19 @@ import localeTitle from '../../../../functions/localeTitle';
  */
 export default function Category({
 	baseURL, locales, onDelete, onUpdated, rights, tree, value
-}) {
+}: CategoryProps) {
 
 	// State
 	const [ add, addSet ] = useState(false);
 
 	// Called when a locale has been added to the category
-	function localeAdded(loc, data) {
+	function localeAdded(loc: string, data: CategoryLocaleStruct) {
 
 		// Clear add state
 		addSet(false);
 
 		// Clone the value
-		const o = { ...value }
+		const o = clone(value)
 
 		// Add the locale
 		o.locales[loc] = data;
@@ -63,10 +79,10 @@ export default function Category({
 	}
 
 	// Called when a locale has been removed from the category
-	function localeDeleted(loc) {
+	function localeDeleted(loc: string) {
 
 		// Clone the value
-		const o = { ...value }
+		const o = clone(value)
 
 		// Remove the locale
 		delete o.locales[loc]
@@ -75,10 +91,10 @@ export default function Category({
 		onUpdated(o);
 	}
 
-	function localeUpdated(loc, data) {
+	function localeUpdated(loc: string, data: CategoryLocaleStruct) {
 
 		// Clone the value
-		const o = { ...value }
+		const o = clone(value)
 
 		// Combined the locale
 		o.locales[loc] = combine(o.locales[loc], data);
@@ -126,7 +142,7 @@ export default function Category({
 				}
 				{add &&
 					<LocaleAdd
-						category={value._id}
+						category={value._id as string}
 						locales={locales.filter(o => {
 							return !(o._id in value.locales);
 						})}

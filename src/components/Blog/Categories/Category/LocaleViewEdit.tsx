@@ -30,6 +30,22 @@ import Translation from '../../../../translations';
 // Project components
 import ConfirmDelete from '../../../elements/ConfirmDelete';
 
+// Types
+import type { rightsStruct } from '@ouroboros/brain-react';
+import type { Tree } from '@ouroboros/define';
+import type { CategoryLocaleStruct } from '..';
+import type { LocaleStruct } from '../../../../types';
+export type LocaleViewEditProps = {
+	baseURL: string,
+	count: number,
+	locales: LocaleStruct[],
+	onDeleted: (val: string) => void,
+	onUpdated: (val: CategoryLocaleStruct) => void,
+	rights: rightsStruct,
+	tree: Tree,
+	value: CategoryLocaleStruct
+}
+
 /**
  * Category Locale View/Edit
  *
@@ -41,15 +57,17 @@ import ConfirmDelete from '../../../elements/ConfirmDelete';
  * @returns React.Component
  */
 export default function LocaleViewEdit({
-	baseURL, count, locales, onDeleted, onUpdated, rights, translations,
-	tree, value
-}) {
+	baseURL, count, locales, onDeleted, onUpdated, rights, tree, value
+}: LocaleViewEditProps) {
+
+	// Text
+	const _ = Translation.get().categories;
 
 	// State
 	const [ edit, editSet ] = useState(false);
 
 	// Refs
-	const refForm = useRef(null);
+	const refForm = useRef<DefineParent>(null);
 
 	// Called to delete the locale record
 	function remove() {
@@ -60,7 +78,7 @@ export default function LocaleViewEdit({
 			locale: value._locale
 		}).then(data => {
 			if(data) {
-				onDeleted(value._locale);
+				onDeleted(value._locale as string);
 			}
 		}, error => {
 			events.get('error').trigger(error);
@@ -71,7 +89,7 @@ export default function LocaleViewEdit({
 	function update() {
 
 		// Get the record from the parent
-		const dRecord = refForm.current.value;
+		const dRecord = (refForm.current as DefineParent).value;
 
 		// Send the request to the server
 		blog.update('admin/category/locale', {
@@ -81,14 +99,14 @@ export default function LocaleViewEdit({
 		}).then(data => {
 			if(data) {
 				editSet(false);
-				onUpdated(dRecord)
+				onUpdated(dRecord as CategoryLocaleStruct)
 			}
 		}, error => {
 			if(error.code === errors.body.DATA_FIELDS) {
-				refForm.current.error(pathToTree(error.msg).record);
+				(refForm.current as DefineParent).error(pathToTree(error.msg).record);
 			} else if(error.code === errors.body.DB_DUPLICATE) {
-				refForm.current.error({
-					slug: translations.categories.duplicate
+				(refForm.current as DefineParent).error({
+					slug: _.duplicate
 				});
 			} else if(error.code === errors.body.DB_UPDATE_FAILED) {
 				return;
@@ -98,15 +116,12 @@ export default function LocaleViewEdit({
 		});
 	}
 
-	// Text
-	const _ = Translation.get().categories;
-
 	// Render
 	return edit ? (
 		<React.Fragment>
-			<Typography><b>{afindo(locales, '_id', value._locale).name}</b></Typography>
+			<Typography><b>{(afindo(locales as LocaleStruct[], '_id', value._locale) as LocaleStruct).name}</b></Typography>
 			<DefineParent
-				name={value._locale}
+				name={value._locale as string}
 				node={tree}
 				ref={refForm}
 				type="update"
@@ -129,15 +144,15 @@ export default function LocaleViewEdit({
 		<Paper className="blog_categories_record_view">
 			<Box className="view_left">
 				{locales.length > 1 &&
-					<Typography><nobr><b>{_.label.language}</b></nobr></Typography>
+					<Typography><span className="nobr"><b>{_.label.language}</b></span></Typography>
 				}
-				<Typography><nobr>{_.label.slug}</nobr></Typography>
-				<Typography><nobr>{_.label.title}</nobr></Typography>
-				<Typography><nobr>{_.label.description}</nobr></Typography>
+				<Typography><span className="nobr">{_.label.slug}</span></Typography>
+				<Typography><span className="nobr">{_.label.title}</span></Typography>
+				<Typography><span className="nobr">{_.label.description}</span></Typography>
 			</Box>
 			<Box className="view_center">
 				{locales.length > 1 &&
-					<Typography><b>{afindo(locales, '_id', value._locale).name}</b></Typography>
+					<Typography><b>{(afindo(locales as LocaleStruct[], '_id', value._locale) as LocaleStruct).name}</b></Typography>
 				}
 				<Typography>{baseURL}/c/{value.slug}<br /></Typography>
 				<Typography>{value.title}<br /></Typography>

@@ -10,14 +10,10 @@
 
 // Ouroboros modules
 import { normalize } from '@ouroboros/tools';
+import { ParentChangeEvent } from '@ouroboros/define-mui'
 
 // Constants
 const TITLE_TO_SLUG = /[ a-z0-9-]/;
-
-// Types
-interface HasTitle { title: string }
-interface HasData { data: HasTitle }
-interface HasSlug { slug: string }
 
 /**
  * Define Title To Slug
@@ -30,7 +26,7 @@ interface HasSlug { slug: string }
  * @param ev The event sent from the Form/Parent
  * @returns object
  */
-export function define_titleToSlug(ev: HasData): HasSlug {
+export function define_titleToSlug(ev: ParentChangeEvent): Record<string, any>  {
 
 	// Use the regular function to generate the slug, then return it in a format
 	//	define can handle

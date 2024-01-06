@@ -18,7 +18,6 @@ import React, { KeyboardEvent } from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 
 // Types
 export type TagsProps = {

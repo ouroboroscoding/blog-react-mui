@@ -32,6 +32,18 @@ import Translation from '../../../../translations';
 // Local modules
 import { define_titleToSlug } from '../../../../functions/titleToSlug';
 
+// Types
+import type { Tree } from '@ouroboros/define';
+import type { LocaleStruct } from '../../../../types';
+import type { CategoryLocaleStruct } from '..';
+export type LocaleAddProps = {
+	category: string,
+	locales: LocaleStruct[],
+	onAdded: (loc: string, data: CategoryLocaleStruct) => void,
+	onCancel: () => void,
+	tree: Tree
+}
+
 /**
  * Category Locale View/Edit
  *
@@ -44,7 +56,7 @@ import { define_titleToSlug } from '../../../../functions/titleToSlug';
  */
 export default function LocaleAdd({
 	category, locales, onAdded, onCancel, tree
-}) {
+}: LocaleAddProps) {
 
 	// Text
 	const _ = Translation.get().categories;
@@ -53,13 +65,13 @@ export default function LocaleAdd({
 	const [ loc, locSet ] = useState(locales[0]._id);
 
 	// Refs
-	const refForm = useRef(null);
+	const refForm = useRef<DefineParent>(null);
 
 	// Called to create the new locale record
 	function submit() {
 
 		// Get the record from the parent
-		const dRecord = refForm.current.value;
+		const dRecord = (refForm.current as DefineParent).value;
 
 		// Send the request to the server
 		blog.create('admin/category/locale', {
@@ -68,13 +80,13 @@ export default function LocaleAdd({
 			record: dRecord
 		}).then(data => {
 			if(data) {
-				onAdded(loc, dRecord)
+				onAdded(loc, dRecord as CategoryLocaleStruct)
 			}
 		}, error => {
 			if(error.code === errors.body.DATA_FIELDS) {
-				refForm.current.error(pathToTree(error.msg).record);
+				(refForm.current as DefineParent).error(pathToTree(error.msg).record);
 			} else if(error.code === errors.body.DB_DUPLICATE) {
-				refForm.current.error({
+				(refForm.current as DefineParent).error({
 					slug: _.duplicate
 				});
 			} else {
@@ -135,9 +147,9 @@ export default function LocaleAdd({
 
 // Valid props
 LocaleAdd.propTypes = {
+	category: PropTypes.string.isRequired,
 	locales: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onAdded: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
-	translations: PropTypes.object.isRequired,
 	tree: PropTypes.object.isRequired
 }

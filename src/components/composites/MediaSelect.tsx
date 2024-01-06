@@ -48,14 +48,14 @@ export default function MediaSelect(
 	{ callback, current, onClose }: MediaSelectProps
 ) {
 
+	// Text
+	const _ = Translation.get().media_select;
+
 	// State
 	const [ images, imagesSet ] = useState<MediaStruct[] | false>(false);
 
 	// Hooks
 	const fullScreen = useMediaQuery('(max-width:600px)');
-
-	// Text
-	const _ = Translation.get().media_select;
 
 	// Render
 	return (

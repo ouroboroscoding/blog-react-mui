@@ -46,7 +46,7 @@ const TAB_MAP = {
 }
 
 // Types
-import { MetaKey } from '../composites/Meta';
+import type { MetaKey } from '../composites/Meta';
 export type BlogProps = {
 	allowedMeta: MetaKey[],
 	basePath: string,
@@ -130,13 +130,13 @@ export default function Blog(
 
 	}, [basePath, location, navigate]);
 
-	// Set proper translation object
-	const _ = Translation.get();
-
 	// Until we have a tab, even a 404, do nothing
 	if(tab === TAB_MAP.none) {
 		return null;
 	}
+
+	// Set proper translation object
+	const _ = Translation.get();
 
 	// Render
 	return (
@@ -193,8 +193,7 @@ export default function Blog(
 						baseURL={baseURL}
 					/>
 				) || (tab === TAB_MAP.media &&
-					<Media
-					/>
+					<Media />
 				) || (tab === TAB_MAP.edit &&
 					<Edit
 						_id={id as string}

@@ -10,6 +10,7 @@
 
 // Ouroboros modules
 import blog, { errors } from '@ouroboros/blog';
+import clone from '@ouroboros/clone';
 import { timestamp } from '@ouroboros/dates';
 import { DefineParent } from '@ouroboros/define-mui';
 import events from '@ouroboros/events';
@@ -38,6 +39,23 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Translation from '../../../translations';
 import { define_titleToSlug } from '../../../functions/titleToSlug';
 
+// Types
+import type { Tree } from '@ouroboros/define';
+import type { LocaleStruct } from '../../../types';
+import type { CategoryStruct } from '.';
+export type CategoryAddProps = {
+	locales: LocaleStruct[] | false,
+	onAdded: (val: CategoryStruct) => void,
+	onCancel: () => void,
+	open: boolean,
+	tree: Tree
+}
+type LocaleRefStruct = {
+	key: string,
+	ref: any
+}
+type LocaleRefList = Record<string, LocaleRefStruct>
+
 /**
  * Category Add
  *
@@ -48,12 +66,15 @@ import { define_titleToSlug } from '../../../functions/titleToSlug';
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Add({
-	locales, onAdded, onCancel, open, tree
-}) {
+export default function Add(
+	{ locales, onAdded, onCancel, open, tree }: CategoryAddProps
+) {
+
+	// Text
+	const _ = Translation.get().categories;
 
 	// State
-	const [ data, dataSet ] = useState(null);
+	const [ data, dataSet ] = useState<LocaleRefList | null>(null);
 
 	// Hooks
 	const mobile = useMediaQuery('(max-width:400px)');
@@ -65,11 +86,11 @@ export default function Add({
 		let sLocale = Translation.locale()
 
 		// If the current locale doesn't match one in the list
-		const i = afindi(locales, '_id', sLocale);
+		const i = afindi(locales as LocaleStruct[], '_id', sLocale);
 		if(i < 0) {
 
 			// Grab the first one available
-			sLocale = locales[0]._id;
+			sLocale = (locales as LocaleStruct[])[0]._id;
 		}
 
 		// Clear the data completely by creating new locale data for the
@@ -90,13 +111,13 @@ export default function Add({
 		dataSet(o => {
 
 			// If the count of data keys matches the locales, you shall not pass
-			if(Object.keys(o).length === locales.length) {
+			if(Object.keys(o as LocaleRefList).length === (locales as LocaleStruct[]).length) {
 				return o;
 			}
 
 			// Get the new locale by filtering out the ones already used and
 			//	then using the first one we find in the remaining
-			const sLocale = locales.filter(d => !(d._id in data))[0]._id;
+			const sLocale = (locales as LocaleStruct[]).filter(d => !(d._id in (data as LocaleRefList)))[0]._id;
 
 			// Shallow copy the data and add the new empty locale to the copy
 			const oData = { ...o };
@@ -111,18 +132,18 @@ export default function Add({
 	}
 
 	// Called to remove a locale from the data
-	function dataRemove(loc) {
+	function dataRemove(loc: string) {
 
 		// Get the latest data
 		dataSet(o => {
 
 			// If it doesn't exist, do nothing
-			if(!(loc in data)) {
+			if(!(loc in (o as LocaleRefList))) {
 				return;
 			}
 
 			// Shallow copy the data and remove the locale from the copy
-			const oData = { ...o };
+			const oData = clone(o);
 			delete oData[loc];
 
 			// Return the new data
@@ -131,18 +152,18 @@ export default function Add({
 	}
 
 	// Called when any of the locale selectors changes
-	function localeChanged(was, is) {
+	function localeChanged(was: string, is: string) {
 
 		// Get the latest data
 		dataSet(o => {
 
 			// If we don't have the "was"
-			if(!(was in data)) {
+			if(!(was in (o as LocaleRefList))) {
 				return;
 			}
 
-			// Shallow copy the data
-			const oData = { ...o };
+			// Clone the data
+			const oData = clone(o);
 
 			// Add the new locale
 			oData[is] = oData[was]
@@ -159,27 +180,27 @@ export default function Add({
 	function submit() {
 
 		// Init the data with the name
-		const oData = { locales: {} };
+		const oData: CategoryStruct = { locales: {} };
 
 		// Keep track of used slugs
-		const lSlugs = [];
+		const lSlugs: string[] = [];
 
 		// Go through each locale
-		for(const k of Object.keys(data)) {
+		for(const k of Object.keys(data as LocaleRefList)) {
 
 			// If the form data is invalid, stop immediately
-			if(!data[k].ref.current.valid()) {
+			if(!(data as LocaleRefList)[k].ref.current.valid()) {
 				return;
 			}
 
 			// Add the locale data
-			oData.locales[k] = data[k].ref.current.value;
+			oData.locales[k] = (data as LocaleRefList)[k].ref.current.value;
 
 			// If the slug already exists
 			if(lSlugs.includes(oData.locales[k].slug)) {
 
 				// Add the duplicate error and stop
-				data[k].ref.current.error({ slug: 'duplicate' });
+				(data as LocaleRefList)[k].ref.current.error({ slug: 'duplicate' });
 				return;
 			}
 
@@ -203,18 +224,15 @@ export default function Add({
 			if(error.code === errors.body.DATA_FIELDS) {
 				const oErrors = pathToTree(error.msg).records;
 				for(const loc of Object.keys(oErrors.locale)) {
-					data[loc].ref.current.error(oErrors.locale[loc]);
+					(data as LocaleRefList)[loc].ref.current.error(oErrors.locale[loc]);
 				}
 			} else if(error.code === errors.body.DB_DUPLICATE) {
-				data[error.msg[0][0]].ref.current.error({ slug: 'duplicate' });
+				(data as LocaleRefList)[error.msg[0][0]].ref.current.error({ slug: 'duplicate' });
 			} else {
 				events.get('error').trigger(error);
 			}
 		});
 	}
-
-	// Text
-	const _ = Translation.get().categories;
 
 	// Render
 	return (
@@ -232,12 +250,12 @@ export default function Add({
 					<React.Fragment>
 						{locales.length === 1 ?
 							<DefineParent
-								name={locales[0]}
+								name={locales[0]._id}
 								node={tree}
 								onNodeChange={{
 									title: define_titleToSlug
 								}}
-								ref={data[locales[0]].ref}
+								ref={data[locales[0]._id].ref}
 								type="create"
 							/>
 						:

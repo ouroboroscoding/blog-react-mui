@@ -10,7 +10,7 @@
 
 // Ouroboros modules
 import blog from '@ouroboros/blog';
-import CategoryLocaleDef from '@ouroboros/blog/definitions/category_locale';
+import CategoryLocaleDef from '@ouroboros/blog/definitions/category_locale.json';
 import { useRights } from '@ouroboros/brain-react';
 import clone from '@ouroboros/clone';
 import { Tree } from '@ouroboros/define';
@@ -48,6 +48,26 @@ const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
 	}
 });
 
+// Types
+import type { LocaleStruct } from '../../../types';
+export type CategoriesProps = {
+	baseURL: string
+}
+export type CategoryStruct = {
+	_id?: string,
+	_created?: number,
+	locales: Record<string, CategoryLocaleStruct>
+}
+export type CategoryLocaleStruct = {
+	_id?: string,
+	_created?: number,
+	_locale?: string,
+	_category?: string,
+	slug: string,
+	title: string,
+	description: string
+}
+
 /**
  * Categories
  *
@@ -58,13 +78,16 @@ const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Categories({ baseURL }) {
+export default function Categories({ baseURL }: CategoriesProps) {
+
+	// Text
+	const _ = Translation.get().categories;
 
 	// State
-	const [ add, addSet ] = useState(false);
-	const [ locales, localesSet ] = useState(false);
-	const [ records, recordsSet ] = useState([]);
-	const [ remove, removeSet ] = useState(null);
+	const [ add, addSet ] = useState<boolean>(false);
+	const [ locales, localesSet ] = useState<LocaleStruct[] | false>(false);
+	const [ records, recordsSet ] = useState<CategoryStruct[] | false>(false);
+	const [ remove, removeSet ] = useState<CategoryStruct | null>(null);
 
 	// Get rights
 	const rights = useRights('blog_category');
@@ -90,7 +113,7 @@ export default function Categories({ baseURL }) {
 	}, []);
 
 	// Called after new category is added
-	function categoryAdded(category) {
+	function categoryAdded(category: CategoryStruct) {
 
 		// Add it to the records and re-sort by name
 		recordsSet(l => {
@@ -108,10 +131,10 @@ export default function Categories({ baseURL }) {
 
 		// Send the delete request to the server
 		blog.delete('admin/category', {
-			_id: remove._id
+			_id: (remove as CategoryStruct)._id
 		}).then(data => {
 			if(data) {
-				recordsSet(l => arrayFindDelete(l, '_id', remove._id, true));
+				recordsSet(l => arrayFindDelete(l as CategoryStruct[], '_id', (remove as CategoryStruct)._id, true) as CategoryStruct[]);
 				removeSet(null);
 			}
 		}, error => {
@@ -120,13 +143,13 @@ export default function Categories({ baseURL }) {
 	}
 
 	// Called when any category is updated
-	function categoryUpdated(_id, data) {
+	function categoryUpdated(_id: string, data: CategoryStruct) {
 
 		// Get latest
 		recordsSet(l => {
 
 			// Get the index
-			const i = afindi(l, '_id', _id);
+			const i = afindi(l as CategoryStruct[], '_id', _id);
 			if(i < 0) {
 				return l;
 			}
@@ -139,9 +162,6 @@ export default function Categories({ baseURL }) {
 			return lRecords;
 		})
 	}
-
-	// Text
-	const _ = Translation.get().categories;
 
 	// If we don't have locales yet
 	if(locales === false) {
@@ -169,18 +189,18 @@ export default function Categories({ baseURL }) {
 					<Box>
 						<Typography>...</Typography>
 					</Box>
-				) || (records.length === 0 &&
+				) || ((records as CategoryStruct[]).length === 0 &&
 					<Box>
 						<Typography>{_.no_records}</Typography>
 					</Box>
 				) ||
-					records.map(o =>
+					(records as CategoryStruct[]).map(o =>
 						<Category
 							baseURL={baseURL}
 							key={o._id}
 							locales={locales}
 							onDelete={() => removeSet(o)}
-							onUpdated={cat => categoryUpdated(o._id, cat)}
+							onUpdated={cat => categoryUpdated(o._id as string, cat)}
 							rights={rights}
 							tree={CategoryLocaleTree}
 							value={o}

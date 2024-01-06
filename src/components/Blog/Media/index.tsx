@@ -39,6 +39,16 @@ import Add from './Add';
 import Filter from '../../composites/MediaFilter';
 import View from './View';
 
+// Types
+import type { MediaStruct } from '../../composites/MediaFilter';
+export type ThumbStruct = {
+	key?: string,
+	type: 'f' | 'c',
+	height: number,
+	chain: boolean,
+	width: number
+}
+
 /**
  * Media
  *
@@ -46,23 +56,25 @@ import View from './View';
  *
  * @name Media
  * @access public
- * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Media(props) {
+export default function Media() {
+
+	// Text
+	const _ = Translation.get().media;
 
 	// State
-	const [ add, addSet ] = useState(false);
-	const [ records, recordsSet ] = useState([]);
-	const [ remove, removeSet ] = useState(null);
-	const [ view, viewSet ] = useState(null);
+	const [ add, addSet ] = useState<boolean>(false);
+	const [ records, recordsSet ] = useState<MediaStruct[] | false>(false);
+	const [ remove, removeSet ] = useState<MediaStruct | null>(null);
+	const [ view, viewSet ] = useState<MediaStruct | null>(null);
 
 	// Get rights
 	const hover = useMediaQuery('(hover: hover)');
 	const rights = useRights('blog_media');
 
 	// Called after new media is uploaded
-	function mediaAdded(file) {
+	function mediaAdded(file: MediaStruct) {
 
 		// Add it to the records
 		recordsSet(l => {
@@ -76,7 +88,7 @@ export default function Media(props) {
 	}
 
 	// Called when the user clicks on, or mouses in and out of the record item
-	function mediaClick(media) {
+	function mediaClick(media: MediaStruct) {
 
 		// If we can hover, do nothing
 		if(hover) {
@@ -87,7 +99,7 @@ export default function Media(props) {
 		recordsSet(l => {
 
 			// Find the record
-			const i = afindi(l, '_id', media._id);
+			const i = afindi(l as MediaStruct[], '_id', media._id);
 			if(i === -1) {
 				return l;
 			}
@@ -95,11 +107,11 @@ export default function Media(props) {
 			// Clone the records
 			const lRecords = clone(l);
 
-			// If we are already in hover move
-			if(lRecords[i].hover) {
-				delete lRecords[i].hover;
+			// If we are already in hover mode
+			if(lRecords[i]._hover) {
+				delete lRecords[i]._hover;
 			} else {
-				lRecords[i].hover = true;
+				lRecords[i]._hover = true;
 			}
 
 			// Set the new records
@@ -112,10 +124,10 @@ export default function Media(props) {
 
 		// Send the delete request to the server
 		blog.delete('admin/media', {
-			_id: remove._id
+			_id: (remove as MediaStruct)._id
 		}).then(data => {
 			if(data) {
-				recordsSet(l => arrayFindDelete(l, '_id', remove._id, true));
+				recordsSet(l => arrayFindDelete(l as MediaStruct[], '_id', (remove as MediaStruct)._id, true) as MediaStruct[]);
 				removeSet(null);
 			}
 		}, error => {
@@ -124,7 +136,7 @@ export default function Media(props) {
 	}
 
 	// Called when the view has added a new thumbnail to the image
-	function thumbAdded(size, url) {
+	function thumbAdded(size: string, url: string) {
 
 		// Get latest
 		recordsSet(l => {
@@ -133,7 +145,7 @@ export default function Media(props) {
 			const lRecords = clone(l);
 
 			// Find the record
-			const i = afindi(lRecords, '_id', view._id);
+			const i = afindi(lRecords, '_id', (view as MediaStruct)._id);
 			if(i === -1) {
 				return l;
 			}
@@ -153,7 +165,7 @@ export default function Media(props) {
 	}
 
 	// Called when the view has removed an existing thumbnail from the image
-	function thumbRemoved(size) {
+	function thumbRemoved(size: string) {
 
 		// Get latest
 		recordsSet(l => {
@@ -162,7 +174,7 @@ export default function Media(props) {
 			const lRecords = clone(l);
 
 			// Find the record
-			const i = afindi(lRecords, '_id', view._id);
+			const i = afindi(lRecords, '_id', (view as MediaStruct)._id);
 			if(i === -1) {
 				return l;
 			}
@@ -181,9 +193,6 @@ export default function Media(props) {
 			return lRecords;
 		});
 	}
-
-	// Text
-	const _ = Translation.get().media;
 
 	// Render
 	return (
@@ -204,14 +213,14 @@ export default function Media(props) {
 					<Box>
 						<Typography>...</Typography>
 					</Box>
-				) || (records.length === 0 &&
+				) || ((records as MediaStruct[]).length === 0 &&
 					<Box>
 						<Typography>{_.no_records}</Typography>
 					</Box>
 				) ||
-					records.map(o =>
+					(records as MediaStruct[]).map(o =>
 						<Paper
-							className={'blog_media_records_item' + (o.hover ? ' hover' : '')}
+							className={'blog_media_records_item' + (o._hover ? ' hover' : '')}
 							key={o._id}
 							onClick={() => mediaClick(o)}
 						>
@@ -227,10 +236,10 @@ export default function Media(props) {
 									</Box>
 								}
 								<Box className="blog_media_record_item_filename">
-									<nobr><Typography>{o.filename}</Typography></nobr>
+									<span className="nobr"><Typography>{o.filename}</Typography></span>
 								</Box>
 							</Box>
-							{(hover || o.hover) &&
+							{(hover || o._hover) &&
 								<Box className="blog_media_records_item_buttons">
 									<Button
 										className="blog_media_records_item_view"

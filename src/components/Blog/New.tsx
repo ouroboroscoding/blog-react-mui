@@ -45,11 +45,9 @@ import titleToSlug from '../../functions/titleToSlug';
 import Translation from '../../translations';
 
 // Types
-import { MetaKey, MetaStruct } from '../composites/Meta';
-type LocaleStruct = {
-	_id: string,
-	name: string
-}
+import type { MetaKey, MetaStruct } from '../composites/Meta';
+import type { CategoryStruct } from './Categories';
+import type { LocaleStruct } from '../../types';
 export type NewProps = {
 	allowedMeta: MetaKey[],
 	basePath: string,
@@ -64,12 +62,6 @@ type NewData = {
 	tags?: string[]
 }
 type NewDataKeys = keyof NewData;
-type CatData = {
-	_id: string,
-	locales: Record<string, {
-		title: string
-	}>
-}
 
 /**
  * New
@@ -83,8 +75,11 @@ type CatData = {
  */
 export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 
+	// Text
+	const _ = Translation.get().new;
+
 	// State
-	const [ cats, catsSet ] = useState<CatData[] | false>(false);
+	const [ cats, catsSet ] = useState<CategoryStruct[] | false>(false);
 	const [ data, dataSet ] = useState<NewData>({
 		categories: [],
 		locale: Translation.locale(),
@@ -229,9 +224,6 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 		});
 	}
 
-	// Text
-	const _ = Translation.get().new;
-
 	// Render
 	return (
 		<Box id="blog_new_post">
@@ -262,8 +254,8 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 											<FormControlLabel
 												control={
 													<Switch
-														checked={data.categories.includes(o._id)}
-														onChange={ev => catChange(o._id, ev.target.checked)}
+														checked={data.categories.includes(o._id as string)}
+														onChange={ev => catChange(o._id as string, ev.target.checked)}
 													/>
 												}
 												label={localeTitle(o)}
