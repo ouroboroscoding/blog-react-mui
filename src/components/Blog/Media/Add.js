@@ -215,7 +215,7 @@ export default function Add({ onAdded, onCancel, open }) {
                                             React.createElement("option", { value: "f" }, _.add.thumb.fit),
                                             React.createElement("option", { value: "c" }, _.add.thumb.crop))),
                                     React.createElement(TextField, { className: "blog_thumb_dimension", InputProps: { inputProps: { min: 1, max: file.dimensions.width } }, label: _.add.thumb.width, onChange: ev => thumbChange(o.key, 'width', ev.target.value), placeholder: _.add.thumb.width, size: "small", type: "number", value: o.width }),
-                                    React.createElement("i", { className: 'blog_thumb_link fa-solid ' + (o.chain ? 'fa-link' : 'fa-link-slash'), onClick: () => thumbChange(o.key, 'chain', !o.chain) }),
+                                    React.createElement("i", { className: 'blog_thumb_chain fa-solid ' + (o.chain ? 'fa-link' : 'fa-link-slash'), onClick: () => thumbChange(o.key, 'chain', !o.chain) }),
                                     React.createElement(TextField, { className: "blog_thumb_dimension", InputProps: { inputProps: { min: 1, max: file.dimensions.height } }, label: _.add.thumb.height, onChange: ev => thumbChange(o.key, 'height', ev.target.value), placeholder: _.add.thumb.height, size: "small", type: "number", value: o.height }),
                                     React.createElement("i", { className: "blog_thumb_remove fa-solid fa-trash-alt", onClick: () => thumbRemove(o.key) }),
                                     React.createElement("br", null)))),

@@ -319,7 +319,7 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 													value={o.width}
 												/>
 												<i
-													className={'blog_thumb_link fa-solid ' + (o.chain ? 'fa-link' : 'fa-link-slash')}
+													className={'blog_thumb_chain fa-solid ' + (o.chain ? 'fa-link' : 'fa-link-slash')}
 													onClick={() => thumbChange(o.key as string, 'chain', !o.chain)}
 												/>
 												<TextField
