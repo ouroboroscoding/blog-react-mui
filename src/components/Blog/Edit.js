@@ -221,7 +221,7 @@ export default function Edit({ _id, allowedMeta, baseURL }) {
         // If we're clicking on new
         if (value === 'new') {
             // Do we have values?
-            if (!newLang.locale) {
+            if (newLang === null) {
                 // Init the new object using the first available locale
                 const oLang = {
                     content: '',
@@ -360,25 +360,26 @@ export default function Edit({ _id, allowedMeta, baseURL }) {
                     remaining.length > 0 &&
                         React.createElement(Accordion, { className: loc === 'new' ? 'accordion_expanded' : '', expanded: loc === 'new', onChange: (ev, expanded) => locChanged('new', expanded) },
                             React.createElement(AccordionSummary, null, _.new_locale),
-                            React.createElement(AccordionDetails, null,
-                                React.createElement(Box, { className: "field" },
-                                    React.createElement(FormControl, { error: '_locale' in error },
-                                        React.createElement(InputLabel, { id: "blog_edit_post_locale_select" }, _.labels.language),
-                                        React.createElement(Select, { label: _.labels.language, labelId: "blog_edit_post_locale_select", native: true, onChange: ev => newChange('locale', ev.target.value), size: fullScreen ? 'small' : 'medium', value: newLang.locale, variant: "outlined" }, remaining.map(o => React.createElement("option", { key: o._id, value: o._id }, o.name))),
-                                        '_locale' in error &&
-                                            React.createElement(FormHelperText, null, error._locale))),
-                                React.createElement(Box, { className: "field" },
-                                    React.createElement(TextField, { error: 'title' in error, helperText: error.title || '', InputLabelProps: {
-                                            shrink: true,
-                                        }, label: _.labels.title, onChange: ev => newChange('title', ev.currentTarget.value), placeholder: _.placeholders.title, size: fullScreen ? 'small' : 'medium', value: newLang.title })),
-                                React.createElement(Box, { className: "field" },
-                                    React.createElement(TextField, { error: 'slug' in error, helperText: error.slug || '', InputProps: {
-                                            startAdornment: React.createElement(InputAdornment, { position: "start" }, `${baseURL}/p/`)
-                                        }, label: _.labels.slug, onChange: ev => newChange('slug', ev.currentTarget.value), size: fullScreen ? 'small' : 'medium', value: newLang.slug })),
-                                React.createElement(Box, { className: "field" },
-                                    React.createElement(Tags, { error: 'tags' in error ? error.tags : false, label: _.labels.tags, onChange: val => newChange('tags', val), placeholder: _.placeholders.tags, value: newLang.tags })),
-                                React.createElement(Box, { className: "actions" },
-                                    React.createElement(Button, { color: "primary", onClick: localeAdd, variant: "contained" }, _.new_locale)))))),
+                            React.createElement(AccordionDetails, null, newLang !== null &&
+                                React.createElement(React.Fragment, null,
+                                    React.createElement(Box, { className: "field" },
+                                        React.createElement(FormControl, { error: '_locale' in error },
+                                            React.createElement(InputLabel, { id: "blog_edit_post_locale_select" }, _.labels.language),
+                                            React.createElement(Select, { label: _.labels.language, labelId: "blog_edit_post_locale_select", native: true, onChange: ev => newChange('locale', ev.target.value), size: fullScreen ? 'small' : 'medium', value: newLang.locale, variant: "outlined" }, remaining.map(o => React.createElement("option", { key: o._id, value: o._id }, o.name))),
+                                            '_locale' in error &&
+                                                React.createElement(FormHelperText, null, error._locale))),
+                                    React.createElement(Box, { className: "field" },
+                                        React.createElement(TextField, { error: 'title' in error, helperText: error.title || '', InputLabelProps: {
+                                                shrink: true,
+                                            }, label: _.labels.title, onChange: ev => newChange('title', ev.currentTarget.value), placeholder: _.placeholders.title, size: fullScreen ? 'small' : 'medium', value: newLang.title })),
+                                    React.createElement(Box, { className: "field" },
+                                        React.createElement(TextField, { error: 'slug' in error, helperText: error.slug || '', InputProps: {
+                                                startAdornment: React.createElement(InputAdornment, { position: "start" }, `${baseURL}/p/`)
+                                            }, label: _.labels.slug, onChange: ev => newChange('slug', ev.currentTarget.value), size: fullScreen ? 'small' : 'medium', value: newLang.slug })),
+                                    React.createElement(Box, { className: "field" },
+                                        React.createElement(Tags, { error: 'tags' in error ? error.tags : false, label: _.labels.tags, onChange: val => newChange('tags', val), placeholder: _.placeholders.tags, value: newLang.tags })),
+                                    React.createElement(Box, { className: "actions" },
+                                        React.createElement(Button, { color: "primary", onClick: localeAdd, variant: "contained" }, _.new_locale))))))),
             rightsPost.update &&
                 React.createElement(Box, { className: "blog_post_edit_drawer_actions" },
                     React.createElement(Button, { color: "primary", onClick: submit, variant: "contained" }, _.submit)))));

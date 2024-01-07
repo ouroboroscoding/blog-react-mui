@@ -287,7 +287,7 @@ export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
 		if(value === 'new') {
 
 			// Do we have values?
-			if(!(newLang as NewLangStruct).locale) {
+			if(newLang === null) {
 
 				// Init the new object using the first available locale
 				const oLang: NewLangStruct = {
@@ -526,75 +526,79 @@ export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
 									{_.new_locale}
 								</AccordionSummary>
 								<AccordionDetails>
-									<Box className="field">
-										<FormControl error={'_locale' in error}>
-											<InputLabel id="blog_edit_post_locale_select">
-												{_.labels.language}
-											</InputLabel>
-											<Select
-												label={_.labels.language}
-												labelId="blog_edit_post_locale_select"
-												native
-												onChange={ev => newChange('locale', ev.target.value)}
-												size={fullScreen ? 'small' : 'medium'}
-												value={(newLang as NewLangStruct).locale}
-												variant="outlined"
-											>
-												{remaining.map(o =>
-													<option key={o._id} value={o._id}>{o.name}</option>
-												)}
-											</Select>
-											{'_locale' in error &&
-												<FormHelperText>{error._locale}</FormHelperText>
-											}
-										</FormControl>
-									</Box>
-									<Box className="field">
-										<TextField
-											error={'title' in error}
-											helperText={error.title || ''}
-											InputLabelProps={{
-												shrink: true,
-											}}
-											label={_.labels.title}
-											onChange={ev => newChange('title', ev.currentTarget.value)}
-											placeholder={_.placeholders.title}
-											size={fullScreen ? 'small' : 'medium'}
-											value={(newLang as NewLangStruct).title}
-										/>
-									</Box>
-									<Box className="field">
-										<TextField
-											error={'slug' in error}
-											helperText={error.slug || ''}
-											InputProps={{
-												startAdornment:
-													<InputAdornment position="start">
-														{`${baseURL}/p/`}
-													</InputAdornment>
-											}}
-											label={_.labels.slug}
-											onChange={ev => newChange('slug', ev.currentTarget.value)}
-											size={fullScreen ? 'small' : 'medium'}
-											value={(newLang as NewLangStruct).slug}
-										/>
-									</Box>
-									<Box className="field">
-										<Tags
-											error={'tags' in error ? error.tags : false}
-											label={_.labels.tags}
-											onChange={val => newChange('tags', val)}
-											placeholder={_.placeholders.tags}
-											value={(newLang as NewLangStruct).tags}
-										/>
-									</Box>
-									<Box className="actions">
-										<Button
-											color="primary"
-											onClick={localeAdd}
-											variant="contained"
-										>{_.new_locale}</Button>
-									</Box>
+									{newLang !== null &&
+										<React.Fragment>
+											<Box className="field">
+												<FormControl error={'_locale' in error}>
+													<InputLabel id="blog_edit_post_locale_select">
+														{_.labels.language}
+													</InputLabel>
+													<Select
+														label={_.labels.language}
+														labelId="blog_edit_post_locale_select"
+														native
+														onChange={ev => newChange('locale', ev.target.value)}
+														size={fullScreen ? 'small' : 'medium'}
+														value={(newLang as NewLangStruct).locale}
+														variant="outlined"
+													>
+														{remaining.map(o =>
+															<option key={o._id} value={o._id}>{o.name}</option>
+														)}
+													</Select>
+													{'_locale' in error &&
+														<FormHelperText>{error._locale}</FormHelperText>
+													}
+												</FormControl>
+											</Box>
+											<Box className="field">
+												<TextField
+													error={'title' in error}
+													helperText={error.title || ''}
+													InputLabelProps={{
+														shrink: true,
+													}}
+													label={_.labels.title}
+													onChange={ev => newChange('title', ev.currentTarget.value)}
+													placeholder={_.placeholders.title}
+													size={fullScreen ? 'small' : 'medium'}
+													value={(newLang as NewLangStruct).title}
+												/>
+											</Box>
+											<Box className="field">
+												<TextField
+													error={'slug' in error}
+													helperText={error.slug || ''}
+													InputProps={{
+														startAdornment:
+															<InputAdornment position="start">
+																{`${baseURL}/p/`}
+															</InputAdornment>
+													}}
+													label={_.labels.slug}
+													onChange={ev => newChange('slug', ev.currentTarget.value)}
+													size={fullScreen ? 'small' : 'medium'}
+													value={(newLang as NewLangStruct).slug}
+												/>
+											</Box>
+											<Box className="field">
+												<Tags
+													error={'tags' in error ? error.tags : false}
+													label={_.labels.tags}
+													onChange={val => newChange('tags', val)}
+													placeholder={_.placeholders.tags}
+													value={(newLang as NewLangStruct).tags}
+												/>
+											</Box>
+											<Box className="actions">
+												<Button
+													color="primary"
+													onClick={localeAdd}
+													variant="contained"
+												>{_.new_locale}</Button>
+											</Box>
+										</React.Fragment>
+									}
 								</AccordionDetails>
 							</Accordion>
 						}
