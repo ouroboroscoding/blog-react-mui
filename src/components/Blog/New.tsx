@@ -59,7 +59,7 @@ type NewData = {
 	slug: string,
 	title: string,
 	meta: MetaStruct,
-	tags?: string[]
+	tags: string[]
 }
 type NewDataKeys = keyof NewData;
 
@@ -85,7 +85,8 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 		locale: Translation.locale(),
 		slug: '',
 		title: '',
-		meta: {}
+		meta: {},
+		tags: []
 	});
 	const [ error, errorSet ] = useState<Record<string, any>>({});
 	const [ locales, localesSet ] = useState<LocaleStruct[] | false>(false);
@@ -164,6 +165,7 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 					content: '',
 					title: data.title.trim(),
 					slug: data.slug.trim(),
+					tags: [ ...data.tags ]
 				}
 			}
 		};
@@ -189,11 +191,6 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 		if(!empty(oErrors)) {
 			errorSet(oErrors);
 			return;
-		}
-
-		// If we have any tags, add them
-		if(data.tags && data.tags.length) {
-			oData.locales[data.locale].tags = [ ...data.tags ];
 		}
 
 		// Send the data to the server
