@@ -12,7 +12,7 @@
 import blog, { errors } from '@ouroboros/blog';
 import { locales as Locales } from '@ouroboros/mouth-mui';
 import events from '@ouroboros/events';
-import { afindo, empty, pathToTree } from '@ouroboros/tools';
+import { afindo, empty, isObject, pathToTree } from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
@@ -201,8 +201,13 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 		}, err => {
 			if(err.code === errors.body.DATA_FIELDS) {
 				errorSet(pathToTree(err.msg));
+				events.get('success').trigger(_.error_saving);
 			} else if(err.code === errors.body.DB_DUPLICATE) {
-				errorSet({'slug': 'duplicate'});
+				errorSet({ 'locales': {
+					[data.locale]: {
+						slug: 'duplicate'
+					}
+				}});
 			} else {
 				events.get('error').trigger(err);
 			}
@@ -219,6 +224,38 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 			}
 			return oData;
 		});
+	}
+
+	// Called to see if an error exists
+	function errorExists(_locale: string, which: string) {
+		return 'locales' in error &&
+				_locale in error.locales &&
+				which in error.locales[_locale];
+	}
+
+	// Called to get the error message
+	function errorMsg(_locale: string, which: string) {
+
+		// Check for a message in the specific locale
+		let mMsg = ('locales' in error &&
+				_locale in error.locales &&
+				which in error.locales[_locale]) ?
+					error.locales[_locale][which] :
+					false;
+
+		// If we have a message, translate it
+		if(mMsg !== false) {
+			if(isObject(mMsg)) {
+				for(const k of Object.keys(mMsg)) {
+					mMsg[k] = _.errors[mMsg[k]]
+				}
+			} else {
+				mMsg = _.errors[mMsg];
+			}
+		}
+
+		// Return the result
+		return mMsg;
 	}
 
 	// Render
@@ -288,8 +325,8 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 							}
 							<Box className="field">
 								<TextField
-									error={'title' in error}
-									helperText={error.title || ''}
+									error={errorExists(data.locale, 'title')}
+									helperText={errorMsg(data.locale, 'title')}
 									InputLabelProps={{
 										shrink: true,
 									}}
@@ -302,8 +339,8 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 							</Box>
 							<Box className="field">
 								<TextField
-									error={'slug' in error}
-									helperText={error.slug || ''}
+									error={errorExists(data.locale, 'slug')}
+									helperText={errorMsg(data.locale, 'slug')}
 									InputProps={{
 										startAdornment:
 											<InputAdornment position="start">

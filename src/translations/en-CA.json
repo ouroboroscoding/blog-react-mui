@@ -31,6 +31,7 @@
 		"error_saving": "There was an error while saving. Please check each language",
 		"errors": {
 			"duplicate": "URL already exists for another post",
+			"failed regex (custom)": "Invalid",
 			"missing": "Value is missing"
 		},
 		"labels": {
@@ -143,6 +144,12 @@
 		"title": "Meta"
 	},
 	"new": {
+		"error_saving": "There was an error while saving",
+		"errors": {
+			"duplicate": "URL already exists for another post",
+			"failed regex (custom)": "Invalid",
+			"missing": "Value is missing"
+		},
 		"labels": {
 			"categories": "Categories",
 			"language": "Language",
