@@ -142,6 +142,10 @@ export type TranslationStruct = {
 		title: string
 	},
 	new: {
+		error_saving: string,
+		errors: {
+			[key: string]: string
+		},
 		labels: {
 			categories: string,
 			language: string,

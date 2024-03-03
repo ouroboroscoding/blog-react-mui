@@ -15,7 +15,9 @@ import clone from '@ouroboros/clone';
 import { timestamp } from '@ouroboros/dates';
 import events from '@ouroboros/events';
 import { locales as Locales } from '@ouroboros/mouth-mui';
-import { afindo, arrayFindDelete, compare, empty, isObject, omap, pathToTree } from '@ouroboros/tools';
+import {
+	afindo, arrayFindDelete, compare, empty, isObject, omap, pathToTree
+} from '@ouroboros/tools';
 
 // NPM modules
 import PropTypes from 'prop-types';
@@ -391,8 +393,7 @@ export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
 			}
 		}, err => {
 			if(err.code === errors.body.DATA_FIELDS) {
-				const dErrors = pathToTree(err.msg);
-				errorSet(dErrors);
+				errorSet(pathToTree(err.msg));
 				events.get('success').trigger(_.error_saving);
 			} else {
 				events.get('error').trigger(err);
