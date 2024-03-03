@@ -310,8 +310,7 @@ export default function Edit({ _id, allowedMeta, baseURL }) {
             }
         }, err => {
             if (err.code === errors.body.DATA_FIELDS) {
-                const dErrors = pathToTree(err.msg);
-                errorSet(dErrors);
+                errorSet(pathToTree(err.msg));
                 events.get('success').trigger(_.error_saving);
             }
             else {

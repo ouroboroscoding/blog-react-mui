@@ -32,6 +32,7 @@
 		"error_saving": "Une erreur s'est produite lors de l'enregistrement. Veuillez vérifier chaque langue",
 		"errors": {
 			"duplicate": "L'URL existe déjà pour un autre article de blog",
+			"failed regex (custom)": "Invalid",
 			"missing": "Valeur manquante"
 		},
 		"labels": {
@@ -144,6 +145,12 @@
 		"title": "Meta"
 	},
 	"new": {
+		"error_saving": "Une erreur s'est produite lors de l'enregistrement",
+		"errors": {
+			"duplicate": "L'URL existe déjà pour un autre article de blog",
+			"failed regex (custom)": "Invalid",
+			"missing": "Valeur manquante"
+		},
 		"labels": {
 			"categories": "Catégories",
 			"language": "Langue",
