@@ -142,7 +142,7 @@ export default function Edit({ _id, allowedMeta, baseURL }) {
         // Else, if we are removing the category
         else {
             postSet(o => {
-                const i = o.categories.indexOf(_id);
+                const i = o.categories.indexOf(id);
                 if (i > -1) {
                     const oPost = clone(o);
                     oPost.categories.splice(i, 1);
