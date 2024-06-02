@@ -196,7 +196,7 @@ export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
 		// Else, if we are removing the category
 		else {
 			postSet(o => {
-				const i = (o as PostStruct).categories.indexOf(_id);
+				const i = (o as PostStruct).categories.indexOf(id);
 				if(i > -1) {
 					const oPost: PostStruct = clone(o);
 					oPost.categories.splice(i, 1);
