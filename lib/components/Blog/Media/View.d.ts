@@ -9,13 +9,13 @@
  */
 import PropTypes from 'prop-types';
 import React from 'react';
-import type { rightsStruct } from '@ouroboros/brain-react';
+import type { idStruct } from '@ouroboros/brain-react';
 import type { MediaStruct } from '../../composites/MediaFilter';
 export type ViewProps = {
     onClose: () => void;
     onThumbAdded: (size: string, data: any) => void;
     onThumbRemoved: (size: string) => void;
-    rights: rightsStruct;
+    rights: idStruct;
     value: MediaStruct;
 };
 /**
