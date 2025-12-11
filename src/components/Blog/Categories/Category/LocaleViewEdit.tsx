@@ -103,7 +103,9 @@ export default function LocaleViewEdit({
 			}
 		}, error => {
 			if(error.code === errors.body.DATA_FIELDS) {
-				(refForm.current as DefineParent).error(pathToTree(error.msg).record);
+				(refForm.current as DefineParent).error(
+					pathToTree(error.msg).record
+				);
 			} else if(error.code === errors.body.DB_DUPLICATE) {
 				(refForm.current as DefineParent).error({
 					slug: _.duplicate

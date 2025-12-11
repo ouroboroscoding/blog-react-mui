@@ -16,7 +16,6 @@ import React, { ChangeEvent, DragEvent, useRef, useState } from 'react';
 export type UploadProps =  {
 	accept?: string,
 	element: (props: ElementProps) => JSX.Element,
-	maxFileSize?: number,
 	onChange: (val: UploadedStruct) => void,
 	value?: any
 }
@@ -53,7 +52,9 @@ export type ElementProps = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Upload(props: UploadProps) {
+export default function Upload(
+	{ accept = '*', element, onChange, value }: UploadProps
+) {
 
 	// State
 	const [uploadDragging, uploadDraggingSet] = useState(false);
@@ -91,7 +92,7 @@ export default function Upload(props: UploadProps) {
 					}
 
 					// Call the on change to notify the parent
-					props.onChange({
+					onChange({
 						file: oFile,
 						url: oReader.result as string
 					});
@@ -104,7 +105,7 @@ export default function Upload(props: UploadProps) {
 			// Else if it's any other type of file, just call the on change to
 			//	notify the parent
 			else {
-				props.onChange({
+				onChange({
 					file: oFile,
 					url: oReader.result as string
 				});
@@ -169,14 +170,14 @@ export default function Upload(props: UploadProps) {
 		<React.Fragment>
 			<input
 				type="file"
-				accept={props.accept}
+				accept={accept}
 				ref={refInput}
 				multiple={false}
 				onChange={inputChange}
 				style={{ display: 'none' }}
 			/>
-			{props.element({
-				file: props.value,
+			{element({
+				file: value,
 				click: uploadClick,
 				drag: {
 					onDrop: drop,
@@ -194,14 +195,8 @@ export default function Upload(props: UploadProps) {
 // Valid props
 Upload.propTypes = {
 	accept: PropTypes.string,
-	maxFileSize: PropTypes.number,
 	onChange: PropTypes.func,
 	value: PropTypes.shape({
 		url: PropTypes.string
 	})
-}
-
-// Default props
-Upload.defaultProps = {
-	accept: '*'
 }

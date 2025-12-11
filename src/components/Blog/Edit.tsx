@@ -58,7 +58,8 @@ import type { LocaleStruct } from '../../types';
 export type EditProps = {
 	_id: string,
 	allowedMeta: MetaKey[],
-	baseURL: string
+	baseURL: string,
+	tinymceKey: string
 }
 type PostLocaleStruct = {
 	title: string,
@@ -87,7 +88,9 @@ type NewLangStruct = { locale: string } & PostLocaleStruct
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
+export default function Edit({
+	_id, allowedMeta, baseURL, tinymceKey
+}: EditProps) {
 
 	// Text
 	const _ = Translation.get().edit;
@@ -393,7 +396,7 @@ export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
 			}
 		}, err => {
 			if(err.code === errors.body.DATA_FIELDS) {
-				errorSet(pathToTree(err.msg));
+				errorSet(pathToTree(err.msg).record);
 				events.get('success').trigger(_.error_saving);
 			} else {
 				events.get('error').trigger(err);
@@ -416,6 +419,7 @@ export default function Edit({ _id, allowedMeta, baseURL }: EditProps) {
 			<Box className="blog_post_edit_content">
 				<HTML
 					error={'content' in error ? error.content : false}
+					tinymceKey={tinymceKey}
 					ref={refHtml}
 					value={loc === 'new' ? (newLang as NewLangStruct).content : post.locales[loc].content}
 				/>

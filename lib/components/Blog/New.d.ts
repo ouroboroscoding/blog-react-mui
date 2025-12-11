@@ -14,6 +14,7 @@ export type NewProps = {
     allowedMeta: MetaKey[];
     basePath: string;
     baseURL: string;
+    tinymceKey: string;
 };
 /**
  * New
@@ -25,7 +26,7 @@ export type NewProps = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-declare function New({ allowedMeta, basePath, baseURL }: NewProps): React.JSX.Element;
+declare function New({ allowedMeta, basePath, baseURL, tinymceKey }: NewProps): React.JSX.Element;
 declare namespace New {
     var propTypes: {
         allowedMeta: PropTypes.Validator<(string | null | undefined)[]>;

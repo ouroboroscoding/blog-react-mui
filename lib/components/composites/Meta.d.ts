@@ -48,9 +48,5 @@ declare namespace Meta {
             url: PropTypes.Requireable<string>;
         }>>>;
     };
-    var defaultProps: {
-        errors: {};
-        value: {};
-    };
 }
 export default Meta;

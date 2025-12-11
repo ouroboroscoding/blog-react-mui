@@ -14,6 +14,7 @@ export type EditProps = {
     _id: string;
     allowedMeta: MetaKey[];
     baseURL: string;
+    tinymceKey: string;
 };
 /**
  * Edit
@@ -25,7 +26,7 @@ export type EditProps = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-declare function Edit({ _id, allowedMeta, baseURL }: EditProps): React.JSX.Element;
+declare function Edit({ _id, allowedMeta, baseURL, tinymceKey }: EditProps): React.JSX.Element;
 declare namespace Edit {
     var propTypes: {
         _id: PropTypes.Validator<string>;

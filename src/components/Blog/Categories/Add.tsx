@@ -222,7 +222,7 @@ export default function Add(
 
 		}, error => {
 			if(error.code === errors.body.DATA_FIELDS) {
-				const oErrors = pathToTree(error.msg).records;
+				const oErrors = pathToTree(error.msg).record;
 				for(const loc of Object.keys(oErrors.locale)) {
 					(data as LocaleRefList)[loc].ref.current.error(oErrors.locale[loc]);
 				}
