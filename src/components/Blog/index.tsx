@@ -51,7 +51,8 @@ export type BlogProps = {
 	allowedMeta: MetaKey[],
 	basePath: string,
 	baseURL: string,
-	locale: string
+	locale: string,
+	tinymceKey: string
 }
 
 /**
@@ -64,9 +65,13 @@ export type BlogProps = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function Blog(
-	{ allowedMeta, basePath, baseURL, locale }: BlogProps
-) {
+export default function Blog({
+	allowedMeta = [ 'title', 'description', 'image', 'url' ],
+	basePath = '/blog',
+	baseURL = 'http://localhost',
+	locale = 'en-US',
+	tinymceKey
+}: BlogProps) {
 
 	// State
 	const [ tab, tabSet ] = useState(TAB_MAP.none);
@@ -120,7 +125,7 @@ export default function Blog(
 		// Else, if the location is an exist post
 		else if(location.pathname.substring(basePath.length, basePath.length + 5) === '/edit') {
 			tabSet(TAB_MAP.edit);
-			idSet(location.pathname.slice(-36));
+			idSet(location.pathname.slice(-32));
 		}
 
 		// Else, unknown location
@@ -128,7 +133,7 @@ export default function Blog(
 			tabSet(TAB_MAP.invalid);
 		}
 
-	}, [basePath, location, navigate]);
+	}, [ basePath, location, navigate ]);
 
 	// Until we have a tab, even a 404, do nothing
 	if(tab === TAB_MAP.none) {
@@ -183,6 +188,7 @@ export default function Blog(
 						allowedMeta={allowedMeta}
 						basePath={basePath}
 						baseURL={baseURL}
+						tinymceKey={tinymceKey}
 					/>
 				) || (tab === TAB_MAP.published &&
 					<Published
@@ -199,6 +205,7 @@ export default function Blog(
 						_id={id as string}
 						allowedMeta={allowedMeta}
 						baseURL={baseURL}
+						tinymceKey={tinymceKey}
 					/>
 				) || (tab === TAB_MAP.invalid &&
 					<Box className="padding">
@@ -218,12 +225,4 @@ Blog.propTypes = {
 	basePath: PropTypes.string,
 	baseURL: PropTypes.string,
 	locale: PropTypes.string
-}
-
-// Default props
-Blog.defaultProps = {
-	allowedMeta: ['title', 'description', 'image', 'url'],
-	basePath: '/blog',
-	baseURL: 'http://localhost',
-	locale: 'en-US'
 }

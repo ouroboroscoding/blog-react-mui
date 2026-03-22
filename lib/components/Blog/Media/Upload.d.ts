@@ -12,7 +12,6 @@ import React, { DragEvent } from 'react';
 export type UploadProps = {
     accept?: string;
     element: (props: ElementProps) => JSX.Element;
-    maxFileSize?: number;
     onChange: (val: UploadedStruct) => void;
     value?: any;
 };
@@ -48,18 +47,14 @@ export type ElementProps = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-declare function Upload(props: UploadProps): React.JSX.Element;
+declare function Upload({ accept, element, onChange, value }: UploadProps): React.JSX.Element;
 declare namespace Upload {
     var propTypes: {
         accept: PropTypes.Requireable<string>;
-        maxFileSize: PropTypes.Requireable<number>;
         onChange: PropTypes.Requireable<(...args: any[]) => any>;
         value: PropTypes.Requireable<PropTypes.InferProps<{
             url: PropTypes.Requireable<string>;
         }>>;
-    };
-    var defaultProps: {
-        accept: string;
     };
 }
 export default Upload;

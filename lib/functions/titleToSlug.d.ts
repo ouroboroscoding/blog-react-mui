@@ -7,7 +7,7 @@
  * @copyright Ouroboros Coding Inc.
  * @created 2023-12-15
  */
-import { ParentChangeEvent } from '@ouroboros/define-mui';
+import { ParentNodeChangeEvent } from '@ouroboros/define-mui';
 /**
  * Define Title To Slug
  *
@@ -19,7 +19,7 @@ import { ParentChangeEvent } from '@ouroboros/define-mui';
  * @param ev The event sent from the Form/Parent
  * @returns object
  */
-export declare function define_titleToSlug(ev: ParentChangeEvent): Record<string, any>;
+export declare function define_titleToSlug(ev: ParentNodeChangeEvent): Record<string, any>;
 /**
  * Title To Slug
  *

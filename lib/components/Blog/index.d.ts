@@ -16,6 +16,7 @@ export type BlogProps = {
     basePath: string;
     baseURL: string;
     locale: string;
+    tinymceKey: string;
 };
 /**
  * Blog
@@ -27,19 +28,13 @@ export type BlogProps = {
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-declare function Blog({ allowedMeta, basePath, baseURL, locale }: BlogProps): React.JSX.Element | null;
+declare function Blog({ allowedMeta, basePath, baseURL, locale, tinymceKey }: BlogProps): React.JSX.Element | null;
 declare namespace Blog {
     var propTypes: {
         allowedMeta: PropTypes.Requireable<(string | null | undefined)[]>;
         basePath: PropTypes.Requireable<string>;
         baseURL: PropTypes.Requireable<string>;
         locale: PropTypes.Requireable<string>;
-    };
-    var defaultProps: {
-        allowedMeta: string[];
-        basePath: string;
-        baseURL: string;
-        locale: string;
     };
 }
 export default Blog;
