@@ -22,6 +22,7 @@ import MediaSelect from '../composites/MediaSelect';
 // Types
 export type HTMLProps = {
 	error: string | false,
+	tinymceKey: string,
 	value: string
 }
 type HTMLState = {
@@ -46,6 +47,7 @@ export default class HTML extends React.Component<HTMLProps, HTMLState> {
 	// Props types
 	static propTypes = {
 		error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+		tinymceKey: PropTypes.string.isRequired,
 		value: PropTypes.string
 	}
 	static defaultProps = {
@@ -83,7 +85,7 @@ export default class HTML extends React.Component<HTMLProps, HTMLState> {
 		return (
 			<Box id="blog_post_html">
 				<Editor
-					apiKey={process.env.REACT_APP_TINYMCE}
+					apiKey={this.props.tinymceKey}
 					onInit={(evt, editor) => this.refEditor.current = editor}
 					initialValue={this.props.value}
 					init={{

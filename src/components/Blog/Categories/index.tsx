@@ -10,7 +10,7 @@
 
 // Ouroboros modules
 import blog from '@ouroboros/blog';
-import CategoryLocaleDef from '@ouroboros/blog/definitions/category_locale.json';
+import CategoryLocaleDef from '@ouroboros/blog/define/category_locale.json';
 import { useRights } from '@ouroboros/brain-react';
 import clone from '@ouroboros/clone';
 import { Tree } from '@ouroboros/define';
@@ -42,6 +42,7 @@ import Translation from '../../../translations';
 
 // Create the category locale Tree
 const CategoryLocaleTree = new Tree(CategoryLocaleDef, {
+	__name__: 'record',
 	__ui__: {
 		__create__: [ 'title', 'slug', 'description'],
 		__update__: [ 'title', 'slug', 'description']

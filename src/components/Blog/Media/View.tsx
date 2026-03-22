@@ -37,14 +37,14 @@ import Translation from '../../../translations';
 import ConfirmDelete from '../../elements/ConfirmDelete';
 
 // Types
-import type { rightsStruct } from '@ouroboros/brain-react';
+import type { idStruct } from '@ouroboros/brain-react';
 import type { MediaImageStruct, MediaStruct } from '../../composites/MediaFilter';
 import type { ThumbStruct } from './index';
 export type ViewProps = {
 	onClose: () => void,
 	onThumbAdded: (size: string, data: any) => void,
 	onThumbRemoved: (size: string) => void,
-	rights: rightsStruct,
+	rights: idStruct,
 	value: MediaStruct
 }
 

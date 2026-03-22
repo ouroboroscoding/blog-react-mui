@@ -10,7 +10,7 @@
 
 // Ouroboros modules
 import { normalize } from '@ouroboros/tools';
-import { ParentChangeEvent } from '@ouroboros/define-mui'
+import { ParentNodeChangeEvent } from '@ouroboros/define-mui'
 
 // Constants
 const TITLE_TO_SLUG = /[ a-z0-9-]/;
@@ -26,7 +26,7 @@ const TITLE_TO_SLUG = /[ a-z0-9-]/;
  * @param ev The event sent from the Form/Parent
  * @returns object
  */
-export function define_titleToSlug(ev: ParentChangeEvent): Record<string, any>  {
+export function define_titleToSlug(ev: ParentNodeChangeEvent): Record<string, any>  {
 
 	// Use the regular function to generate the slug, then return it in a format
 	//	define can handle

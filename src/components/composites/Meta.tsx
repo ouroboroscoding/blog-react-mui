@@ -46,7 +46,9 @@ export type MetaProps = {
  * @name Meta
  * @access public
  */
-export default function Meta({ allowed, errors, onChange, value }: MetaProps) {
+export default function Meta({
+	allowed, errors = {}, onChange, value = {}
+}: MetaProps) {
 
 	// Text
 	const _ = Translation.get().meta;
@@ -174,10 +176,4 @@ Meta.propTypes = {
 		title: PropTypes.string,
 		url: PropTypes.string
 	})
-}
-
-// Default props
-Meta.defaultProps = {
-	errors: {},
-	value: {}
 }

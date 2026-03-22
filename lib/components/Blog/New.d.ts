@@ -1,36 +1,37 @@
 /**
- * Edit Post
+ * New Post
  *
- * Holds the component for updated or adding to an existing post
+ * Holds the component for creating a new blog post
  *
  * @author Chris Nasr <chris@ouroboroscoding.com>
  * @copyright Ouroboros Coding Inc.
- * @created 2023-12-23
+ * @created 2023-12-16
  */
 import PropTypes from 'prop-types';
 import React from 'react';
 import type { MetaKey } from '../composites/Meta';
-export type EditProps = {
-    _id: string;
+export type NewProps = {
     allowedMeta: MetaKey[];
+    basePath: string;
     baseURL: string;
+    tinymceKey: string;
 };
 /**
- * Edit
+ * New
  *
- * Handles the Edit component for updated a blog post
+ * Handles the New component for creating a blog post
  *
- * @name Edit
+ * @name New
  * @access public
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-declare function Edit({ _id, allowedMeta, baseURL }: EditProps): React.JSX.Element;
-declare namespace Edit {
+declare function New({ allowedMeta, basePath, baseURL, tinymceKey }: NewProps): React.JSX.Element;
+declare namespace New {
     var propTypes: {
-        _id: PropTypes.Validator<string>;
         allowedMeta: PropTypes.Validator<(string | null | undefined)[]>;
+        basePath: PropTypes.Validator<string>;
         baseURL: PropTypes.Validator<string>;
     };
 }
-export default Edit;
+export default New;

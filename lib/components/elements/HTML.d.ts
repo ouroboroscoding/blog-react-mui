@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 export type HTMLProps = {
     error: string | false;
+    tinymceKey: string;
     value: string;
 };
 type HTMLState = {
@@ -30,6 +31,7 @@ export default class HTML extends React.Component<HTMLProps, HTMLState> {
     private refEditor;
     static propTypes: {
         error: PropTypes.Requireable<NonNullable<string | boolean | null | undefined>>;
+        tinymceKey: PropTypes.Validator<string>;
         value: PropTypes.Requireable<string>;
     };
     static defaultProps: {

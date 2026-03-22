@@ -9,7 +9,7 @@
  */
 import PropTypes from 'prop-types';
 import React from 'react';
-import type { rightsStruct } from '@ouroboros/brain-react';
+import type { idStruct } from '@ouroboros/brain-react';
 import type { Tree } from '@ouroboros/define';
 import type { CategoryStruct } from '..';
 import type { LocaleStruct } from '../../../../types';
@@ -18,7 +18,7 @@ export type CategoryProps = {
     locales: LocaleStruct[];
     onDelete: () => void;
     onUpdated: (data: CategoryStruct) => void;
-    rights: rightsStruct;
+    rights: idStruct;
     tree: Tree;
     value: CategoryStruct;
 };

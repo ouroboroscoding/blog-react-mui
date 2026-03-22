@@ -31,7 +31,7 @@ import Translation from '../../../../translations';
 import ConfirmDelete from '../../../elements/ConfirmDelete';
 
 // Types
-import type { rightsStruct } from '@ouroboros/brain-react';
+import type { idStruct } from '@ouroboros/brain-react';
 import type { Tree } from '@ouroboros/define';
 import type { CategoryLocaleStruct } from '..';
 import type { LocaleStruct } from '../../../../types';
@@ -41,7 +41,7 @@ export type LocaleViewEditProps = {
 	locales: LocaleStruct[],
 	onDeleted: (val: string) => void,
 	onUpdated: (val: CategoryLocaleStruct) => void,
-	rights: rightsStruct,
+	rights: idStruct,
 	tree: Tree,
 	value: CategoryLocaleStruct
 }
@@ -103,7 +103,9 @@ export default function LocaleViewEdit({
 			}
 		}, error => {
 			if(error.code === errors.body.DATA_FIELDS) {
-				(refForm.current as DefineParent).error(pathToTree(error.msg).record);
+				(refForm.current as DefineParent).error(
+					pathToTree(error.msg).record
+				);
 			} else if(error.code === errors.body.DB_DUPLICATE) {
 				(refForm.current as DefineParent).error({
 					slug: _.duplicate

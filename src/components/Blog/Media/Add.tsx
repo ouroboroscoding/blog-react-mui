@@ -225,7 +225,7 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 
 		}, error => {
 			if(error.code === errors.body.DATA_FIELDS) {
-				errsSet(pathToTree(error.msg));
+				errsSet(pathToTree(error.msg).record);
 			} else if(error.code === errors.body.DB_DUPLICATE) {
 				errsSet({ duplicate: true });
 			} else {
@@ -357,7 +357,6 @@ export default function Add({ onAdded, onCancel, open }: AddProps) {
 							</Box>
 						)
 					}}
-					maxFileSize={10485760}
 					onChange={uploadChange}
 					value={upload}
 				/>

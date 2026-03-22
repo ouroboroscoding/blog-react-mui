@@ -51,7 +51,8 @@ import type { LocaleStruct } from '../../types';
 export type NewProps = {
 	allowedMeta: MetaKey[],
 	basePath: string,
-	baseURL: string
+	baseURL: string,
+	tinymceKey: string
 }
 type NewData = {
 	categories: string[],
@@ -73,7 +74,9 @@ type NewDataKeys = keyof NewData;
  * @param Object props Properties passed to the component
  * @returns React.Component
  */
-export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
+export default function New({
+	allowedMeta, basePath, baseURL, tinymceKey
+}: NewProps) {
 
 	// Text
 	const _ = Translation.get().new;
@@ -200,7 +203,7 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 			}
 		}, err => {
 			if(err.code === errors.body.DATA_FIELDS) {
-				errorSet(pathToTree(err.msg));
+				errorSet(pathToTree(err.msg).record);
 				events.get('success').trigger(_.error_saving);
 			} else if(err.code === errors.body.DB_DUPLICATE) {
 				errorSet({ 'locales': {
@@ -265,6 +268,7 @@ export default function New({ allowedMeta, basePath, baseURL }: NewProps) {
 				<HTML
 					error={'content' in error ? error.content : false}
 					ref={refHtml}
+					tinymceKey={tinymceKey}
 				/>
 			</Box>
 			{fullScreen &&
