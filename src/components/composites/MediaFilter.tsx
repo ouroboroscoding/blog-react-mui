@@ -98,7 +98,7 @@ export default class MediaFilter extends
 		super(props);
 
 		// Get the stored filter
-		const dFilter = safeLocalStorage.json('blog_media_filter', {
+		const oFilter = safeLocalStorage.json('blog_media_filter', {
 			filename: null,
 			range: 'today'
 		});
@@ -107,15 +107,15 @@ export default class MediaFilter extends
 		const oState: MediaFilterState = {
 			filename: false, range: false, toggle: []
 		};
-		if(dFilter.filename) {
-			oState.filename = dFilter.filename;
+		if(oFilter.filename) {
+			oState.filename = oFilter.filename;
 			oState.toggle.push('file');
 		}
-		if(dFilter.range) {
-			oState.range = dFilter.range;
+		if(oFilter.range) {
+			oState.range = oFilter.range;
 			oState.toggle.push('date');
 		}
-		if(dFilter.mine) {
+		if(oFilter.mine) {
 			oState.toggle.push('mine');
 		}
 
@@ -123,7 +123,7 @@ export default class MediaFilter extends
 		this.state = oState;
 
 		// Keep track of the last filter sent
-		this.lastFilter = {};
+		this.lastFilter = { };
 
 		// Send it
 		this.send();
@@ -246,10 +246,10 @@ export default class MediaFilter extends
 	send() {
 
 		// Init the storage
-		const dStorage: MediaFilterFilter = {};
+		const oStorage: MediaFilterFilter = { };
 
 		// Init the server filter
-		const dFilter: MediaFilterFilter = {};
+		const oFilter: MediaFilterFilter = { };
 
 		// If we have a filename
 		if(this.state.filename !== false) {
@@ -261,10 +261,10 @@ export default class MediaFilter extends
 				const sFilename = this.state.filename.trim()
 
 				// Add it to the filter
-				dFilter.filename = sFilename;
+				oFilter.filename = sFilename;
 
 				// Add it to the storage
-				dStorage.filename = sFilename;
+				oStorage.filename = sFilename;
 			}
 		}
 
@@ -273,7 +273,7 @@ export default class MediaFilter extends
 
 			// If the range is an array
 			if(Array.isArray(this.state.range)) {
-				dFilter.range = this.state.range;
+				oFilter.range = this.state.range;
 			}
 
 			// Else, it's some sort of text representation
@@ -282,40 +282,40 @@ export default class MediaFilter extends
 				// If it's today
 				if(this.state.range === 'today') {
 					const sToday = iso(new Date(), false);
-					dFilter.range = [ sToday, sToday ]
+					oFilter.range = [ sToday, sToday ]
 				}
 
 				// If it's the last 7 days
 				else if(this.state.range === 'last_week') {
-					dFilter.range = [
+					oFilter.range = [
 						iso(increment(-7), false), iso(new Date(), false)
 					]
 				}
 
 				// If it's the last 14 days
 				else if(this.state.range === 'last_two_weeks') {
-					dFilter.range = [
+					oFilter.range = [
 						iso(increment(-14), false), iso(new Date(), false)
 					]
 				}
 
 				// If it's the last 30 days
 				else if(this.state.range === 'last_thirty') {
-					dFilter.range = [
+					oFilter.range = [
 						iso(increment(-30), false), iso(new Date(), false)
 					]
 				}
 
 				// If it's the last 90 days
 				else if(this.state.range === 'last_ninety') {
-					dFilter.range = [
+					oFilter.range = [
 						iso(increment(-90), false), iso(new Date(), false)
 					]
 				}
 
 				// If it's the last 365 days
 				else if(this.state.range === 'last_year') {
-					dFilter.range = [
+					oFilter.range = [
 						iso(increment(-365), false), iso(new Date(), false)
 					]
 				}
@@ -325,7 +325,7 @@ export default class MediaFilter extends
 					const oNow = new Date();
 					const iMonth = oNow.getMonth();
 					const sMonth = iMonth < 10 ? `0${iMonth}` : iMonth.toString();
-					dFilter.range = [
+					oFilter.range = [
 						`${oNow.getFullYear()}-${sMonth}-01`,
 						iso(oNow, false)
 					]
@@ -334,7 +334,7 @@ export default class MediaFilter extends
 				// If it's just in this year
 				else if(this.state.range === 'this_year') {
 					const oNow = new Date();
-					dFilter.range = [
+					oFilter.range = [
 						`${oNow.getFullYear()}-01-01`,
 						iso(oNow, false)
 					]
@@ -342,55 +342,55 @@ export default class MediaFilter extends
 			}
 
 			// Add it to the storage
-			dStorage.range = this.state.range;
+			oStorage.range = this.state.range;
 		}
 
 		// If we only want the user's uploads
 		if(this.state.toggle.includes('mine')) {
 
 			// Add it to the filter
-			dFilter.mine = true;
+			oFilter.mine = true;
 
 			// Add it to the storage
-			dStorage.mine = true;
+			oStorage.mine = true;
 		}
 
 		// If the filter has changed
-		if(!compare(dFilter, this.lastFilter)) {
+		if(!compare(oFilter, this.lastFilter)) {
 
 			// Overwrite the last filter
-			this.lastFilter = dFilter;
+			this.lastFilter = oFilter;
 
 			// If it's empty, clear the records
-			if(empty(dFilter)) {
+			if(empty(oFilter)) {
 				this.props.onRecords([]);
 				return;
 			}
 
 			// Else, fetch the records from the server, start by cloning the
 			//	filter
-			const dData: Record<string, any> = dFilter;
+			const oData: Record<string, any> = clone(oFilter);
 
 			// If we have a range, convert it
-			if(dData.range) {
-				dData.range[0] = timestamp(dData.range[0] + ' 00:00:00', false);
-				dData.range[1] = timestamp(dData.range[1] + ' 23:59:59', false);
+			if(oData.range) {
+				oData.range[0] = timestamp(oData.range[0] + ' 00:00:00', false);
+				oData.range[1] = timestamp(oData.range[1] + ' 23:59:59', false);
 			}
 
 			// If we only want images
 			if(this.props.imagesOnly) {
-				dData.images_only = true;
+				oData.images_only = true;
 			}
 
 			// Fetch from the server
 			this.props.onRecords(false);
-			blog.read('admin/media/filter', dData).then(
+			blog.read('admin/media/filter', oData).then(
 				this.props.onRecords,
 				error => events.get('error').trigger(error)
 			);
 
 			// Store it
-			localStorage.setItem('blog_media_filter', JSON.stringify(dStorage))
+			localStorage.setItem('blog_media_filter', JSON.stringify(oFilter))
 		}
 	}
 
